@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -33,7 +34,7 @@ def _handle_quote_post(request, services):
         messages.error(request, "Name and phone number are required.")
     else:
         service_id = request.POST.get("service") or None
-        QuoteRequest.objects.create(
+        quote_request = QuoteRequest.objects.create(
             name=name,
             phone=phone,
             email=request.POST.get("email", "").strip(),
@@ -41,6 +42,38 @@ def _handle_quote_post(request, services):
             service_id=service_id,
             message=request.POST.get("message", "").strip(),
         )
+        
+        # Send confirmation email if email provided
+        if quote_request.email:
+            try:
+                subject = "Quote Request Received - VoltPro Electrodata Solutions"
+                message = f"""
+Dear {name},
+
+Thank you for your quote request. We have received your inquiry and our team will contact you within one business day.
+
+Your request details:
+- Phone: {phone}
+- Location: {quote_request.location or 'Not specified'}
+- Service: {quote_request.service.title if quote_request.service else 'Not specified'}
+- Message: {quote_request.message or 'No message provided'}
+
+If you have any questions, please contact us at +254 714 155 230.
+
+Best regards,
+VoltPro Electrodata Solutions
+"""
+                send_mail(
+                    subject,
+                    message,
+                    'kagunyesam@gmail.com',
+                    [quote_request.email],
+                    fail_silently=True,
+                )
+            except Exception:
+                # Email sending failed but don't block the request
+                pass
+        
         messages.success(
             request,
             "Request received. Our team will call you back within one business day.",
