@@ -72,6 +72,8 @@
 
     <div class="quote-actions">
       <a class="btn btn-ghost" href="{% url 'core:quote_pdf' quote.public_id %}" target="_blank">Download PDF</a>
+      <button class="btn btn-ghost" onclick="window.print()">Print</button>
+      <button class="btn btn-ghost" onclick="shareQuote()">Share via Email</button>
       {% if quote.status == "sent" %}
       <form method="post" class="quote-decision-form">
         {% csrf_token %}
@@ -89,4 +91,18 @@
 
   </div>
 </section>
+
+<script>
+function shareQuote() {
+  const subject = encodeURIComponent('Quote {{ quote.quote_number }} from VoltPro Electrodata Solutions');
+  const body = encodeURIComponent(
+    'Hello,\n\nPlease find attached quote {{ quote.quote_number }} for {{ quote.client_name }}.\n\n' +
+    'Total Amount: KES {{ quote.total|floatformat:2|intcomma }}\n' +
+    'Valid until: {{ quote.valid_until|date:"d M Y" }}\n\n' +
+    'You can view the quote online at: {{ request.build_absolute_uri }}\n\n' +
+    'Best regards,\nVoltPro Electrodata Solutions'
+  );
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+</script>
 {% endblock %}
