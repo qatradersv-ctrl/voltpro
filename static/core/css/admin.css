@@ -1,0 +1,104 @@
+/* ---------------------------------------------------------
+   VoltPro admin skin — reuses the front-end brand palette
+   on top of Django's default admin (structure untouched,
+   only CSS custom properties + light layout tweaks).
+--------------------------------------------------------- */
+:root, html[data-theme="light"], html[data-theme="dark"]{
+  --primary: #16233A;
+  --secondary: #0B1220;
+  --accent: #F5A623;
+  --primary-fg: #E9EEF5;
+
+  --body-fg: #1B2434;
+  --body-bg: #F4F6FA;
+  --body-quiet-color: #5B6B84;
+  --body-medium-color: #33405A;
+  --body-loud-color: #0B1220;
+
+  --header-color: #F5A623;
+  --header-branding-color: #F5A623;
+  --header-bg: #0B1220;
+  --header-link-color: #E9EEF5;
+
+  --breadcrumbs-fg: #C7D2E2;
+  --breadcrumbs-link-fg: #F5A623;
+  --breadcrumbs-bg: #16233A;
+
+  --link-fg: #C9743A;
+  --link-hover-color: #F5A623;
+  --link-selected-fg: #C9743A;
+
+  --hairline-color: #E3E7EF;
+  --border-color: #D7DEEA;
+
+  --error-fg: #E0563F;
+
+  --message-success-bg: #E4F6EE;
+  --message-warning-bg: #FDF3DA;
+  --message-error-bg: #FBEAE6;
+
+  --darkened-bg: #EBEFF5;
+  --selected-bg: #FCEFDA;
+  --selected-row: #FDF3DA;
+
+  --button-fg: #16130A;
+  --button-bg: #F5A623;
+  --button-hover-bg: #FFB84D;
+  --default-button-bg: #16233A;
+  --default-button-hover-bg: #0B1220;
+  --close-button-bg: #5B6B84;
+  --close-button-hover-bg: #33405A;
+  --delete-button-bg: #E0563F;
+  --delete-button-hover-bg: #C7442F;
+
+  --object-tools-fg: #E9EEF5;
+  --object-tools-bg: #16233A;
+  --object-tools-hover-bg: #0B1220;
+
+  --font-family-primary: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+/* Branding lockup in the top bar */
+#header{ padding: 0 24px; }
+#branding h1{ font-family: "Space Grotesk", var(--font-family-primary); font-weight: 700; letter-spacing: -0.01em; }
+#branding h1 a:link, #branding h1 a:visited{ color: var(--header-color); }
+#branding::before{
+  content:"";
+  display:inline-block; width:22px; height:22px; margin-right:10px; vertical-align:-5px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpolygon points='20,1 38,10.5 38,29.5 20,39 2,29.5 2,10.5' fill='none' stroke='%23F5A623' stroke-width='2.4'/%3E%3Cpath d='M22 8 L12 21 L19 21 L17 32 L29 17 L21 17 Z' fill='%23F5A623'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+/* Buttons: match the amber CTA + mono-ish letter-spacing used site-wide */
+.button, input[type=submit], input[type=button], .submit-row input, a.button{
+  border-radius: 4px; letter-spacing: 0.02em; font-weight: 500;
+}
+.button.default, input[type=submit].default, .submit-row input.default{
+  background: var(--secondary); font-weight: 600;
+}
+.button.default:hover, input[type=submit].default:hover{ background: var(--default-button-hover-bg); }
+
+/* Module headers on the index page */
+.module h2, .module caption, .inline-group h2{
+  background: var(--secondary); letter-spacing: 0.01em;
+}
+
+/* Status badges — mirror the front-end .quote-status pill styling */
+.vp-badge{
+  display:inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  border: 1px solid var(--border-color); white-space: nowrap;
+}
+.vp-badge-draft{ color:#5B6B84; border-color:#C7D2E2; background:#EEF1F6; }
+.vp-badge-sent{ color:#B0710A; border-color:#F5A623; background:#FDF3DA; }
+.vp-badge-accepted{ color:#1C8A5F; border-color:#4FBF8B; background:#E4F6EE; }
+.vp-badge-rejected{ color:#C7442F; border-color:#E0563F; background:#FBEAE6; }
+.vp-badge-expired{ color:#5B6B84; border-color:#C7D2E2; background:#EEF1F6; }
+.vp-badge-yes{ color:#1C8A5F; border-color:#4FBF8B; background:#E4F6EE; }
+.vp-badge-no{ color:#B0710A; border-color:#F5A623; background:#FDF3DA; }
+
+/* Dashboard: quick-glance lead counter card */
+.vp-dashboard-note{
+  margin: 0 0 18px; padding: 14px 18px; background:#fff; border:1px solid var(--border-color);
+  border-left: 4px solid var(--accent); border-radius: 4px; font-size: 13px; color: var(--body-medium-color);
+}
+.vp-dashboard-note a{ font-weight: 600; }

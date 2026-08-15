@@ -1,0 +1,169 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}VoltPro Electrodata Solutions — Power, Access & Security Installations{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}VoltPro Electrodata Solutions — solar, electrical wiring, UPS &amp; backup power, biometric access, CCTV, generators, switchgear and gate automation, installed to spec.{% endblock %}">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='6' fill='%230B1220'/%3E%3Cpolygon points='20,3 36,11 36,29 20,37 4,29 4,11' fill='none' stroke='%23F5A623' stroke-width='2'/%3E%3Cpath d='M22 9 L13 21 L19 21 L17 31 L28 18 L21 18 Z' fill='%23F5A623'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="VoltPro Electrodata Solutions">
+<meta property="og:title" content="{% block og_title %}VoltPro Electrodata Solutions — Power, Access & Security Installations{% endblock %}">
+<meta property="og:description" content="{% block og_description %}Solar, electrical wiring, UPS &amp; backup power, biometric access, CCTV, generators, switchgear and gate automation — designed and installed as one system.{% endblock %}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{% block twitter_title %}VoltPro Electrodata Solutions{% endblock %}">
+<meta name="twitter:description" content="{% block twitter_description %}Power, access and security installations across Nairobi and beyond.{% endblock %}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<div class="top-nav">
+  <div class="wrap top-nav-row">
+    <span class="top-nav-info">Mon – Fri: 8:00 – 18:00 | Saturday: 9:00 – 15:00 | Emergency: 24/7 call-out</span>
+    <a href="tel:+254714155230" class="top-nav-phone">+254 714 155 230</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="{% url 'core:home' %}" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="34" height="34">
+          <polygon points="20,1 38,10.5 38,29.5 20,39 2,29.5 2,10.5" fill="none" stroke="var(--amber)" stroke-width="2"/>
+          <path d="M22 8 L12 21 L19 21 L17 32 L29 17 L21 17 Z" fill="var(--amber)"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">VoltPro</span>
+        <span class="brand-sub">ELECTRODATA SOLUTIONS</span>
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="Primary">
+      <a href="{% url 'core:home' %}#services">Services</a>
+      <a href="{% url 'core:home' %}#process">How we work</a>
+      <a href="{% url 'core:home' %}#work">Our work</a>
+      <a href="{% url 'core:home' %}#contact">Contact</a>
+    </nav>
+
+    <a class="btn btn-amber header-cta" href="{% url 'core:home' %}#contact">Request a quote</a>
+
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+  </div>
+
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Primary mobile">
+    <a href="{% url 'core:home' %}#services">Services</a>
+    <a href="{% url 'core:home' %}#process">How we work</a>
+    <a href="{% url 'core:home' %}#work">Our work</a>
+    <a href="{% url 'core:home' %}#contact">Contact</a>
+    <a class="btn btn-amber btn-block" href="{% url 'core:home' %}#contact">Request a quote</a>
+  </nav>
+</header>
+
+<main id="main">
+  {% if messages %}
+    <div class="wrap">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <span class="brand-name">VoltPro</span>
+      <span class="brand-sub">ELECTRODATA SOLUTIONS</span>
+      <p>Power, access and security installations across Nairobi and beyond — surveyed, wired and tested to spec.</p>
+    </div>
+
+    <div class="footer-col">
+      <h3>Services</h3>
+      <ul>
+        <li><a href="{% url 'core:home' %}#services">Solar &amp; power backup</a></li>
+        <li><a href="{% url 'core:home' %}#services">Electrical &amp; building wiring</a></li>
+        <li><a href="{% url 'core:home' %}#services">Access control &amp; CCTV</a></li>
+        <li><a href="{% url 'core:home' %}#services">Gates &amp; switchgear</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Contact</h3>
+      <ul>
+        <li><a href="tel:+254714155230">+254 714 155 230</a></li>
+        <li><a href="mailto:info@voltproelectrodata.co.ke">info@voltproelectrodata.co.ke</a></li>
+        <li>Nairobi, Kenya</li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Hours</h3>
+      <ul class="spec-list">
+        <li><span>Mon – Fri</span><span>8:00 – 18:00</span></li>
+        <li><span>Saturday</span><span>9:00 – 15:00</span></li>
+        <li><span>Emergency</span><span>24/7 call-out</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>&copy; {% now "Y" %} VoltPro Electrodata Solutions. All rights reserved.</span>
+    <span class="footer-tag">Licensed &amp; insured electrical contractor</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var toggle = document.querySelector('.nav-toggle');
+  var panel = document.getElementById('mobile-nav');
+  if(!toggle || !panel) return;
+
+  function closeMenu(){
+    document.body.classList.remove('nav-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
+  }
+  function openMenu(){
+    document.body.classList.add('nav-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Close menu');
+  }
+
+  toggle.addEventListener('click', function(){
+    document.body.classList.contains('nav-open') ? closeMenu() : openMenu();
+  });
+  panel.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenu();
+  });
+  window.addEventListener('resize', function(){
+    if(window.innerWidth > 860) closeMenu();
+  });
+})();
+</script>
+<div class="mobile-actionbar" aria-hidden="false">
+  <a href="tel:+254714155230" class="btn btn-ghost">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </svg>
+    Call
+  </a>
+  <a href="{% url 'core:home' %}#contact" class="btn btn-amber">Request a quote</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% comment %}
+Usage: {% include "core/_service_card.html" with service=service %}
+{% endcomment %}
+<a class="service-card" href="{% url 'core:service_detail' service.slug %}">
+  <div class="service-card-media">
+    <img src="{{ service.cover_image_url }}" alt="{{ service.title }}" loading="lazy">
+    {% if service.rating_note %}<span class="service-card-chip">{{ service.rating_note }}</span>{% endif %}
+    <span class="service-card-icon">
+      <svg class="card-icon"><use href="#icon-{{ service.icon }}"/></svg>
+    </span>
+  </div>
+  <div class="service-card-content">
+    <h3>{{ service.title }}</h3>
+    <p>{{ service.short_description }}</p>
+    <span class="service-card-link">
+      View details
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </span>
+  </div>
+</a>

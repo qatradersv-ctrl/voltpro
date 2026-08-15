@@ -1,0 +1,92 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+{% block title %}Quote {{ quote.quote_number }} — VoltPro Electrodata Solutions{% endblock %}
+{% block content %}
+<section class="section quote-page">
+  <div class="wrap quote-wrap">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="quote-head">
+      <div>
+        <p class="eyebrow">Quotation {{ quote.quote_number }}</p>
+        <h1>{{ quote.client_name }}</h1>
+        <p class="section-lede">
+          Issued {{ quote.issue_date|date:"d M Y" }}
+          {% if quote.valid_until %} &middot; valid until {{ quote.valid_until|date:"d M Y" }}{% endif %}
+        </p>
+      </div>
+      <div class="quote-status quote-status-{{ quote.status }}">{{ quote.get_status_display }}</div>
+    </div>
+
+    {% if quote.notes %}
+    <div class="quote-block">
+      <p class="card-spec">Scope</p>
+      <p>{{ quote.notes|linebreaksbr }}</p>
+    </div>
+    {% endif %}
+
+    <div class="quote-table-wrap">
+      <table class="quote-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit</th>
+            <th>Unit price</th>
+            <th>Line total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in quote.line_items.all %}
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit }}</td>
+            <td>KES {{ item.unit_price|floatformat:2|intcomma }}</td>
+            <td>KES {{ item.line_total|floatformat:2|intcomma }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5">No line items added yet — check back once the quote has been finalised.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="quote-totals">
+      <div><span>Subtotal</span><span>KES {{ quote.subtotal|floatformat:2|intcomma }}</span></div>
+      <div><span>VAT ({{ quote.tax_rate }}%)</span><span>KES {{ quote.tax_amount|floatformat:2|intcomma }}</span></div>
+      <div class="quote-total-final"><span>Total due</span><span>KES {{ quote.total|floatformat:2|intcomma }}</span></div>
+    </div>
+
+    {% if quote.terms %}
+    <div class="quote-block">
+      <p class="card-spec">Terms</p>
+      <p>{{ quote.terms|linebreaksbr }}</p>
+    </div>
+    {% endif %}
+
+    <div class="quote-actions">
+      <a class="btn btn-ghost" href="{% url 'core:quote_pdf' quote.public_id %}" target="_blank">Download PDF</a>
+      {% if quote.status == "sent" %}
+      <form method="post" class="quote-decision-form">
+        {% csrf_token %}
+        <button type="submit" name="decision" value="reject" class="btn btn-ghost">Decline</button>
+        <button type="submit" name="decision" value="accept" class="btn btn-amber">Accept quote</button>
+      </form>
+      {% elif quote.status == "accepted" %}
+      <p class="quote-decided">Accepted — our team will be in touch to schedule the work.</p>
+      {% elif quote.status == "rejected" %}
+      <p class="quote-decided">Marked as declined. Contact us if anything changes.</p>
+      {% else %}
+      <p class="quote-decided">This quote is still in draft — you'll be able to accept it once it's sent.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+{% endblock %}

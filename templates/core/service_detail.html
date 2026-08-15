@@ -1,0 +1,49 @@
+{% extends "core/base.html" %}
+{% block title %}{{ service.title }} — VoltPro Electrodata Solutions{% endblock %}
+{% block meta_description %}{{ service.short_description }}{% endblock %}
+{% block og_title %}{{ service.title }} — VoltPro Electrodata Solutions{% endblock %}
+{% block og_description %}{{ service.short_description }}{% endblock %}
+{% block twitter_title %}{{ service.title }} — VoltPro{% endblock %}
+{% block twitter_description %}{{ service.short_description }}{% endblock %}
+{% block content %}
+{% include "core/_icons.html" %}
+
+<section class="section service-detail">
+  <div class="wrap">
+    <a class="back-link" href="{% url 'core:home' %}#services">&larr; All services</a>
+
+    <div class="service-detail-media">
+      <img src="{{ service.cover_image_url }}" alt="{{ service.title }}">
+      <span class="service-card-icon service-detail-icon">
+        <svg class="card-icon"><use href="#icon-{{ service.icon }}"/></svg>
+      </span>
+    </div>
+
+    <div class="service-detail-head">
+      <div>
+        {% if service.rating_note %}<p class="card-spec">{{ service.rating_note }}</p>{% endif %}
+        <h1>{{ service.title }}</h1>
+        <p class="section-lede">{{ service.short_description }}</p>
+      </div>
+    </div>
+
+    <div class="service-detail-body">
+      <p>{{ service.description }}</p>
+    </div>
+
+    <a href="{% url 'core:home' %}#contact" class="btn btn-amber">Request a quote for this service</a>
+
+    {% if related %}
+    <div class="section-head related-head">
+      <p class="eyebrow">Related</p>
+      <h2>Often installed together</h2>
+    </div>
+    <div class="service-grid">
+      {% for r in related %}
+        {% include "core/_service_card.html" with service=r %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
