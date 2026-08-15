@@ -1,6 +1,7 @@
 import csv
 
 from django.contrib import admin
+from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
@@ -300,7 +301,7 @@ class QuoteAdmin(admin.ModelAdmin):
     autocomplete_fields = ("request", "service")
     date_hierarchy = "issue_date"
     inlines = [QuoteLineItemInline]
-    actions = ["export_csv"]
+    actions = ["export_csv", "send_quote"]
     fieldsets = (
         (None, {"fields": ("quote_number", "request", "service", "status")}),
         ("Client", {"fields": ("client_name", "client_phone", "client_email", "client_location")}),
@@ -359,3 +360,66 @@ class QuoteAdmin(admin.ModelAdmin):
              "Issued", "Valid until", "Subtotal", "VAT", "Total"],
             rows,
         )
+
+    @admin.action(description="Send selected quotes to clients")
+    def send_quote(self, request, queryset):
+        sent_count = 0
+        failed_count = 0
+        
+        for quote in queryset:
+            if quote.status != QuoteStatus.DRAFT:
+                continue
+            
+            if not quote.client_email:
+                failed_count += 1
+                continue
+            
+            try:
+                detail_url = request.build_absolute_uri(
+                    reverse("core:quote_detail", args=[quote.public_id])
+                )
+                
+                subject = f"Quote {quote.quote_number} from VoltPro Electrodata Solutions"
+                message = f"""
+Dear {quote.client_name},
+
+Please find your quote #{quote.quote_number} below.
+
+Total Amount: KES {quote.total:,.2f}
+Valid until: {quote.valid_until.strftime('%d %B %Y') if quote.valid_until else 'N/A'}
+
+You can view your quote online at: {detail_url}
+
+If you have any questions, please don't hesitate to contact us.
+
+Best regards,
+VoltPro Electrodata Solutions
+"""
+                
+                send_mail(
+                    subject,
+                    message,
+                    'kagunyesam@gmail.com',
+                    [quote.client_email],
+                    fail_silently=False,
+                )
+                
+                quote.status = QuoteStatus.SENT
+                quote.save(update_fields=["status", "updated_at"])
+                sent_count += 1
+                
+            except Exception as e:
+                failed_count += 1
+        
+        if sent_count > 0:
+            self.message_user(
+                request,
+                f"{sent_count} quote(s) sent successfully.",
+                level='success'
+            )
+        if failed_count > 0:
+            self.message_user(
+                request,
+                f"{failed_count} quote(s) failed to send (missing email or error).",
+                level='warning'
+            )
