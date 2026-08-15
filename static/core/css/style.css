@@ -466,3 +466,32 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
     height: 50px;
   }
 }
+
+/* ---------- Alert messages ---------- */
+.alert{
+  padding: 16px 20px;
+  border-radius: var(--radius-sm);
+  margin: 20px 0;
+  font-size: 14px;
+  border: 1px solid transparent;
+}
+.alert-success{
+  background: #E8F5E9;
+  color: #2E7D32;
+  border-color: #C8E6C9;
+}
+.alert-error{
+  background: #FFEBEE;
+  color: #C62828;
+  border-color: #FFCDD2;
+}
+.alert-warning{
+  background: #FFF3E0;
+  color: #E65100;
+  border-color: #FFE0B2;
+}
+.alert-info{
+  background: #E3F2FD;
+  color: #1565C0;
+  border-color: #BBDEFB;
+}
