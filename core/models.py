@@ -234,6 +234,35 @@ class SiteConfiguration(models.Model):
         null=True,
         help_text="Video shown in the services section."
     )
+    
+    # Email configuration
+    email_host = models.CharField(
+        max_length=100,
+        default='smtp.gmail.com',
+        help_text="SMTP server host (e.g., smtp.gmail.com)"
+    )
+    email_port = models.PositiveIntegerField(
+        default=587,
+        help_text="SMTP server port (e.g., 587 for TLS)"
+    )
+    email_use_tls = models.BooleanField(
+        default=True,
+        help_text="Use TLS for email sending"
+    )
+    email_host_user = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="SMTP username (usually email address)"
+    )
+    email_host_password = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="SMTP password or app-specific password"
+    )
+    contact_email = models.EmailField(
+        default='kagunyesam@gmail.com',
+        help_text="Contact email address displayed on the site"
+    )
 
     class Meta:
         verbose_name = "Site Configuration"

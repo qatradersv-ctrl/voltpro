@@ -161,7 +161,17 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
         return False
 
     readonly_fields = ("hero_image_preview", "services_video_preview")
-    fields = ("hero_image", "hero_image_preview", "services_video", "services_video_preview")
+    fieldsets = (
+        ("Hero Section", {
+            "fields": ("hero_image", "hero_image_preview")
+        }),
+        ("Services Section", {
+            "fields": ("services_video", "services_video_preview")
+        }),
+        ("Email Configuration", {
+            "fields": ("email_host", "email_port", "email_use_tls", "email_host_user", "email_host_password", "contact_email")
+        }),
+    )
 
     @admin.display(description="Hero Image Preview")
     def hero_image_preview(self, obj):
