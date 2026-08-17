@@ -74,6 +74,33 @@ VoltPro Electrodata Solutions
                 # Email sending failed but don't block the request
                 pass
         
+        # Send admin notification email
+        try:
+            admin_subject = f"New Quote Request - {name}"
+            admin_message = f"""
+New quote request received from the website:
+
+Client Details:
+- Name: {name}
+- Phone: {phone}
+- Email: {quote_request.email or 'Not provided'}
+- Location: {quote_request.location or 'Not specified'}
+- Service: {quote_request.service.title if quote_request.service else 'Not specified'}
+- Message: {quote_request.message or 'No message provided'}
+
+Please follow up with the client within one business day.
+"""
+            send_mail(
+                admin_subject,
+                admin_message,
+                'kagunyesam@gmail.com',
+                ['kagunyesam@gmail.com', 'info@voltproelectrodata.co.ke'],
+                fail_silently=True,
+            )
+        except Exception:
+            # Email sending failed but don't block the request
+            pass
+        
         messages.success(
             request,
             "Request received. Our team will call you back within one business day.",
