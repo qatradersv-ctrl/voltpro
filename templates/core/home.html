@@ -4,15 +4,15 @@
 {% include "core/_icons.html" %}
 
 <!-- Confirmation Modal -->
-<div class="modal-overlay" id="confirmationModal">
+<div class="modal-overlay" id="confirmationModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal-content">
     <div class="modal-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
         <polyline points="22 4 12 14.01 9 11.01"/>
       </svg>
     </div>
-    <h3 class="modal-title">Request Received!</h3>
+    <h3 class="modal-title" id="modal-title">Request Received!</h3>
     <p class="modal-message">Thank you for your quote request. Our team will contact you within one business day.</p>
     <button class="modal-close" onclick="closeModal()">Got it</button>
   </div>
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<section class="hero">
+<section class="hero" aria-label="Hero section">
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="eyebrow">Nairobi &middot; Design–Supply–Install</p>

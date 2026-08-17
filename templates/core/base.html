@@ -5,22 +5,57 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}VoltPro Electrodata Solutions — Power, Access & Security Installations{% endblock %}</title>
 <meta name="description" content="{% block meta_description %}VoltPro Electrodata Solutions — solar, electrical wiring, UPS &amp; backup power, biometric access, CCTV, generators, switchgear and gate automation, installed to spec.{% endblock %}">
+<meta name="keywords" content="solar installation, electrical wiring, backup power, UPS systems, biometric access control, CCTV installation, generators, switchgear, gate automation, electrical contractor, Nairobi, Kenya">
+<meta name="author" content="VoltPro Electrodata Solutions">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='6' fill='%230B1220'/%3E%3Cpolygon points='20,3 36,11 36,29 20,37 4,29 4,11' fill='none' stroke='%23F5A623' stroke-width='2'/%3E%3Cpath d='M22 9 L13 21 L19 21 L17 31 L28 18 L21 18 Z' fill='%23F5A623'/%3E%3C/svg%3E">
 
+<!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VoltPro Electrodata Solutions">
 <meta property="og:title" content="{% block og_title %}VoltPro Electrodata Solutions — Power, Access & Security Installations{% endblock %}">
 <meta property="og:description" content="{% block og_description %}Solar, electrical wiring, UPS &amp; backup power, biometric access, CCTV, generators, switchgear and gate automation — designed and installed as one system.{% endblock %}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{% block og_image %}{% static 'core/images/hero.png' %}{% endblock %}">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{% block twitter_title %}VoltPro Electrodata Solutions{% endblock %}">
 <meta name="twitter:description" content="{% block twitter_description %}Power, access and security installations across Nairobi and beyond.{% endblock %}">
+<meta name="twitter:image" content="{% block twitter_image %}{% static 'core/images/hero.png' %}{% endblock %}">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+
+<!-- Structured Data / Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Electrician",
+  "name": "VoltPro Electrodata Solutions",
+  "description": "Solar, electrical wiring, UPS & backup power, biometric access, CCTV, generators, switchgear and gate automation — designed and installed as one system.",
+  "url": "https://voltpro-t3ng.onrender.com",
+  "telephone": "+254 714 155 230",
+  "email": "info@voltproelectrodata.co.ke",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Nairobi",
+    "addressCountry": "KE"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "-1.2921",
+    "longitude": "36.8219"
+  },
+  "openingHours": "Mo-Fr 08:00-18:00 Sa 09:00-15:00",
+  "priceRange": "$$"
+}
+</script>
 </head>
 <body>
 
@@ -33,9 +68,9 @@
   </div>
 </div>
 
-<header class="site-header">
+<header class="site-header" role="banner">
   <div class="wrap header-row">
-    <a href="{% url 'core:home' %}" class="brand">
+    <a href="{% url 'core:home' %}" class="brand" aria-label="VoltPro Electrodata Solutions - Home">
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 40 40" width="34" height="34">
           <polygon points="20,1 38,10.5 38,29.5 20,39 2,29.5 2,10.5" fill="none" stroke="var(--amber)" stroke-width="2"/>
@@ -48,7 +83,7 @@
       </span>
     </a>
 
-    <nav class="main-nav" aria-label="Primary">
+    <nav class="main-nav" aria-label="Primary navigation">
       <a href="{% url 'core:services' %}">Services</a>
       <a href="{% url 'core:process' %}">How we work</a>
       <a href="{% url 'core:work' %}">Our work</a>
@@ -71,7 +106,7 @@
   </nav>
 </header>
 
-<main id="main">
+<main id="main" role="main">
   {% if messages %}
     <div class="wrap">
       {% for message in messages %}
@@ -82,7 +117,7 @@
   {% block content %}{% endblock %}
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer" role="contentinfo">
   <div class="wrap footer-grid">
     <div class="footer-brand">
       <span class="brand-name">VoltPro</span>
