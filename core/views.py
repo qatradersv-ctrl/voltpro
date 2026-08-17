@@ -96,6 +96,20 @@ def work(request):
     return render(request, "core/work.html", context)
 
 
+def services(request):
+    services = Service.objects.all()
+    context = {"services": services}
+    return render(request, "core/services.html", context)
+
+
+def process(request):
+    return render(request, "core/process.html")
+
+
+def contact(request):
+    return render(request, "core/contact.html")
+
+
 def quote_detail(request, public_id):
     """Client-facing quote page — no login required, reachable only with the UUID link."""
     quote = get_object_or_404(Quote, public_id=public_id)

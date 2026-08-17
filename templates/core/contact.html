@@ -1,0 +1,54 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Contact Us — VoltPro Electrodata Solutions{% endblock %}
+{% block content %}
+{% include "core/_icons.html" %}
+
+<section class="page-header">
+  <div class="wrap">
+    <p class="eyebrow">Get in touch</p>
+    <h1>Contact Us</h1>
+    <p class="section-lede">Send the details below and a technician — not a call-centre — will call you back to confirm scope and book a site visit.</p>
+  </div>
+</section>
+
+<section class="section contact-section">
+  <div class="wrap contact-grid">
+    <div class="contact-copy">
+      <p class="eyebrow">Contact information</p>
+      <h2>Tell us what you're powering, wiring or securing</h2>
+      <p class="section-lede">We're available Monday to Friday for consultations and offer 24/7 emergency call-out services.</p>
+      <dl class="hero-specs">
+        <div><dt>Call</dt><dd><a href="tel:+254714155230">+254 714 155 230</a></dd></div>
+        <div><dt>Email</dt><dd><a href="mailto:info@voltproelectrodata.co.ke">info@voltproelectrodata.co.ke</a></dd></div>
+        <div><dt>Emergency</dt><dd>24/7 call-out available</dd></div>
+      </dl>
+    </div>
+
+    <form class="quote-form" method="post" action="{% url 'core:home' %}">
+      {% csrf_token %}
+      <div class="form-row">
+        <label for="id_name">Name</label>
+        <input id="id_name" type="text" name="name" required>
+      </div>
+      <div class="form-row">
+        <label for="id_phone">Phone</label>
+        <input id="id_phone" type="tel" name="phone" required>
+      </div>
+      <div class="form-row">
+        <label for="id_email">Email <span class="optional">(optional)</span></label>
+        <input id="id_email" type="email" name="email">
+      </div>
+      <div class="form-row">
+        <label for="id_location">Site location</label>
+        <input id="id_location" type="text" name="location" placeholder="e.g. Industrial Area, Nairobi">
+      </div>
+      <div class="form-row">
+        <label for="id_message">Job details <span class="optional">(optional)</span></label>
+        <textarea id="id_message" name="message" rows="4"></textarea>
+      </div>
+      <button type="submit" class="btn btn-amber btn-block">Send request</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

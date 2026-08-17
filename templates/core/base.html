@@ -49,13 +49,13 @@
     </a>
 
     <nav class="main-nav" aria-label="Primary">
-      <a href="{% url 'core:home' %}#services">Services</a>
-      <a href="{% url 'core:home' %}#process">How we work</a>
-      <a href="{% url 'core:home' %}#work">Our work</a>
-      <a href="{% url 'core:home' %}#contact">Contact</a>
+      <a href="{% url 'core:services' %}">Services</a>
+      <a href="{% url 'core:process' %}">How we work</a>
+      <a href="{% url 'core:work' %}">Our work</a>
+      <a href="{% url 'core:contact' %}">Contact</a>
     </nav>
 
-    <a class="btn btn-amber header-cta" href="{% url 'core:home' %}#contact">Request a quote</a>
+    <a class="btn btn-amber header-cta" href="{% url 'core:contact' %}">Request a quote</a>
 
     <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
       <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -63,11 +63,11 @@
   </div>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primary mobile">
-    <a href="{% url 'core:home' %}#services">Services</a>
-    <a href="{% url 'core:home' %}#process">How we work</a>
-    <a href="{% url 'core:home' %}#work">Our work</a>
-    <a href="{% url 'core:home' %}#contact">Contact</a>
-    <a class="btn btn-amber btn-block" href="{% url 'core:home' %}#contact">Request a quote</a>
+    <a href="{% url 'core:services' %}">Services</a>
+    <a href="{% url 'core:process' %}">How we work</a>
+    <a href="{% url 'core:work' %}">Our work</a>
+    <a href="{% url 'core:contact' %}">Contact</a>
+    <a class="btn btn-amber btn-block" href="{% url 'core:contact' %}">Request a quote</a>
   </nav>
 </header>
 
@@ -91,12 +91,22 @@
     </div>
 
     <div class="footer-col">
+      <h3>Company</h3>
+      <ul>
+        <li><a href="{% url 'core:home' %}#about">About</a></li>
+        <li><a href="{% url 'core:process' %}">How we work</a></li>
+        <li><a href="{% url 'core:work' %}">Our work</a></li>
+        <li><a href="{% url 'core:contact' %}">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
       <h3>Services</h3>
       <ul>
-        <li><a href="{% url 'core:home' %}#services">Solar &amp; power backup</a></li>
-        <li><a href="{% url 'core:home' %}#services">Electrical &amp; building wiring</a></li>
-        <li><a href="{% url 'core:home' %}#services">Access control &amp; CCTV</a></li>
-        <li><a href="{% url 'core:home' %}#services">Gates &amp; switchgear</a></li>
+        <li><a href="{% url 'core:services' %}">Solar &amp; power backup</a></li>
+        <li><a href="{% url 'core:services' %}">Electrical &amp; building wiring</a></li>
+        <li><a href="{% url 'core:services' %}">Access control &amp; CCTV</a></li>
+        <li><a href="{% url 'core:services' %}">Gates &amp; switchgear</a></li>
       </ul>
     </div>
 

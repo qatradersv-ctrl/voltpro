@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}How We Work — VoltPro Electrodata Solutions{% endblock %}
+{% block content %}
+{% include "core/_icons.html" %}
+
+<section class="page-header">
+  <div class="wrap">
+    <p class="eyebrow">How we work</p>
+    <h1>Four stages, same order every time</h1>
+    <p class="section-lede">Our proven process ensures quality, safety, and customer satisfaction on every project.</p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <ol class="process-list">
+      <li>
+        <span class="process-num">01</span>
+        <h3>Site survey</h3>
+        <p>We walk the site, check the existing supply and loads, and confirm what's actually feasible before we quote.</p>
+      </li>
+      <li>
+        <span class="process-num">02</span>
+        <h3>Design &amp; quote</h3>
+        <p>A written scope and single-line diagram where relevant, priced against materials and labour — no verbal estimates.</p>
+      </li>
+      <li>
+        <span class="process-num">03</span>
+        <h3>Install &amp; test</h3>
+        <p>Installation to code, with load and continuity testing before anything is energised for use.</p>
+      </li>
+      <li>
+        <span class="process-num">04</span>
+        <h3>Handover &amp; support</h3>
+        <p>Documentation, a walkthrough of your system, and a direct line for servicing or emergency call-out.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section service-cta">
+  <div class="wrap">
+    <div class="service-cta-content">
+      <h2>Ready to get started?</h2>
+      <p>Contact us today to begin your project with our proven process.</p>
+      <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
