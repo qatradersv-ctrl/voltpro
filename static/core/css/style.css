@@ -344,9 +344,9 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
 
 /* ---------- service grid ---------- */
 .services-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items:center; margin-bottom: 44px; }
-.video-card{ background: var(--bg-panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); max-width: 400px; }
-.video-container{ position: relative; width: 100%; border-radius: 6px; overflow: hidden; }
-.video-player{ width: 100%; height: auto; display: block; background: var(--bg); }
+.video-card{ background: var(--bg-panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); max-width: 600px; }
+.video-container{ position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; }
+.video-player{ width: 100%; height: 100%; display: block; background: var(--bg); object-fit: cover; }
 @media (max-width: 780px){ .services-grid{ grid-template-columns: 1fr; } }
 
 .services-hero-cards{ display:grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-bottom: 44px; max-width: 600px; margin-left: auto; margin-right: auto; }
