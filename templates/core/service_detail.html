@@ -8,34 +8,95 @@
 {% block content %}
 {% include "core/_icons.html" %}
 
-<section class="section service-detail">
+<section class="page-header service-header">
   <div class="wrap">
     <a class="back-link" href="{% url 'core:home' %}#services">&larr; All services</a>
-
-    <div class="service-detail-media">
-      <img src="{{ service.cover_image_url }}" alt="{{ service.title }}">
-      <span class="service-card-icon service-detail-icon">
+    <div class="service-header-content">
+      <div class="service-header-icon">
         <svg class="card-icon"><use href="#icon-{{ service.icon }}"/></svg>
-      </span>
-    </div>
-
-    <div class="service-detail-head">
-      <div>
+      </div>
+      <div class="service-header-text">
         {% if service.rating_note %}<p class="card-spec">{{ service.rating_note }}</p>{% endif %}
         <h1>{{ service.title }}</h1>
         <p class="section-lede">{{ service.short_description }}</p>
       </div>
     </div>
+  </div>
+</section>
 
-    <div class="service-detail-body">
-      <p>{{ service.description }}</p>
+<section class="section service-hero">
+  <div class="wrap">
+    <div class="service-hero-grid">
+      <div class="service-hero-media">
+        <img src="{{ service.cover_image_url }}" alt="{{ service.title }}">
+      </div>
+      <div class="service-hero-content">
+        <div class="service-hero-cta">
+          <h2>Get a quote for this service</h2>
+          <p>Our team will assess your needs and provide a detailed proposal.</p>
+          <a href="{% url 'core:home' %}#contact" class="btn btn-amber">Request quote</a>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <a href="{% url 'core:home' %}#contact" class="btn btn-amber">Request a quote for this service</a>
+<section class="section service-description">
+  <div class="wrap">
+    <div class="service-description-content">
+      <h2>About this service</h2>
+      <div class="service-description-text">
+        {{ service.description|linebreaks }}
+      </div>
+    </div>
+  </div>
+</section>
 
-    {% if related %}
-    <div class="section-head related-head">
-      <p class="eyebrow">Related</p>
+<section class="section section-alt service-features">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Why choose us</p>
+      <h2>What makes us different</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3>Certified experts</h3>
+        <p>Our technicians are certified and experienced in this specific service.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3>24/7 support</h3>
+        <p>Emergency call-out available for urgent issues and maintenance.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h3>Quality guaranteed</h3>
+        <p>All work is tested, certified and backed by our warranty.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if related %}
+<section class="section related-services">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Related services</p>
       <h2>Often installed together</h2>
     </div>
     <div class="service-grid">
@@ -43,7 +104,17 @@
         {% include "core/_service_card.html" with service=r %}
       {% endfor %}
     </div>
-    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<section class="section service-cta">
+  <div class="wrap">
+    <div class="service-cta-content">
+      <h2>Ready to get started?</h2>
+      <p>Contact us today for a free consultation and quote for your {{ service.title }} needs.</p>
+      <a href="{% url 'core:home' %}#contact" class="btn btn-amber">Get in touch</a>
+    </div>
   </div>
 </section>
 {% endblock %}
