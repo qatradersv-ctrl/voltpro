@@ -1,19 +1,19 @@
 /* ---------------------------------------------------------
    VoltPro Electrodata Solutions — design tokens
-   Palette: deep substation blue-black + amber/copper accent
+   Palette: deep blue + yellow accent
    Type: Space Grotesk (display) / Inter (body) / JetBrains Mono (spec)
 --------------------------------------------------------- */
 :root{
   --bg: #FFFFFF;
-  --bg-panel: #F0F9F4;
-  --bg-panel-raised: #E0F2E9;
-  --line: #C8E6C9;
-  --line-bright: #A5D6A7;
-  --primary: #2E7D32;
-  --primary-dim: #1B5E20;
+  --bg-panel: #E3F2FD;
+  --bg-panel-raised: #BBDEFB;
+  --line: #90CAF9;
+  --line-bright: #64B5F6;
+  --primary: #1565C0;
+  --primary-dim: #0D47A1;
   --accent: #FFC107;
   --accent-dim: #FF8F00;
-  --text: #1B3A25;
+  --text: #0D47A1;
   --text-muted: #546E7A;
   --danger: #EF4444;
   --success: #4CAF50;
