@@ -35,6 +35,7 @@ body{
   line-height: 1.6;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent; /* Remove blue tap highlight on mobile */
 }
 
 @media (prefers-reduced-motion: reduce){
@@ -43,6 +44,9 @@ body{
 }
 
 .wrap{ max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px){
+  .wrap{ padding: 0 16px; }
+}
 
 a{ color: inherit; text-decoration: none; }
 h1,h2,h3{ font-family: var(--font-display); font-weight: 700; margin: 0 0 16px; letter-spacing: -0.02em; line-height: 1.2; }
@@ -103,6 +107,14 @@ p{ margin: 0 0 16px; color: var(--text-muted); font-size: 16px; }
   font-family: var(--font-body); font-size: 15px; font-weight: 600; letter-spacing: 0;
   border: 1px solid transparent; cursor: pointer; transition: all .2s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  min-height: 48px; /* WCAG touch target minimum */
+}
+@media (max-width: 640px){
+  .btn{
+    padding: 12px 20px;
+    font-size: 14px;
+    min-height: 44px;
+  }
 }
 .btn-amber{ background: var(--accent); color: #FFFFFF; }
 .btn-amber:hover{ background: var(--accent-dim); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
@@ -130,9 +142,10 @@ p{ margin: 0 0 16px; color: var(--text-muted); font-size: 16px; }
 /* ---------- mobile nav ---------- */
 .nav-toggle{
   display:none; align-items:center; justify-content:center;
-  width: 40px; height: 40px; padding:0; margin-left: 4px;
+  width: 48px; height: 48px; padding:0; margin-left: 4px;
   background: transparent; border: 1px solid var(--line-bright); border-radius: var(--radius);
   cursor: pointer; flex-shrink:0;
+  min-height: 48px; /* WCAG touch target minimum */
 }
 .nav-toggle-bars{ position:relative; width:18px; height:12px; display:block; }
 .nav-toggle-bars span{
@@ -151,7 +164,15 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   background: var(--bg-panel); border-top: 1px solid var(--line);
   padding: 8px 24px 20px;
 }
-.mobile-nav a{ padding: 12px 4px; font-size: 15px; color: var(--text-muted); border-bottom: 1px solid var(--line); }
+.mobile-nav a{ 
+  padding: 16px 4px; 
+  font-size: 16px; 
+  color: var(--text-muted); 
+  border-bottom: 1px solid var(--line); 
+  min-height: 48px; /* WCAG touch target minimum */
+  display: flex;
+  align-items: center;
+}
 .mobile-nav a:last-child{ border-bottom:none; margin-top: 10px; text-align:center; }
 .mobile-nav a:hover{ color: var(--accent); }
 
@@ -175,6 +196,10 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
 @media (max-width: 640px){
   .mobile-actionbar{ display:flex; }
   body{ padding-bottom: 68px; }
+  .mobile-actionbar .btn{
+    font-size: 14px;
+    min-height: 44px;
+  }
 }
 
 .alert{ margin: 16px 0; padding: 12px 16px; border-radius: var(--radius); font-family: var(--font-mono); font-size: 13px; }
@@ -367,13 +392,28 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   width:100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm);
   font-family: var(--font-body); font-size: 15px; background: var(--bg);
   transition: all .2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  min-height: 48px; /* WCAG touch target minimum */
+}
+@media (max-width: 640px){
+  .form-row input, .form-row textarea, .form-row select{
+    padding: 12px 14px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  .form-row textarea{
+    min-height: 100px;
+  }
 }
 .form-row input:focus, .form-row textarea:focus, .form-row select:focus{
   outline: none; border-color: var(--accent); background: #ECFDF5; box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
 }
 .form-row textarea{ resize: vertical; min-height: 120px; }
 .optional{ font-size: 12px; color: var(--text-muted); font-weight: normal; }
-@media (max-width: 780px){ .contact-grid{ grid-template-columns: 1fr; gap: 48px; } .quote-form{ grid-template-columns: 1fr; } .form-row.full-width{ grid-column: span 1; } }
+@media (max-width: 780px){ 
+  .contact-grid{ grid-template-columns: 1fr; gap: 48px; } 
+  .quote-form{ grid-template-columns: 1fr; } 
+  .form-row.full-width{ grid-column: span 1; }
+  .contact-section{ padding: 48px 0; }
+}
 
 /* ---------- service detail ---------- */
 .back-link{ font-family: var(--font-mono); font-size: 13px; color: var(--text-muted); display:inline-block; margin-bottom: 28px; }
