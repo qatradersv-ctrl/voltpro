@@ -172,6 +172,7 @@ p{ margin: 0 0 16px; color: var(--text-muted); font-size: 16px; letter-spacing: 
 .brand-logo{
   height: 48px;
   width: auto;
+  max-width: 200px;
   object-fit: contain;
 }
 .brand-text{ display:flex; flex-direction:column; line-height:1.1; }
@@ -226,6 +227,10 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   .header-row{ height: 64px; }
   .brand-name{ font-size: 16px; }
   .brand-sub{ font-size: 8px; }
+  .brand-logo{
+    height: 40px;
+    max-width: 160px;
+  }
 }
 
 /* ---------- mobile sticky call/quote bar ---------- */
@@ -267,6 +272,10 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   .hero-lede{ font-size: 14px; }
   .hero-actions .btn{ width:100%; }
   .hero-specs{ flex-direction: column; gap: 16px; }
+  .brand-logo{
+    height: 36px;
+    max-width: 140px;
+  }
 }
 .hero-image-wrapper{ display:flex; justify-content:flex-end; align-items:center; position: relative; }
 .hero-image-wrapper::before{

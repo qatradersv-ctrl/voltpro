@@ -12,6 +12,10 @@
 
 <link rel="icon" type="image/svg+xml" href="{% static 'core/images/favicon.svg' %}">
 
+<!-- Preload critical assets -->
+<link rel="preload" href="{% static 'core/images/logo.jpg' %}" as="image">
+<link rel="preload" href="{% static 'core/css/style.css' %}" as="style">
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="VoltPro Electrodata Solutions">
@@ -71,7 +75,7 @@
 <header class="site-header" role="banner">
   <div class="wrap header-row">
     <a href="{% url 'core:home' %}" class="brand" aria-label="VoltPro Electrodata Solutions - Home">
-      <img src="{% static 'core/images/logo.jpg' %}" alt="VoltPro Logo" class="brand-logo">
+      <img src="{% static 'core/images/logo.jpg' %}" alt="VoltPro Logo" class="brand-logo" loading="eager" decoding="sync" fetchpriority="high" width="200" height="48">
     </a>
 
     <nav class="main-nav" aria-label="Primary navigation">
