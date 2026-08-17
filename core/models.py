@@ -60,8 +60,8 @@ class Service(models.Model):
         category cover graphic so every card and detail page always shows an image."""
         if self.image:
             return self.image.url
-        from django.templatetags.static import static
-        return static(f"core/images/covers/{self.category}.svg")
+        # Return the static file path - the template will handle the static tag
+        return f"/static/core/images/covers/{self.category}.svg"
 
 
 class Project(models.Model):
