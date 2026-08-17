@@ -1,9 +1,14 @@
 {% extends "core/base.html" %}
 {% load humanize %}
+{% load static %}
 {% block title %}Quote {{ quote.quote_number }} — VoltPro Electrodata Solutions{% endblock %}
 {% block content %}
 <section class="section quote-page">
   <div class="wrap quote-wrap">
+
+    <div class="quote-header-logo">
+      <img src="{% static 'core/images/logo.jpg' %}" alt="VoltPro Logo" class="quote-logo">
+    </div>
 
     {% if messages %}
       {% for message in messages %}

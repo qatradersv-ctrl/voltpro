@@ -71,16 +71,7 @@
 <header class="site-header" role="banner">
   <div class="wrap header-row">
     <a href="{% url 'core:home' %}" class="brand" aria-label="VoltPro Electrodata Solutions - Home">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 40 40" width="34" height="34">
-          <polygon points="20,1 38,10.5 38,29.5 20,39 2,29.5 2,10.5" fill="none" stroke="var(--amber)" stroke-width="2"/>
-          <path d="M22 8 L12 21 L19 21 L17 32 L29 17 L21 17 Z" fill="var(--amber)"/>
-        </svg>
-      </span>
-      <span class="brand-text">
-        <span class="brand-name">VoltPro</span>
-        <span class="brand-sub">ELECTRODATA SOLUTIONS</span>
-      </span>
+      <img src="{% static 'core/images/logo.jpg' %}" alt="VoltPro Logo" class="brand-logo">
     </a>
 
     <nav class="main-nav" aria-label="Primary navigation">
