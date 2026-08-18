@@ -1,6 +1,8 @@
 """Generates the branded VoltPro Electrodata Solutions quote PDF with ReportLab."""
 from io import BytesIO
+import os
 
+from django.conf import settings
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
@@ -8,7 +10,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_RIGHT
 from reportlab.platypus import (
     BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table,
-    TableStyle, HRFlowable,
+    TableStyle, HRFlowable, Image,
 )
 
 INK = colors.HexColor("#101A2C")
@@ -37,7 +39,7 @@ def _footer(canvas, doc):
     canvas.line(20 * mm, y + 8, doc.pagesize[0] - 20 * mm, y + 8)
     canvas.setFont("Helvetica", 7.5)
     canvas.setFillColor(MUTED)
-    canvas.drawString(20 * mm, y - 2, "VoltPro Electrodata Solutions  ·  Nairobi, Kenya  ·  +254 700 000 000  ·  info@voltproelectrodata.co.ke")
+    canvas.drawString(20 * mm, y - 2, "VoltPro Electrodata Solutions  ·  Nairobi, Kenya  ·  +254 714 155 230  ·  info@voltproelectrodata.co.ke")
     canvas.drawRightString(doc.pagesize[0] - 20 * mm, y - 2, f"Page {doc.page}")
     canvas.restoreState()
 
@@ -54,16 +56,44 @@ def build_quote_pdf(quote):
 
     story = []
 
-    header_table = Table(
-        [[
-            Paragraph("VOLTPRO<br/><font size=8 color='#C9822F'>ELECTRODATA SOLUTIONS</font>", STYLES["brand"]),
-            Paragraph(
-                f"QUOTATION<br/><font size=9 color='#5B6B80'>{quote.quote_number}</font>",
-                ParagraphStyle("qmeta", fontName="Helvetica-Bold", fontSize=14, textColor=AMBER, alignment=TA_RIGHT, leading=17),
-            ),
-        ]],
-        colWidths=[100 * mm, 70 * mm],
-    )
+    # Add logo to header if available
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'core', 'images', 'logo.jpg')
+    if os.path.exists(logo_path):
+        try:
+            logo = Image(logo_path, width=40 * mm, height=10 * mm)
+            header_table = Table(
+                [[
+                    logo,
+                    Paragraph(
+                        f"QUOTATION<br/><font size=9 color='#5B6B80'>{quote.quote_number}</font>",
+                        ParagraphStyle("qmeta", fontName="Helvetica-Bold", fontSize=14, textColor=AMBER, alignment=TA_RIGHT, leading=17),
+                    ),
+                ]],
+                colWidths=[100 * mm, 70 * mm],
+            )
+        except Exception:
+            # Fallback to text if logo fails
+            header_table = Table(
+                [[
+                    Paragraph("VOLTPRO<br/><font size=8 color='#C9822F'>ELECTRODATA SOLUTIONS</font>", STYLES["brand"]),
+                    Paragraph(
+                        f"QUOTATION<br/><font size=9 color='#5B6B80'>{quote.quote_number}</font>",
+                        ParagraphStyle("qmeta", fontName="Helvetica-Bold", fontSize=14, textColor=AMBER, alignment=TA_RIGHT, leading=17),
+                    ),
+                ]],
+                colWidths=[100 * mm, 70 * mm],
+            )
+    else:
+        header_table = Table(
+            [[
+                Paragraph("VOLTPRO<br/><font size=8 color='#C9822F'>ELECTRODATA SOLUTIONS</font>", STYLES["brand"]),
+                Paragraph(
+                    f"QUOTATION<br/><font size=9 color='#5B6B80'>{quote.quote_number}</font>",
+                    ParagraphStyle("qmeta", fontName="Helvetica-Bold", fontSize=14, textColor=AMBER, alignment=TA_RIGHT, leading=17),
+                ),
+            ]],
+            colWidths=[100 * mm, 70 * mm],
+        )
     header_table.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
