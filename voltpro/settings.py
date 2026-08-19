@@ -25,14 +25,20 @@ SECRET_KEY = 'django-insecure-fhk4w_f1@95-ls65v3t^9n2uv^4qynih%3dc5*)7#xxy+*696p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'voltpro-t3ng.onrender.com']
+ALLOWED_HOSTS = [
+    "voltpro.co.ke",
+    "www.voltpro.co.ke",
+    ".vercel.app",
+]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:57337',
     'http://127.0.0.1:8000',
     'http://localhost:57337',
     'http://localhost:8000',
-    'https://voltpro-t3ng.onrender.com',
+    'https://voltpro.co.ke',
+    'https://www.voltpro.co.ke',
+    'https://.vercel.app',
 ]
 
 
