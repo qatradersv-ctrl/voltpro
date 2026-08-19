@@ -5,7 +5,7 @@ import os
 from django.conf import settings
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm, auto
+from reportlab.lib.units import mm
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_RIGHT
 from reportlab.platypus import (
