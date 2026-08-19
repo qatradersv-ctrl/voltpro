@@ -99,11 +99,16 @@ Client Details:
 
 Please follow up with the client within one business day.
 """
+            # Send to technician email and dennisc@voltproelectrodata.co.ke
+            recipients = [technician_email, 'dennisc@voltproelectrodata.co.ke']
+            # Remove duplicates if technician_email is the same
+            recipients = list(set(recipients))
+            
             send_mail(
                 technician_subject,
                 technician_message,
                 settings.DEFAULT_FROM_EMAIL,
-                [technician_email],
+                recipients,
                 fail_silently=True,
             )
         except Exception:
