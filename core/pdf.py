@@ -44,7 +44,7 @@ def _footer(canvas, doc):
     canvas.line(20 * mm, y + 8, doc.pagesize[0] - 20 * mm, y + 8)
     canvas.setFont("Helvetica", 7.5)
     canvas.setFillColor(colors.black)
-    canvas.drawString(20 * mm, y - 2, "If you have any questions about this price quote, please contact VoltPro Electrodata Solutions, +254 714 155 230, info@voltproelectrodata.co.ke")
+    canvas.drawString(20 * mm, y - 2, "If you have any questions about this price quote, please contact VoltPro Electrodata Solutions, 0715 117855 / 0724 076 047, info@voltproelectrodata.co.ke")
     canvas.setFont("Helvetica-Oblique", 9)
     canvas.setFillColor(NAVY_BLUE)
     canvas.drawCentredString(doc.pagesize[0] / 2, y - 10, "Thank You For Your Business!")
@@ -75,7 +75,7 @@ def build_quote_pdf(quote):
                 [Spacer(1, 2 * mm), Spacer(1, 2 * mm)],
                 ["", Paragraph("Nairobi, Kenya", STYLES["contact"])],
                 ["", Paragraph("Website: voltproelectrodata.co.ke", STYLES["contact"])],
-                ["", Paragraph("Phone: +254 714 155 230", STYLES["contact"])],
+                ["", Paragraph("Phone: 0715 117855 / 0724 076 047", STYLES["contact"])],
                 ["", Paragraph("Prepared by: Sales Team", STYLES["contact"])],
             ]
             company_table = Table(company_left, colWidths=[28 * mm, 60 * mm])

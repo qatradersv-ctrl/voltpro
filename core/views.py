@@ -64,7 +64,7 @@ Your request details:
 - Service: {quote_request.service.title if quote_request.service else 'Not specified'}
 - Message: {quote_request.message or 'No message provided'}
 
-If you have any questions, please contact us at 0715 117855 or 0724 076 047.
+If you have any questions, please contact us at 0715 117855 or 0724076047.
 
 Best regards,
 VoltPro Electrodata Solutions
