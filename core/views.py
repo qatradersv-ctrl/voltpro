@@ -13,7 +13,12 @@ def home(request):
     services = Service.objects.filter(is_featured=True)
     projects = Project.objects.all()[:6]
     testimonials = Testimonial.objects.all()
-    site_config = SiteConfiguration.objects.first()
+    
+    # Handle database schema issues gracefully
+    try:
+        site_config = SiteConfiguration.objects.first()
+    except Exception:
+        site_config = None
 
     if request.method == "POST":
         return _handle_quote_post(request, services)
