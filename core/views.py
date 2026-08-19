@@ -3,6 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
 
 from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration
 from .pdf import build_quote_pdf
@@ -58,7 +59,7 @@ Your request details:
 - Service: {quote_request.service.title if quote_request.service else 'Not specified'}
 - Message: {quote_request.message or 'No message provided'}
 
-If you have any questions, please contact us at +254 714 155 230.
+If you have any questions, please contact us at 0715 117855 or 0724 076 047.
 
 Best regards,
 VoltPro Electrodata Solutions
@@ -66,7 +67,7 @@ VoltPro Electrodata Solutions
                 send_mail(
                     subject,
                     message,
-                    'kagunyesam@gmail.com',
+                    settings.DEFAULT_FROM_EMAIL,
                     [quote_request.email],
                     fail_silently=True,
                 )
@@ -74,10 +75,13 @@ VoltPro Electrodata Solutions
                 # Email sending failed but don't block the request
                 pass
         
-        # Send admin notification email
+        # Send technician notification email with client details
         try:
-            admin_subject = f"New Quote Request - {name}"
-            admin_message = f"""
+            site_config = SiteConfiguration.objects.first()
+            technician_email = site_config.technician_email if site_config else settings.DEFAULT_FROM_EMAIL
+            
+            technician_subject = f"New Quote Request - {name}"
+            technician_message = f"""
 New quote request received from the website:
 
 Client Details:
@@ -91,10 +95,10 @@ Client Details:
 Please follow up with the client within one business day.
 """
             send_mail(
-                admin_subject,
-                admin_message,
-                'kagunyesam@gmail.com',
-                ['kagunyesam@gmail.com', 'info@voltproelectrodata.co.ke'],
+                technician_subject,
+                technician_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [technician_email],
                 fail_silently=True,
             )
         except Exception:

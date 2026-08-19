@@ -19,7 +19,7 @@
       <h2>Tell us what you're powering, wiring or securing</h2>
       <p class="section-lede">We're available Monday to Friday for consultations and offer 24/7 emergency call-out services.</p>
       <dl class="hero-specs">
-        <div><dt>Call</dt><dd><a href="tel:+254714155230">+254 714 155 230</a></dd></div>
+        <div><dt>Call</dt><dd><a href="tel:+254715117855">0715 117855</a></dd></div>
         <div><dt>Email</dt><dd><a href="mailto:info@voltproelectrodata.co.ke">info@voltproelectrodata.co.ke</a></dd></div>
         <div><dt>Emergency</dt><dd>24/7 call-out available</dd></div>
       </dl>
@@ -28,26 +28,28 @@
     <form class="quote-form" method="post" action="{% url 'core:home' %}">
       {% csrf_token %}
       <div class="form-row">
-        <label for="id_name">Name</label>
-        <input id="id_name" type="text" name="name" required>
+        <label for="id_name">Full Name</label>
+        <input id="id_name" type="text" name="name" placeholder="Enter your full name" required>
       </div>
       <div class="form-row">
-        <label for="id_phone">Phone</label>
-        <input id="id_phone" type="tel" name="phone" required>
+        <label for="id_phone">Phone Number</label>
+        <input id="id_phone" type="tel" name="phone" placeholder="e.g. 0715 117855" required>
       </div>
       <div class="form-row">
-        <label for="id_email">Email <span class="optional">(optional)</span></label>
-        <input id="id_email" type="email" name="email">
+        <label for="id_email">Email Address <span class="optional">(optional)</span></label>
+        <input id="id_email" type="email" name="email" placeholder="your@email.com">
       </div>
       <div class="form-row">
-        <label for="id_location">Site location</label>
+        <label for="id_location">Site Location</label>
         <input id="id_location" type="text" name="location" placeholder="e.g. Industrial Area, Nairobi">
       </div>
-      <div class="form-row">
-        <label for="id_message">Job details <span class="optional">(optional)</span></label>
-        <textarea id="id_message" name="message" rows="4"></textarea>
+      <div class="form-row full-width">
+        <label for="id_message">Project Details <span class="optional">(optional)</span></label>
+        <textarea id="id_message" name="message" rows="4" placeholder="Tell us about your project requirements..."></textarea>
       </div>
-      <button type="submit" class="btn btn-amber btn-block">Send request</button>
+      <div class="form-row full-width">
+        <button type="submit" class="btn btn-amber btn-block btn-sm">Send Quote Request</button>
+      </div>
     </form>
   </div>
 </section>

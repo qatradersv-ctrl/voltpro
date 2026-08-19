@@ -260,8 +260,12 @@ class SiteConfiguration(models.Model):
         help_text="SMTP password or app-specific password"
     )
     contact_email = models.EmailField(
-        default='kagunyesam@gmail.com',
+        default='info@voltproelectrodata.co.ke',
         help_text="Contact email address displayed on the site"
+    )
+    technician_email = models.EmailField(
+        default='warrenm@voltpro.co.ke',
+        help_text="Technician email address for receiving quote notifications"
     )
 
     class Meta:

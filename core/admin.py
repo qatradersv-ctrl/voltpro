@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
+from django.conf import settings
 
 from .models import (
     Service, Project, Testimonial, QuoteRequest, Quote, QuoteLineItem, QuoteStatus,
@@ -170,7 +171,7 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             "fields": ("services_video", "services_video_preview")
         }),
         ("Email Configuration", {
-            "fields": ("email_host", "email_port", "email_use_tls", "email_host_user", "email_host_password", "contact_email")
+            "fields": ("email_host", "email_port", "email_use_tls", "email_host_user", "email_host_password", "contact_email", "technician_email")
         }),
     )
 
@@ -281,36 +282,57 @@ class QuoteLineItemInline(admin.TabularInline):
     extra = 3
     fields = ("order", "description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
-
+    
     @admin.display(description="Line total")
     def line_total_display(self, obj):
         if obj.pk:
             return f"KES {obj.line_total:,.2f}"
         return "—"
+    
+    class Media:
+        css = {
+            'all': ('core/css/admin.css',)
+        }
 
 
 @admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
     list_display = (
         "quote_number", "client_name", "service", "status_badge",
-        "issue_date", "valid_until", "total_display", "pdf_link",
+        "issue_date", "total_display", "pdf_link",
     )
     list_filter = ("status", "service", "issue_date")
     search_fields = ("quote_number", "client_name", "client_phone", "client_email")
-    readonly_fields = ("quote_number", "public_id", "created_at", "updated_at", "totals_display", "client_link_display")
+    readonly_fields = ("quote_number", "totals_display", "client_link_display")
     autocomplete_fields = ("request", "service")
     date_hierarchy = "issue_date"
     inlines = [QuoteLineItemInline]
     actions = ["export_csv", "send_quote"]
+    
+    # Custom form layout for better Bootstrap-like appearance
     fieldsets = (
-        (None, {"fields": ("quote_number", "request", "service", "status")}),
-        ("Client", {"fields": ("client_name", "client_phone", "client_email", "client_location")}),
-        ("Dates", {"fields": ("issue_date", "valid_until")}),
-        ("Content", {"fields": ("notes", "terms", "tax_rate")}),
-        ("Totals", {"fields": ("totals_display",)}),
-        ("Share with client", {"fields": ("client_link_display",)}),
-        ("System", {"fields": ("public_id", "created_at", "updated_at"), "classes": ("collapse",)}),
+        (None, {
+            "fields": (("client_name", "client_phone"), ("client_email", "client_location"), ("service", "status")),
+            "classes": ("wide",),
+        }),
+        ("Quote Details", {
+            "fields": (("issue_date", "valid_until"), ("tax_rate",), "notes", "terms"),
+            "classes": ("wide",),
+        }),
+        ("Totals & Sharing", {
+            "fields": ("totals_display", "client_link_display"),
+            "classes": ("wide", "collapse"),
+        }),
+        ("System Info", {
+            "fields": ("quote_number",),
+            "classes": ("collapse",),
+        }),
     )
+    
+    class Media:
+        css = {
+            'all': ('core/css/admin.css',)
+        }
 
     @admin.display(description="Status", ordering="status")
     def status_badge(self, obj):
@@ -379,6 +401,7 @@ class QuoteAdmin(admin.ModelAdmin):
                     reverse("core:quote_detail", args=[quote.public_id])
                 )
                 
+                # Send to client
                 subject = f"Quote {quote.quote_number} from VoltPro Electrodata Solutions"
                 message = f"""
 Dear {quote.client_name},
@@ -399,9 +422,40 @@ VoltPro Electrodata Solutions
                 send_mail(
                     subject,
                     message,
-                    'kagunyesam@gmail.com',
+                    settings.DEFAULT_FROM_EMAIL,
                     [quote.client_email],
                     fail_silently=False,
+                )
+                
+                # Send to technician with client details
+                site_config = SiteConfiguration.objects.first()
+                technician_email = site_config.technician_email if site_config else settings.DEFAULT_FROM_EMAIL
+                
+                technician_subject = f"Quote Sent - {quote.quote_number} - {quote.client_name}"
+                technician_message = f"""
+Quote #{quote.quote_number} has been sent to the client.
+
+Client Details:
+- Name: {quote.client_name}
+- Phone: {quote.client_phone or 'Not provided'}
+- Email: {quote.client_email}
+- Location: {quote.client_location or 'Not specified'}
+- Service: {quote.service.title if quote.service else 'Not specified'}
+
+Quote Details:
+- Total Amount: KES {quote.total:,.2f}
+- Valid until: {quote.valid_until.strftime('%d %B %Y') if quote.valid_until else 'N/A'}
+- Quote Link: {detail_url}
+
+You can view and manage this quote in the admin panel.
+"""
+                
+                send_mail(
+                    technician_subject,
+                    technician_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [technician_email],
+                    fail_silently=True,
                 )
                 
                 quote.status = QuoteStatus.SENT
@@ -414,7 +468,7 @@ VoltPro Electrodata Solutions
         if sent_count > 0:
             self.message_user(
                 request,
-                f"{sent_count} quote(s) sent successfully.",
+                f"{sent_count} quote(s) sent successfully to clients and technician.",
                 level='success'
             )
         if failed_count > 0:
