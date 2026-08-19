@@ -69,7 +69,7 @@ def build_quote_pdf(quote):
     # Left side: Logo and company details
     if os.path.exists(logo_path):
         try:
-            logo = Image(logo_path, width=15 * mm, height=15 * mm, hAlign='LEFT', valign='MIDDLE')
+            logo = Image(logo_path, width=25 * mm, height=25 * mm, hAlign='LEFT', valign='MIDDLE')
             company_left = [
                 [logo, Paragraph("VoltPro Electrodata Solutions", STYLES["company_name"])],
                 [Spacer(1, 2 * mm), Spacer(1, 2 * mm)],
@@ -78,7 +78,7 @@ def build_quote_pdf(quote):
                 ["", Paragraph("Phone: +254 714 155 230", STYLES["contact"])],
                 ["", Paragraph("Prepared by: Sales Team", STYLES["contact"])],
             ]
-            company_table = Table(company_left, colWidths=[18 * mm, 70 * mm])
+            company_table = Table(company_left, colWidths=[28 * mm, 60 * mm])
             company_table.setStyle(TableStyle([
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
                 ("LEFTPADDING", (0, 0), (-1, -1), 0),
