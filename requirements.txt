@@ -3,3 +3,4 @@ Pillow>=10.0
 reportlab>=4.0
 gunicorn>=21.0
 whitenoise>=6.0
+dj-database-url>=2.0
