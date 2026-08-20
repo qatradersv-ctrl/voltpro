@@ -223,6 +223,39 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
+/* Submit button styling */
+.submit-row input[type="submit"],
+.submit-row button{
+  background: #FFFFFF !important;
+  color: var(--secondary) !important;
+  border: 2px solid var(--accent) !important;
+  padding: 10px 24px !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  transition: all 0.3s ease !important;
+}
+
+.submit-row input[type="submit"]:hover,
+.submit-row button:hover{
+  background: var(--accent) !important;
+  color: var(--secondary) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(245,166,35,0.3) !important;
+}
+
+.submit-row input[type="submit"].default,
+.submit-row button.default{
+  background: var(--accent) !important;
+  color: var(--secondary) !important;
+}
+
+.submit-row input[type="submit"].default:hover,
+.submit-row button.default:hover{
+  background: #FFB84D !important;
+}
+
 /* Desktop-specific improvements */
 @media (min-width: 1200px) {
   .form-row{
