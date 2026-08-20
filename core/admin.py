@@ -358,8 +358,8 @@ class QuoteAdmin(admin.ModelAdmin):
             "fields": (("client_name", "client_phone"), ("client_email", "client_location"), ("service", "status"), ("issue_date", "valid_until"), ("tax_rate",)),
             "classes": ("wide",),
         }),
-        ("Additional Details", {
-            "fields": (("technician_name", "technician_phone"), ("technician_email",), "notes", "terms"),
+        ("Scope & Terms", {
+            "fields": ("notes", "terms"),
             "classes": ("wide", "collapse"),
         }),
         ("Totals & Sharing", {
