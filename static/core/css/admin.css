@@ -258,3 +258,70 @@
     min-width: 80px;
   }
 }
+
+/* Fieldset descriptions */
+.fieldset > p{
+ color: var(--body-quiet-color);
+ font-size: 13px;
+ margin-bottom: 16px;
+ padding: 8px 12px;
+ background: #F8F9FA;
+ border-left: 3px solid var(--accent);
+ border-radius: 4px;
+}
+
+/* Inline form improvements */
+.inline-group .tabular thead th{
+  background: var(--secondary);
+  color: #FFFFFF;
+  border-bottom: 2px solid var(--accent);
+  padding: 14px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.inline-group .tabular tbody td{
+  border-bottom: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  padding: 14px 12px;
+  vertical-align: middle;
+}
+
+.inline-group .tabular tbody td input,
+.inline-group .tabular tbody td select{
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 13px;
+  background: #FFFFFF;
+  transition: all 0.2s ease;
+}
+
+.inline-group .tabular tbody td input:focus,
+.inline-group .tabular tbody td select:focus{
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.1);
+}
+
+.inline-group .tabular tbody tr:hover{
+  background: #FDF3DA;
+}
+
+/* Add button styling */
+.inline-group .add-row a{
+  background: var(--accent);
+  color: var(--secondary);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 12px;
+}
+
+.inline-group .add-row a:hover{
+  background: #FFB84D;
+}

@@ -292,6 +292,8 @@ class QuoteLineItemInline(admin.TabularInline):
     extra = 3
     fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
+    verbose_name = "Quote Line Item"
+    verbose_name_plural = "Quote Line Items"
     
     def get_formset(self, request, obj=None, **kwargs):
         from django import forms
@@ -352,13 +354,25 @@ class QuoteAdmin(admin.ModelAdmin):
     
     # Custom form layout for better Bootstrap-like appearance
     fieldsets = (
-        (None, {
-            "fields": (("client_name", "technician_name"), ("client_phone", "technician_phone"), ("client_email", "technician_email"), ("client_location", "service"), ("status",)),
+        ("Client Information", {
+            "fields": (("client_name", "client_phone"), ("client_email", "client_location")),
             "classes": ("wide",),
+            "description": "Enter the client's contact details for this quote."
+        }),
+        ("Technician Information", {
+            "fields": (("technician_name", "technician_phone"), ("technician_email",)),
+            "classes": ("wide",),
+            "description": "Assign a technician to handle this quote (optional)."
         }),
         ("Quote Details", {
-            "fields": (("issue_date", "valid_until"), ("tax_rate",), "notes", "terms"),
+            "fields": (("service", "status"), ("issue_date", "valid_until"), ("tax_rate",)),
             "classes": ("wide",),
+            "description": "Set the quote dates, service type, and tax rate."
+        }),
+        ("Scope & Terms", {
+            "fields": ("notes", "terms"),
+            "classes": ("wide",),
+            "description": "Add scope notes and payment terms for the quote."
         }),
         ("Totals & Sharing", {
             "fields": ("totals_display", "client_link_display"),
