@@ -290,8 +290,8 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 class QuoteLineItemInline(admin.TabularInline):
     model = QuoteLineItem
     extra = 3
-    fields = ("inventory_item", "description", "quantity", "unit", "unit_price", "line_total_display")
-    readonly_fields = ("line_total_display",)
+    fields = ("line_number_display", "inventory_item", "description", "quantity", "unit", "unit_price", "line_total_display")
+    readonly_fields = ("line_number_display", "line_total_display")
     
     def get_formset(self, request, obj=None, **kwargs):
         from django import forms
@@ -325,6 +325,12 @@ class QuoteLineItemInline(admin.TabularInline):
         kwargs['form'] = QuoteLineItemForm
         return super().get_formset(request, obj, **kwargs)
     
+    @admin.display(description="#")
+    def line_number_display(self, obj):
+        if obj.pk:
+            return obj.line_number
+        return "—"
+
     @admin.display(description="Line total")
     def line_total_display(self, obj):
         if obj.pk:
@@ -332,7 +338,7 @@ class QuoteLineItemInline(admin.TabularInline):
         return "—"
     
     class Media:
-        js = ('core/js/inventory_autofill.js',)
+        js = ('core/js/inventory_autofill.js', 'admin/js/jquery.init.js')
         css = {
             'all': ('core/css/admin.css',)
         }
