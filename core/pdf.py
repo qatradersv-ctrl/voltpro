@@ -1,280 +1,300 @@
-"""Generates the branded VoltPro Electrodata Solutions quote PDF with ReportLab."""
-from io import BytesIO
+"""
+Renders a Quote as a PDF matching the reference template:
+logo + company block / QUOTE title, date/quote#/customer id/valid-until
+box, customer block, line-items table, totals block, terms &
+conditions + signature, footer.
+"""
+import io
 import os
 
 from django.conf import settings
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
-from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_RIGHT
-from reportlab.platypus import (
-    BaseDocTemplate, PageTemplate, Frame, Paragraph, Spacer, Table,
-    TableStyle, HRFlowable, Image,
-)
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
 
-NAVY_BLUE = colors.HexColor("#2C4173")  # Professional navy blue
-SLATE_BLUE = colors.HexColor("#6B7BA8")  # Soft slate blue accent
-WHITE = colors.white
-LIGHT_GRAY = colors.HexColor("#F5F5F5")  # Light gray for alternating rows
-GRAY = colors.HexColor("#E0E0E0")  # Medium gray for lines
+NAVY = colors.HexColor("#33517A")
+LIGHT_BLUE = colors.HexColor("#8FAADC")
+ROW_SHADE = colors.HexColor("#EFEFEF")
+LINE_GREY = colors.HexColor("#B7B7B7")
+TOTAL_SHADE = colors.HexColor("#C9D5EA")
+HEADER_GREY = colors.HexColor("#E9E9E9")
 
-STYLES = {
-    "brand": ParagraphStyle("brand", fontName="Helvetica-Bold", fontSize=18, textColor=NAVY_BLUE, leading=22),
-    "company_name": ParagraphStyle("company_name", fontName="Helvetica-Bold", fontSize=14, textColor=NAVY_BLUE, leading=18),
-    "contact": ParagraphStyle("contact", fontName="Helvetica", fontSize=8, textColor=colors.black, leading=12),
-    "label": ParagraphStyle("label", fontName="Helvetica-Bold", fontSize=8, textColor=SLATE_BLUE, leading=11),
-    "body": ParagraphStyle("body", fontName="Helvetica", fontSize=9.5, textColor=colors.black, leading=14),
-    "body_muted": ParagraphStyle("body_muted", fontName="Helvetica", fontSize=9, textColor=colors.black, leading=13),
-    "small": ParagraphStyle("small", fontName="Helvetica", fontSize=8, textColor=colors.black, leading=11),
-    "right": ParagraphStyle("right", fontName="Helvetica", fontSize=9.5, textColor=colors.black, alignment=TA_RIGHT),
-    "total_label": ParagraphStyle("total_label", fontName="Helvetica-Bold", fontSize=9, textColor=NAVY_BLUE, alignment=TA_RIGHT),
-    "total_value": ParagraphStyle("total_value", fontName="Helvetica-Bold", fontSize=11, textColor=NAVY_BLUE, alignment=TA_RIGHT),
-    "quote_title": ParagraphStyle("quote_title", fontName="Helvetica-Bold", fontSize=24, textColor=SLATE_BLUE, leading=30),
-    "meta_label": ParagraphStyle("meta_label", fontName="Helvetica-Bold", fontSize=8, textColor=NAVY_BLUE, leading=10),
-    "meta_value": ParagraphStyle("meta_value", fontName="Helvetica", fontSize=8, textColor=colors.black, leading=10),
-}
+PAGE_W, PAGE_H = letter
+MARGIN = 0.5 * inch
 
 
-def _footer(canvas, doc):
-    canvas.saveState()
-    canvas.setStrokeColor(NAVY_BLUE)
-    canvas.setLineWidth(1.0)
-    y = 18 * mm
-    canvas.line(20 * mm, y + 8, doc.pagesize[0] - 20 * mm, y + 8)
-    canvas.setFont("Helvetica", 7.5)
-    canvas.setFillColor(colors.black)
-    canvas.drawString(20 * mm, y - 2, "If you have any questions about this price quote, please contact VoltPro Electrodata Solutions, 0715 117855 / 0724 076 047, info@voltproelectrodata.co.ke")
-    canvas.setFont("Helvetica-Oblique", 9)
-    canvas.setFillColor(NAVY_BLUE)
-    canvas.drawCentredString(doc.pagesize[0] / 2, y - 10, "Thank You For Your Business!")
-    canvas.restoreState()
+def _wrapped_text(c, text, x, y, max_width, font="Helvetica", size=8, leading=10):
+    """Very small word-wrap helper for the terms & conditions block."""
+    from reportlab.pdfbase.pdfmetrics import stringWidth
+    words = text.split(" ")
+    line = ""
+    for word in words:
+        candidate = f"{line} {word}".strip()
+        if stringWidth(candidate, font, size) > max_width and line:
+            c.drawString(x, y, line)
+            y -= leading
+            line = word
+        else:
+            line = candidate
+    if line:
+        c.drawString(x, y, line)
+        y -= leading
+    return y
 
 
 def build_quote_pdf(quote):
     """Returns a BytesIO containing the rendered quote PDF for a Quote instance."""
-    buf = BytesIO()
-    doc = BaseDocTemplate(
-        buf, pagesize=A4,
-        topMargin=20 * mm, bottomMargin=26 * mm, leftMargin=20 * mm, rightMargin=20 * mm,
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter)
+
+    # Outer border
+    c.setStrokeColor(colors.HexColor("#999999"))
+    c.setLineWidth(1)
+    c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
+
+    x_left = MARGIN
+    x_right = PAGE_W - MARGIN
+    y = PAGE_H - MARGIN - 10
+
+    # ---------------- Header: logo + company name / QUOTE -----------------
+    logo_box_size = 0.55 * inch
+
+    # Figure out contact lines and meta rows up front so we can size the
+    # grey header band correctly before drawing anything on top of it.
+    contact_lines = []
+    contact_lines.append("Nairobi, Kenya")
+    contact_lines.append("Website: voltproelectrodata.co.ke")
+    contact_lines.append("Phone: 0715 117855 / 0724 076 047")
+    contact_lines.append("Prepared by: Sales Team")
+
+    meta_rows = [
+        ("DATE", quote.issue_date.strftime("%m/%d/%Y") if quote.issue_date else "-"),
+        ("QUOTE #", quote.quote_number or "-"),
+        ("CUSTOMER ID", quote.client_name[:10] if quote.client_name else "-"),
+        ("VALID UNTIL", quote.valid_until.strftime("%m/%d/%Y") if quote.valid_until else "-"),
+    ]
+
+    header_body_h = max(len(contact_lines) * 11, len(meta_rows) * 15)
+    header_top = PAGE_H - MARGIN * 0.6 - 2
+    header_bottom = y - logo_box_size - header_body_h - 12
+    c.setFillColor(HEADER_GREY)
+    c.rect(
+        MARGIN * 0.6 + 1, header_bottom,
+        PAGE_W - MARGIN * 1.2 - 2, header_top - header_bottom,
+        fill=1, stroke=0,
     )
-    frame = Frame(doc.leftMargin, doc.bottomMargin, doc.width, doc.height, id="main")
-    doc.addPageTemplates([PageTemplate(id="quote", frames=[frame], onPage=_footer)])
 
-    story = []
-
-    # Header section - Left: Logo and company info, Right: Quote metadata
+    logo_drawn = False
     logo_path = os.path.join(settings.BASE_DIR, 'static', 'core', 'images', 'logo.png')
-    
-    # Left side: Logo and company details
     if os.path.exists(logo_path):
         try:
-            logo = Image(logo_path, width=25 * mm, height=25 * mm, hAlign='LEFT', valign='MIDDLE')
-            company_left = [
-                [logo, Paragraph("VoltPro Electrodata Solutions", STYLES["company_name"])],
-                [Spacer(1, 2 * mm), Spacer(1, 2 * mm)],
-                ["", Paragraph("Nairobi, Kenya", STYLES["contact"])],
-                ["", Paragraph("Website: voltproelectrodata.co.ke", STYLES["contact"])],
-                ["", Paragraph("Phone: 0715 117855 / 0724 076 047", STYLES["contact"])],
-                ["", Paragraph("Prepared by: Sales Team", STYLES["contact"])],
-            ]
-            company_table = Table(company_left, colWidths=[28 * mm, 60 * mm])
-            company_table.setStyle(TableStyle([
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                ("TOPPADDING", (0, 0), (-1, -1), 2),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-            ]))
+            img = ImageReader(logo_path)
+            iw, ih = img.getSize()
+            draw_h = logo_box_size
+            draw_w = draw_h * (iw / ih)
+            c.drawImage(
+                img, x_left, y - logo_box_size, width=draw_w,
+                height=draw_h, preserveAspectRatio=True, mask="auto",
+            )
+            logo_drawn = True
         except Exception:
-            company_table = Paragraph("VoltPro Electrodata Solutions", STYLES["company_name"])
-    else:
-        company_table = Paragraph("VoltPro Electrodata Solutions", STYLES["company_name"])
-    
-    # Right side: Quote metadata in boxed grid
-    meta_data = [
-        ["DATE", quote.issue_date.strftime("%d %b %Y") if quote.issue_date else ""],
-        ["QUOTE #", quote.quote_number],
-        ["CUSTOMER ID", quote.client_name[:10] if quote.client_name else ""],
-        ["VALID UNTIL", quote.valid_until.strftime("%d %b %Y") if quote.valid_until else ""],
-    ]
-    meta_box = Table(meta_data, colWidths=[25 * mm, 25 * mm])
-    meta_box.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, -1), WHITE),
-        ("GRID", (0, 0), (-1, -1), 0.5, GRAY),
-        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, -1), 8),
-        ("TEXTCOLOR", (0, 0), (0, -1), NAVY_BLUE),
-        ("ALIGN", (1, 0), (1, -1), "RIGHT"),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ("LEFTPADDING", (0, 0), (-1, -1), 4),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-    ]))
-    
-    # Quote title
-    quote_title = Paragraph("QUOTE", STYLES["quote_title"])
-    
-    # Combine right side
-    right_header = Table([[quote_title], [Spacer(1, 3 * mm)], [meta_box]])
-    right_header.setStyle(TableStyle([
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("ALIGN", (0, 0), (-1, -1), "RIGHT"),
-    ]))
-    
-    # Full header
-    header = Table([[company_table, right_header]], colWidths=[88 * mm, 82 * mm])
-    header.setStyle(TableStyle([
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ]))
-    story.append(header)
-    story.append(Spacer(1, 8 * mm))
+            logo_drawn = False
+    if not logo_drawn:
+        c.setFillColor(colors.HexColor("#D9E1F2"))
+        c.rect(x_left, y - logo_box_size, logo_box_size, logo_box_size, fill=1, stroke=0)
+        c.setFillColor(NAVY)
+        c.setFont("Helvetica-Bold", 7)
+        c.drawCentredString(x_left + logo_box_size / 2, y - logo_box_size / 2 - 3, "LOGO")
 
-    # Customer details section with navy blue bar
-    customer_bar = Table([[Paragraph("CUSTOMER", ParagraphStyle("customer_bar", fontName="Helvetica-Bold", fontSize=10, textColor=WHITE, leading=12))]], colWidths=[170 * mm])
-    customer_bar.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, -1), NAVY_BLUE),
-        ("TOPPADDING", (0, 0), (-1, -1), 6),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-        ("LEFTPADDING", (0, 0), (-1, -1), 4),
-    ]))
-    story.append(customer_bar)
-    
-    # Customer details
-    customer_details = []
-    if quote.client_name:
-        customer_details.append(Paragraph(quote.client_name, STYLES["body"]))
-    if quote.client_location:
-        customer_details.append(Paragraph(quote.client_location, STYLES["body"]))
-    if quote.client_phone:
-        customer_details.append(Paragraph(quote.client_phone, STYLES["body"]))
-    if quote.client_email:
-        customer_details.append(Paragraph(quote.client_email, STYLES["body"]))
-    
-    if customer_details:
-        customer_table = Table([[Paragraph("", STYLES["body"])]], colWidths=[170 * mm])
-        for detail in customer_details:
-            customer_table._argW[0] = 170 * mm
-            customer_table._cellvalues.append([[detail]])
-        customer_table.setStyle(TableStyle([
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-            ("LEFTPADDING", (0, 0), (-1, -1), 4),
-        ]))
-        story.append(customer_table)
-    
-    story.append(Spacer(1, 8 * mm))
+    c.setFillColor(NAVY)
+    c.setFont("Helvetica-Bold", 20)
+    c.drawString(x_left + logo_box_size + 10, y - 20, "VoltPro Electrodata Solutions")
 
+    c.setFillColor(LIGHT_BLUE)
+    c.setFont("Helvetica-Bold", 26)
+    c.drawRightString(x_right, y - 14, "QUOTE")
+
+    y -= logo_box_size + 8
+
+    # Company contact block (left)
+    c.setFillColor(colors.black)
+    c.setFont("Helvetica", 8)
+    cy = y
+    for line in contact_lines:
+        c.drawString(x_left, cy, line)
+        cy -= 11
+
+    # Date / Quote# / Customer ID / Valid until box (right)
+    box_w = 2.3 * inch
+    box_x = x_right - box_w
+    row_h = 15
+    ry = y
+    c.setFont("Helvetica-Bold", 8)
+    label_w = box_w * 0.5
+    for label, value in meta_rows:
+        c.setFillColor(colors.black)
+        c.drawRightString(box_x + label_w - 4, ry - 10, label)
+        c.setStrokeColor(LINE_GREY)
+        c.setFillColor(colors.white)
+        c.rect(box_x + label_w, ry - row_h + 2, box_w - label_w, row_h, fill=1, stroke=1)
+        c.setFillColor(colors.black)
+        c.setFont("Helvetica", 8)
+        c.drawString(box_x + label_w + 4, ry - 10, str(value))
+        c.setFont("Helvetica-Bold", 8)
+        ry -= row_h
+
+    y = min(cy, ry) - 14
+
+    # ---------------- Customer block ----------------
+    c.setFillColor(NAVY)
+    c.rect(x_left, y - 14, x_right - x_left, 14, fill=1, stroke=0)
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(x_left + 4, y - 10.5, "CUSTOMER")
+    y -= 14 + 4
+
+    c.setFillColor(colors.black)
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(x_left, y - 2, quote.client_name or "")
+    y -= 13
+    c.setFont("Helvetica", 8.5)
+    for val in [quote.client_location, quote.client_phone, quote.client_email]:
+        if val:
+            c.drawString(x_left, y, val)
+            y -= 11
+
+    y -= 8
+
+    # ---------------- Scope notes ----------------
     if quote.notes:
-        story.append(Paragraph("SCOPE", STYLES["label"]))
-        story.append(Spacer(1, 2 * mm))
-        story.append(Paragraph(quote.notes.replace("\n", "<br/>"), STYLES["body"]))
-        story.append(Spacer(1, 7 * mm))
+        c.setFont("Helvetica-Bold", 9)
+        c.setFillColor(NAVY)
+        c.drawString(x_left, y - 2, "SCOPE")
+        y -= 12
+        c.setFont("Helvetica", 8.5)
+        c.setFillColor(colors.black)
+        for line in quote.notes.split('\n'):
+            y = _wrapped_text(c, line, x_left, y, x_right - x_left - 8, size=8.5, leading=11)
+        y -= 8
 
-    # Itemized table with navy blue header and alternating rows
-    rows = [["DESCRIPTION", "UNIT PRICE", "QTY", "TAXED", "AMOUNT"]]
-    for i, item in enumerate(quote.line_items.all(), start=1):
-        rows.append([
-            Paragraph(item.description, STYLES["body"]),
-            f"KES {item.unit_price:,.2f}",
-            f"{item.quantity:g}",
-            "No",
-            f"KES {item.line_total:,.2f}",
-        ])
-    if len(rows) == 1:
-        rows.append(["No line items added yet.", "", "", "", ""])
+    # ---------------- Line items table ----------------
+    col_desc_x = x_left
+    col_unit_x = x_left + 3.4 * inch
+    col_qty_x = x_left + 4.5 * inch
+    col_tax_x = x_left + 5.15 * inch
+    col_amt_x = x_right
 
-    items_table = Table(
-        rows, colWidths=[80 * mm, 30 * mm, 20 * mm, 20 * mm, 20 * mm], repeatRows=1
-    )
-    items_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), NAVY_BLUE),
-        ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, -1), 9),
-        ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
-        ("ALIGN", (2, 0), (2, -1), "CENTER"),
-        ("ALIGN", (3, 0), (3, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [WHITE, LIGHT_GRAY]),
-        ("LINEAFTER", (0, 0), (-2, -1), 0.5, GRAY),  # Vertical divider lines
-        ("TOPPADDING", (0, 0), (-1, -1), 8),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
-        ("LEFTPADDING", (0, 0), (-1, -1), 8),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-    ]))
-    story.append(items_table)
-    story.append(Spacer(1, 10 * mm))
+    header_h = 14
+    c.setFillColor(NAVY)
+    c.rect(x_left, y - header_h, x_right - x_left, header_h, fill=1, stroke=0)
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 8)
+    c.drawString(col_desc_x + 4, y - 10.5, "DESCRIPTION")
+    c.drawRightString(col_unit_x, y - 10.5, "UNIT PRICE")
+    c.drawCentredString(col_qty_x, y - 10.5, "QTY")
+    c.drawCentredString(col_tax_x, y - 10.5, "TAXED")
+    c.drawRightString(col_amt_x, y - 10.5, "AMOUNT")
+    y -= header_h
 
-    # Bottom section: Terms and conditions (left), Totals (right)
-    # Terms and conditions section
-    terms_content = []
-    if quote.terms:
-        terms_text = quote.terms.replace("\n", "<br/>")
-        # Split into numbered terms if possible
-        terms_lines = terms_text.split("<br/>")
-        for i, line in enumerate(terms_lines, start=1):
-            terms_content.append(Paragraph(f"{i}. {line}", STYLES["small"]))
-    else:
-        terms_content.append(Paragraph("1. Payment is due within 30 days of invoice date.", STYLES["small"]))
-        terms_content.append(Paragraph("2. Prices are valid for 30 days from quote date.", STYLES["small"]))
-        terms_content.append(Paragraph("3. Goods remain the property of VoltPro until paid in full.", STYLES["small"]))
-    
-    terms_section = [
-        [Paragraph("TERMS AND CONDITIONS", ParagraphStyle("terms_header", fontName="Helvetica-Bold", fontSize=9, textColor=NAVY_BLUE, leading=12))],
-        [Spacer(1, 2 * mm)],
+    items = list(quote.line_items.all())
+    row_h = 14
+    min_rows = max(len(items), 8)
+    c.setFont("Helvetica", 8.5)
+    for i in range(min_rows):
+        shade = ROW_SHADE if i % 2 == 0 else colors.white
+        c.setFillColor(shade)
+        c.rect(x_left, y - row_h, x_right - x_left, row_h, fill=1, stroke=0)
+        if i < len(items):
+            item = items[i]
+            c.setFillColor(colors.black)
+            c.drawString(col_desc_x + 4, y - 10, item.description[:70])
+            c.drawRightString(col_unit_x, y - 10, f"{item.unit_price:,.2f}")
+            c.drawCentredString(col_qty_x, y - 10, f"{item.quantity:g}")
+            c.drawCentredString(col_tax_x, y - 10, "No")
+            c.drawRightString(col_amt_x, y - 10, f"{item.line_total:,.2f}")
+        else:
+            c.setFillColor(colors.black)
+            c.drawRightString(col_amt_x, y - 10, "-")
+        y -= row_h
+
+    c.setStrokeColor(LINE_GREY)
+    c.line(x_left, y, x_right, y)
+
+    y -= 10
+
+    # ---------------- Totals block ----------------
+    totals_box_x = x_left + 4.2 * inch
+    totals = [
+        ("Subtotal", f"{quote.subtotal:,.2f}", False),
+        ("Taxable", f"{quote.subtotal:,.2f}", False),
+        (f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%", False),
+        ("Tax due", f"{quote.tax_amount:,.2f}", False),
+        ("Other", "0.00", False),
+        ("TOTAL", f"{quote.total:,.2f}", True),
     ]
-    for term in terms_content:
-        terms_section.append([term])
-    terms_section.append([Spacer(1, 4 * mm)])
-    terms_section.append([Paragraph("Customer Acceptance (sign below):", STYLES["small"])])
-    terms_section.append([Spacer(1, 2 * mm)])
-    terms_section.append([Paragraph("x __________________________", STYLES["small"])])
-    terms_section.append([Spacer(1, 1 * mm)])
-    terms_section.append([Paragraph("Print Name: __________________________", STYLES["small"])])
-    
-    terms_table = Table(terms_section, colWidths=[95 * mm])
-    terms_table.setStyle(TableStyle([
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ("LEFTPADDING", (0, 0), (-1, -1), 4),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ]))
-    
-    # Totals calculation section
-    totals_rows = [
-        ["Subtotal", f"KES {quote.subtotal:,.2f}"],
-        ["Taxable", f"KES {quote.subtotal:,.2f}"],
-        [f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%"],
-        ["Tax due", f"KES {quote.tax_amount:,.2f}"],
-        ["Other", "KES 0.00"],
-        ["TOTAL", f"KES {quote.total:,.2f}"],
-    ]
-    totals_table = Table(totals_rows, colWidths=[35 * mm, 35 * mm])
-    totals_table.setStyle(TableStyle([
-        ("FONTNAME", (0, 0), (0, -2), "Helvetica"),
-        ("FONTNAME", (0, -1), (0, -1), "Helvetica-Bold"),
-        ("FONTNAME", (1, 0), (1, -2), "Helvetica"),
-        ("FONTNAME", (1, -1), (1, -1), "Helvetica-Bold"),
-        ("FONTSIZE", (0, 0), (-1, -2), 9),
-        ("FONTSIZE", (0, -1), (-1, -1), 11),
-        ("ALIGN", (1, 0), (1, -1), "RIGHT"),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ("LEFTPADDING", (0, 0), (-1, -1), 4),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-        ("BACKGROUND", (0, -1), (-1, -1), NAVY_BLUE),
-        ("TEXTCOLOR", (0, -1), (-1, -1), WHITE),
-        ("LINEABOVE", (0, -1), (-1, -1), 1.0, GRAY),
-    ]))
-    
-    # Combine bottom section
-    bottom_section = Table([[terms_table, totals_table]], colWidths=[95 * mm, 75 * mm])
-    bottom_section.setStyle(TableStyle([
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ]))
-    story.append(bottom_section)
+    c.setFont("Helvetica", 9)
+    for label, value, is_total in totals:
+        if is_total:
+            c.setFillColor(TOTAL_SHADE)
+            c.rect(totals_box_x, y - 13, x_right - totals_box_x, 15, fill=1, stroke=0)
+            c.setFillColor(colors.black)
+            c.setFont("Helvetica-Bold", 10)
+            c.drawString(totals_box_x + 4, y - 9, "TOTAL")
+            c.drawRightString(x_right - 2, y - 9, f"KES {value}")
+        else:
+            c.setFillColor(colors.black)
+            c.setFont("Helvetica", 9)
+            c.drawString(totals_box_x + 4, y - 9, label)
+            c.drawRightString(x_right - 2, y - 9, value)
+        y -= 16
 
-    doc.build(story)
+    y -= 10
+
+    # ---------------- Terms & conditions + signature ----------------
+    terms_top = y
+    terms_box_h = 1.35 * inch
+    terms_w = 4.6 * inch
+
+    c.setFillColor(NAVY)
+    c.rect(x_left, terms_top - 14, terms_w, 14, fill=1, stroke=0)
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(x_left + 4, terms_top - 10.5, "TERMS AND CONDITIONS")
+
+    ty = terms_top - 14 - 12
+    c.setFillColor(colors.black)
+    c.setFont("Helvetica", 8)
+    terms_text = quote.terms if quote.terms else "50% deposit on acceptance, balance on completion. Quote valid for 30 days from issue date unless stated otherwise. Materials sourced to spec unless an alternative is agreed in writing."
+    for line in terms_text.splitlines():
+        if not line.strip():
+            continue
+        ty = _wrapped_text(c, line.strip(), x_left, ty, terms_w - 8, size=8, leading=10)
+
+    ty -= 6
+    c.setFont("Helvetica-Oblique", 8)
+    c.drawString(x_left, ty, "Customer Acceptance (sign below):")
+    ty -= 26
+    c.setStrokeColor(colors.black)
+    c.line(x_left + 8, ty, x_left + terms_w - 20, ty)
+    ty -= 11
+    c.setFont("Helvetica", 8)
+    c.drawString(x_left, ty, "Print Name: ____________________________")
+
+    y = ty - 28
+
+    # ---------------- Footer ----------------
+    c.setFont("Helvetica", 8.5)
+    c.setFillColor(colors.black)
+    c.drawCentredString(PAGE_W / 2, y, "If you have any questions about this price quote, please contact")
+    y -= 11
+    c.drawCentredString(PAGE_W / 2, y, "VoltPro Electrodata Solutions, 0715 117855 / 0724 076 047, info@voltproelectrodata.co.ke")
+    y -= 16
+    c.setFont("Helvetica-BoldOblique", 10)
+    c.drawCentredString(PAGE_W / 2, y, "Thank You For Your Business!")
+
+    c.showPage()
+    c.save()
     buf.seek(0)
     return buf
