@@ -11,6 +11,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (inlineFormsets.length > 0 && fieldsets.length > 0) {
         // Insert the first inline formset after the first fieldset
         fieldsets[0].after(inlineFormsets[0]);
+        
+        // Move collapsed sections (Scope & Terms, Totals & Sharing, System Info) after inline formsets
+        for (let i = 1; i < fieldsets.length; i++) {
+            if (fieldsets[i].classList.contains('collapsed')) {
+                inlineFormsets[0].after(fieldsets[i]);
+            }
+        }
     }
 });
 </script>
