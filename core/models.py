@@ -222,10 +222,6 @@ class InventoryItem(models.Model):
 
 class QuoteLineItem(models.Model):
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="line_items")
-    inventory_item = models.ForeignKey(
-        InventoryItem, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name="quote_items", help_text="Select from inventory (optional)"
-    )
     description = models.CharField(max_length=200)
     unit = models.CharField(max_length=20, default="unit", help_text="e.g. unit, hrs, m, lot")
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("1.00"))
