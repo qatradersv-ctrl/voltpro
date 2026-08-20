@@ -212,7 +212,7 @@ def build_quote_pdf(quote):
             item = items[i]
             c.setFillColor(colors.black)
             c.drawCentredString(col_num_x + 0.15 * inch, y - 10, str(i + 1))
-            c.drawString(col_desc_x + 4, y - 10, item.description[:70])
+            c.drawString(col_desc_x + 4, y - 10, item.description[:100])
             c.drawRightString(col_unit_x, y - 10, f"KES {item.unit_price:,.2f}")
             c.drawCentredString(col_qty_x, y - 10, f"{item.quantity:g}")
             c.drawCentredString(col_tax_x, y - 10, "No")
