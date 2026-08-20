@@ -220,3 +220,41 @@
   margin-top: 24px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
+
+/* Desktop-specific improvements */
+@media (min-width: 1200px) {
+  .form-row{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .form-row .field-box{
+    flex: 1;
+  }
+  .form-row label{
+    width: 120px;
+    margin-bottom: 0;
+  }
+  .form-row input[type="text"],
+  .form-row input[type="email"],
+  .form-row input[type="tel"],
+  .form-row input[type="number"],
+  .form-row input[type="date"],
+  .form-row select{
+    width: 100%;
+  }
+  .inline-group .tabular table{
+    width: 100%;
+  }
+  .inline-group .tabular tbody td{
+    padding: 12px 10px;
+  }
+  .inline-group .tabular tbody td input,
+  .inline-group .tabular tbody td select{
+    width: 100%;
+    min-width: 120px;
+  }
+  .inline-group .tabular tbody td input[type="number"]{
+    min-width: 80px;
+  }
+}
