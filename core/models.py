@@ -226,10 +226,9 @@ class QuoteLineItem(models.Model):
     unit = models.CharField(max_length=20, default="unit", help_text="e.g. unit, hrs, m, lot")
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("1.00"))
     unit_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
-    order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ["order", "id"]
+        ordering = ["id"]
 
     def __str__(self):
         return f"{self.description} ({self.quantity} {self.unit})"
