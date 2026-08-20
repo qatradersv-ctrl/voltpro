@@ -370,8 +370,6 @@ class QuoteAdmin(admin.ModelAdmin):
         }),
     )
     
-    change_form_template = "admin/core/quote_change_form.html"
-    
     class Media:
         css = {
             'all': ('core/css/admin.css',)

@@ -1,18 +1,17 @@
 {% extends "admin/change_form.html" %}
 
-{% block fieldsets %}
-{% for fieldset in adminform %}
-  {% include "admin/includes/fieldset.html" %}
-  {% if forloop.counter == 1 and inline_admin_formsets %}
-    <div class="inline-group">
-      <div class="tabular inline-related">
-        <h2>Quote Line Items</h2>
-        {{ inline_admin_formsets }}
-      </div>
-    </div>
-  {% endif %}
-{% endfor %}
-{% endblock %}
-
-{% block inline_field_sets %}
+{% block extrahead %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Move inline formsets after the first fieldset
+    const inlineFormsets = document.querySelectorAll('.inline-group');
+    const fieldsets = document.querySelectorAll('.module');
+    
+    if (inlineFormsets.length > 0 && fieldsets.length > 0) {
+        // Insert the first inline formset after the first fieldset
+        fieldsets[0].after(inlineFormsets[0]);
+    }
+});
+</script>
 {% endblock %}
