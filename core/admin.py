@@ -290,7 +290,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 class QuoteLineItemInline(admin.TabularInline):
     model = QuoteLineItem
     extra = 3
-    fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
+    fields = ("inventory_item", "description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
     
     def get_formset(self, request, obj=None, **kwargs):
@@ -300,16 +300,25 @@ class QuoteLineItemInline(admin.TabularInline):
         class QuoteLineItemForm(forms.ModelForm):
             class Meta:
                 model = QuoteLineItem
-                fields = ("description", "quantity", "unit", "unit_price")
+                fields = ("inventory_item", "description", "quantity", "unit", "unit_price")
                 widgets = {
                     "unit_price": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
                     "quantity": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
                 }
             
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                # Filter inventory items to only show active ones
+                if 'inventory_item' in self.fields:
+                    self.fields['inventory_item'].queryset = InventoryItem.objects.filter(is_active=True)
+                    self.fields['inventory_item'].required = False
+                    self.fields['inventory_item'].empty_label = "-- Select from inventory or type manually --"
+            
             def has_changed(self):
-                # Only consider the row changed if it has a description
+                # Only consider the row changed if it has a description or inventory item
                 description_key = self.add_prefix("description")
-                if not (self.data.get(description_key) or "").strip():
+                inventory_key = self.add_prefix("inventory_item")
+                if not (self.data.get(description_key) or "").strip() and not self.data.get(inventory_key):
                     return False
                 return super().has_changed()
         
