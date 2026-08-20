@@ -309,26 +309,20 @@
 /* Inline form improvements */
 .inline-group{
   margin-top: 24px;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  overflow: visible;
-  background: #FFFFFF;
 }
 
-.inline-group h2{
-  background: #F9FAFB;
-  color: #374151;
-  padding: 14px 16px;
-  margin: 0;
+.inline-group .tabular tbody td input,
+.inline-group .tabular tbody td select{
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
   font-size: 13px;
-  font-weight: 600;
-  text-transform: none;
-  letter-spacing: 0;
-  border-bottom: 1px solid #E5E7EB;
 }
 
-.inline-related{
-  padding: 16px;
+.inline-group .tabular tbody td input:focus,
+.inline-group .tabular tbody td select:focus{
+  outline: none;
+  border-color: var(--accent);
 }
 
 .inline-group .tabular{
@@ -379,8 +373,6 @@
   background: #F9FAFB;
 }
 
-.inline-group .tabular tbody td input,
-.inline-group .tabular tbody td select,
 .inline-group .tabular tbody td textarea{
   padding: 8px 10px;
   border: 1px solid #E5E7EB;
@@ -393,8 +385,6 @@
   transition: all 0.2s ease;
 }
 
-.inline-group .tabular tbody td input:focus,
-.inline-group .tabular tbody td select:focus,
 .inline-group .tabular tbody td textarea:focus{
   outline: none;
   border-color: var(--accent);

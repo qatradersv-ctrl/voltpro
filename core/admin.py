@@ -292,50 +292,12 @@ class QuoteLineItemInline(admin.TabularInline):
     extra = 3
     fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
-    verbose_name = "Quote Line Item"
-    verbose_name_plural = "Quote Line Items"
     
-    def get_formset(self, request, obj=None, **kwargs):
-        from django import forms
-        from decimal import Decimal
-        
-        class QuoteLineItemForm(forms.ModelForm):
-            class Meta:
-                model = QuoteLineItem
-                fields = ("description", "quantity", "unit", "unit_price")
-                widgets = {
-                    "unit_price": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
-                    "quantity": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
-                }
-            
-            def has_changed(self):
-                # Consider the row changed if it has description, quantity, or unit_price
-                description_key = self.add_prefix("description")
-                quantity_key = self.add_prefix("quantity")
-                unit_price_key = self.add_prefix("unit_price")
-                
-                description = (self.data.get(description_key) or "").strip()
-                quantity = (self.data.get(quantity_key) or "").strip()
-                unit_price = (self.data.get(unit_price_key) or "").strip()
-                
-                if not description and not quantity and not unit_price:
-                    return False
-                return super().has_changed()
-        
-        kwargs['form'] = QuoteLineItemForm
-        return super().get_formset(request, obj, **kwargs)
-    
-    @admin.display(description="Line total")
+    @admin.display(description="Line Total")
     def line_total_display(self, obj):
         if obj.pk:
             return f"KES {obj.line_total:,.2f}"
         return "—"
-    
-    class Media:
-        js = ('core/js/inventory_autofill.js', 'admin/js/jquery.init.js')
-        css = {
-            'all': ('core/css/admin.css',)
-        }
 
 
 @admin.register(Quote)
@@ -352,30 +314,19 @@ class QuoteAdmin(admin.ModelAdmin):
     inlines = [QuoteLineItemInline]
     actions = ["export_csv", "send_quote", "generate_sales_report"]
     
-    # Custom form layout for better Bootstrap-like appearance
     fieldsets = (
         (None, {
-            "fields": (("client_name", "client_phone"), ("client_email", "client_location"), ("service", "status"), ("issue_date", "valid_until"), ("tax_rate",)),
-            "classes": ("wide",),
-        }),
-        ("Scope & Terms", {
-            "fields": ("notes", "terms"),
-            "classes": ("wide", "collapse"),
+            "fields": ("client_name", "client_phone", "client_email", "client_location", "service", "status", "issue_date", "valid_until", "tax_rate", "notes", "terms"),
         }),
         ("Totals & Sharing", {
             "fields": ("totals_display", "client_link_display"),
-            "classes": ("wide", "collapse"),
+            "classes": ("collapse",),
         }),
         ("System Info", {
             "fields": ("quote_number",),
             "classes": ("collapse",),
         }),
     )
-    
-    class Media:
-        css = {
-            'all': ('core/css/admin.css',)
-        }
 
     @admin.display(description="Status", ordering="status")
     def status_badge(self, obj):
