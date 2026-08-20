@@ -201,8 +201,31 @@ class Quote(models.Model):
         return reverse("core:quote_detail", kwargs={"public_id": self.public_id})
 
 
+class InventoryItem(models.Model):
+    """Inventory items that can be selected in quote line items."""
+    name = models.CharField(max_length=200, help_text="Item name for dropdown")
+    description = models.CharField(max_length=200, help_text="Default description")
+    unit = models.CharField(max_length=20, default="unit", help_text="e.g. unit, hrs, m, lot")
+    unit_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
+    category = models.CharField(max_length=100, blank=True, help_text="Category for grouping")
+    is_active = models.BooleanField(default=True, help_text="Show in dropdown")
+    order = models.PositiveIntegerField(default=0, help_text="Sort order in dropdown")
+
+    class Meta:
+        ordering = ["order", "name"]
+        verbose_name = "Inventory Item"
+        verbose_name_plural = "Inventory Items"
+
+    def __str__(self):
+        return f"{self.name} - KES {self.unit_price:,.2f}/{self.unit}"
+
+
 class QuoteLineItem(models.Model):
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="line_items")
+    inventory_item = models.ForeignKey(
+        InventoryItem, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="quote_items", help_text="Select from inventory (optional)"
+    )
     description = models.CharField(max_length=200)
     unit = models.CharField(max_length=20, default="unit", help_text="e.g. unit, hrs, m, lot")
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("1.00"))

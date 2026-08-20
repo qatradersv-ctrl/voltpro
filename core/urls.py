@@ -13,4 +13,5 @@ urlpatterns = [
     path("quotes/<uuid:public_id>/", views.quote_detail, name="quote_detail"),
     path("quotes/<uuid:public_id>/pdf/", views.quote_pdf, name="quote_pdf"),
     path("quotes/admin/<int:pk>/pdf/", views.quote_pdf_admin, name="quote_pdf_admin"),
+    path("admin/core/inventoryitem/<int:pk>/json/", views.inventory_item_json, name="inventory_item_json"),
 ]

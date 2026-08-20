@@ -1,11 +1,11 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import send_mail
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 
-from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration
+from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem
 from .pdf import build_quote_pdf
 
 
@@ -187,3 +187,17 @@ def quote_pdf_admin(request, pk):
     response = HttpResponse(buf.read(), content_type="application/pdf")
     response["Content-Disposition"] = f'inline; filename="{quote.quote_number}.pdf"'
     return response
+
+
+@staff_member_required
+def inventory_item_json(request, pk):
+    """Return inventory item data as JSON for admin autofill."""
+    item = get_object_or_404(InventoryItem, pk=pk)
+    data = {
+        'name': item.name,
+        'description': item.description,
+        'unit': item.unit,
+        'unit_price': str(item.unit_price),
+        'category': item.category,
+    }
+    return JsonResponse(data)
