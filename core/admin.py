@@ -354,25 +354,13 @@ class QuoteAdmin(admin.ModelAdmin):
     
     # Custom form layout for better Bootstrap-like appearance
     fieldsets = (
-        ("Client Information", {
-            "fields": (("client_name", "client_phone"), ("client_email", "client_location")),
+        (None, {
+            "fields": (("client_name", "client_phone"), ("client_email", "client_location"), ("service", "status"), ("issue_date", "valid_until"), ("tax_rate",)),
             "classes": ("wide",),
-            "description": "Enter the client's contact details for this quote."
         }),
-        ("Technician Information", {
-            "fields": (("technician_name", "technician_phone"), ("technician_email",)),
-            "classes": ("wide",),
-            "description": "Assign a technician to handle this quote (optional)."
-        }),
-        ("Quote Details", {
-            "fields": (("service", "status"), ("issue_date", "valid_until"), ("tax_rate",)),
-            "classes": ("wide",),
-            "description": "Set the quote dates, service type, and tax rate."
-        }),
-        ("Scope & Terms", {
-            "fields": ("notes", "terms"),
-            "classes": ("wide",),
-            "description": "Add scope notes and payment terms for the quote."
+        ("Additional Details", {
+            "fields": (("technician_name", "technician_phone"), ("technician_email",), "notes", "terms"),
+            "classes": ("wide", "collapse"),
         }),
         ("Totals & Sharing", {
             "fields": ("totals_display", "client_link_display"),
