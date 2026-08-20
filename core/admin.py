@@ -283,6 +283,29 @@ class QuoteLineItemInline(admin.TabularInline):
     fields = ("order", "description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
     
+    def get_formset(self, request, obj=None, **kwargs):
+        from django import forms
+        from decimal import Decimal
+        
+        class QuoteLineItemForm(forms.ModelForm):
+            class Meta:
+                model = QuoteLineItem
+                fields = ("order", "description", "quantity", "unit", "unit_price")
+                widgets = {
+                    "unit_price": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
+                    "quantity": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
+                }
+            
+            def has_changed(self):
+                # Only consider the row changed if it has a description
+                description_key = self.add_prefix("description")
+                if not (self.data.get(description_key) or "").strip():
+                    return False
+                return super().has_changed()
+        
+        kwargs['form'] = QuoteLineItemForm
+        return super().get_formset(request, obj, **kwargs)
+    
     @admin.display(description="Line total")
     def line_total_display(self, obj):
         if obj.pk:
