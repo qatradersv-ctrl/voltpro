@@ -2,6 +2,33 @@
     'use strict';
     
     $(document).ready(function() {
+        // Auto-number quote line items
+        function updateLineNumbers() {
+            const $rows = $('#id_quotelineitem_set-group .dynamic-quotelineitem_set');
+            let counter = 1;
+            $rows.each(function() {
+                const $row = $(this);
+                // Skip rows marked for deletion
+                if ($row.find('input[name$="-DELETE"]').is(':checked')) {
+                    return;
+                }
+                // Update line number display
+                const $lineNumCell = $row.find('td:first');
+                if ($lineNumCell.length) {
+                    $lineNumCell.text(counter);
+                }
+                counter++;
+            });
+        }
+        
+        // Initial numbering
+        setTimeout(updateLineNumbers, 100);
+        
+        // Update numbering when rows are added/removed
+        $(document).on('formset:added', updateLineNumbers);
+        $(document).on('formset:removed', updateLineNumbers);
+        $(document).on('change', 'input[name$="-DELETE"]', updateLineNumbers);
+        
         // Handle inventory item selection change
         $(document).on('change', 'select[name$="-inventory_item"]', function() {
             const $row = $(this).closest('tr');
