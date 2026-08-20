@@ -150,6 +150,9 @@ class Quote(models.Model):
     issue_date = models.DateField(default=timezone.localdate)
     valid_until = models.DateField(blank=True, null=True)
 
+    apply_vat = models.BooleanField(
+        default=True, help_text="Check to apply VAT to this quote"
+    )
     tax_rate = models.DecimalField(
         max_digits=5, decimal_places=2, default=VAT_RATE_DEFAULT,
         help_text="VAT %% applied to the subtotal. Set to 0 for a tax-exempt quote.",
@@ -191,7 +194,9 @@ class Quote(models.Model):
 
     @property
     def tax_amount(self):
-        return (self.subtotal * self.tax_rate / Decimal("100")).quantize(Decimal("0.01"))
+        if self.apply_vat:
+            return (self.subtotal * self.tax_rate / Decimal("100")).quantize(Decimal("0.01"))
+        return Decimal("0.00")
 
     @property
     def total(self):

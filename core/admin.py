@@ -350,7 +350,7 @@ class QuoteAdmin(admin.ModelAdmin):
             "classes": ("wide",),
         }),
         ("Quote Details", {
-            "fields": (("issue_date", "valid_until"), ("tax_rate",), "notes", "terms"),
+            "fields": (("issue_date", "valid_until"), ("apply_vat", "tax_rate"), "notes", "terms"),
             "classes": ("wide",),
         }),
         ("Totals & Sharing", {
