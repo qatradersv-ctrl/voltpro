@@ -290,8 +290,8 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 class QuoteLineItemInline(admin.TabularInline):
     model = QuoteLineItem
     extra = 3
-    fields = ("line_number_display", "inventory_item", "description", "quantity", "unit", "unit_price", "line_total_display")
-    readonly_fields = ("line_number_display", "line_total_display")
+    fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
+    readonly_fields = ("line_total_display",)
     
     def get_formset(self, request, obj=None, **kwargs):
         from django import forms
@@ -300,37 +300,22 @@ class QuoteLineItemInline(admin.TabularInline):
         class QuoteLineItemForm(forms.ModelForm):
             class Meta:
                 model = QuoteLineItem
-                fields = ("inventory_item", "description", "quantity", "unit", "unit_price")
+                fields = ("description", "quantity", "unit", "unit_price")
                 widgets = {
                     "unit_price": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
                     "quantity": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
                 }
             
-            def __init__(self, *args, **kwargs):
-                super().__init__(*args, **kwargs)
-                # Filter inventory items to only show active ones
-                if 'inventory_item' in self.fields:
-                    self.fields['inventory_item'].queryset = InventoryItem.objects.filter(is_active=True)
-                    self.fields['inventory_item'].required = False
-                    self.fields['inventory_item'].empty_label = "-- Select from inventory or type manually --"
-            
             def has_changed(self):
-                # Only consider the row changed if it has a description or inventory item
+                # Only consider the row changed if it has a description
                 description_key = self.add_prefix("description")
-                inventory_key = self.add_prefix("inventory_item")
-                if not (self.data.get(description_key) or "").strip() and not self.data.get(inventory_key):
+                if not (self.data.get(description_key) or "").strip():
                     return False
                 return super().has_changed()
         
         kwargs['form'] = QuoteLineItemForm
         return super().get_formset(request, obj, **kwargs)
     
-    @admin.display(description="#")
-    def line_number_display(self, obj):
-        if obj.pk:
-            return obj.line_number
-        return "—"
-
     @admin.display(description="Line total")
     def line_total_display(self, obj):
         if obj.pk:
