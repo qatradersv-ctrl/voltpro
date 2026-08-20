@@ -290,7 +290,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 class QuoteLineItemInline(admin.TabularInline):
     model = QuoteLineItem
     extra = 3
-    fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
+    fields = ("order", "description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
     
     def get_formset(self, request, obj=None, **kwargs):
@@ -300,10 +300,11 @@ class QuoteLineItemInline(admin.TabularInline):
         class QuoteLineItemForm(forms.ModelForm):
             class Meta:
                 model = QuoteLineItem
-                fields = ("description", "quantity", "unit", "unit_price")
+                fields = ("order", "description", "quantity", "unit", "unit_price")
                 widgets = {
                     "unit_price": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
                     "quantity": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
+                    "order": forms.NumberInput(attrs={"step": "1", "min": "0"}),
                 }
             
             def has_changed(self):
