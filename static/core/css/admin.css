@@ -311,7 +311,7 @@
   margin-top: 24px;
   border: 1px solid #E5E7EB;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
   background: #FFFFFF;
 }
 
@@ -328,18 +328,17 @@
 }
 
 .inline-related{
-  padding: 0;
+  padding: 16px;
 }
 
 .inline-group .tabular{
   border: none;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .inline-group .tabular table{
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
 }
 
 .inline-group .tabular thead th{
