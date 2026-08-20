@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block fieldsets %}
+{% for fieldset in adminform %}
+  {% include "admin/includes/fieldset.html" %}
+  {% if forloop.counter == 1 and inline_admin_formsets %}
+    <div class="inline-group">
+      <div class="tabular inline-related">
+        <h2>Quote Line Items</h2>
+        {{ inline_admin_formsets }}
+      </div>
+    </div>
+  {% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block inline_field_sets %}
+{% endblock %}
