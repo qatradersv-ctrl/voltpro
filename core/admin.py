@@ -307,9 +307,16 @@ class QuoteLineItemInline(admin.TabularInline):
                 }
             
             def has_changed(self):
-                # Only consider the row changed if it has a description
+                # Consider the row changed if it has description, quantity, or unit_price
                 description_key = self.add_prefix("description")
-                if not (self.data.get(description_key) or "").strip():
+                quantity_key = self.add_prefix("quantity")
+                unit_price_key = self.add_prefix("unit_price")
+                
+                description = (self.data.get(description_key) or "").strip()
+                quantity = (self.data.get(quantity_key) or "").strip()
+                unit_price = (self.data.get(unit_price_key) or "").strip()
+                
+                if not description and not quantity and not unit_price:
                     return False
                 return super().has_changed()
         
