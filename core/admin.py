@@ -294,7 +294,6 @@ class QuoteLineItemInline(admin.TabularInline):
     readonly_fields = ("line_total_display",)
     verbose_name = "Quote Line Item"
     verbose_name_plural = "Quote Line Items"
-    template = "admin/edit_inline/tabular.html"
     
     def get_formset(self, request, obj=None, **kwargs):
         from django import forms
