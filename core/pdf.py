@@ -231,12 +231,20 @@ def build_quote_pdf(quote):
     totals_box_x = x_left + 4.2 * inch
     totals = [
         ("Subtotal", f"KES {quote.subtotal:,.2f}", False),
-        ("Taxable", f"KES {quote.subtotal:,.2f}", False),
-        (f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%", False),
-        ("Tax due", f"KES {quote.tax_amount:,.2f}", False),
+    ]
+    
+    # Only show tax-related lines if tax_rate > 0
+    if quote.tax_rate > 0:
+        totals.extend([
+            ("Taxable", f"KES {quote.subtotal:,.2f}", False),
+            (f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%", False),
+            ("Tax due", f"KES {quote.tax_amount:,.2f}", False),
+        ])
+    
+    totals.extend([
         ("Other", "KES 0.00", False),
         ("TOTAL", f"KES {quote.total:,.2f}", True),
-    ]
+    ])
     c.setFont("Helvetica", 9)
     for label, value, is_total in totals:
         if is_total:
