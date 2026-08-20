@@ -328,5 +328,80 @@ def build_quote_pdf(quote):
 
     c.showPage()
     c.save()
-    buf.seek(0)
-    return buf
+    return buffer
+
+
+def build_sales_report(queryset):
+    """Generate a sales report PDF for selected quotes."""
+    from io import BytesIO
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib import colors
+    from reportlab.pdfgen import canvas
+    from datetime import datetime
+    from decimal import Decimal
+    
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    PAGE_W, PAGE_H = A4
+    
+    # Colors
+    NAVY = colors.HexColor("#16233A")
+    ACCENT = colors.HexColor("#F5A623")
+    
+    # Header
+    c.setFillColor(NAVY)
+    c.rect(0, PAGE_H - 80, PAGE_W, 80, fill=1, stroke=0)
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 24)
+    c.drawString(50, PAGE_H - 50, "SALES REPORT")
+    c.setFont("Helvetica", 12)
+    c.drawString(50, PAGE_H - 70, f"Generated: {datetime.now().strftime('%d %B %Y %H:%M')}")
+    
+    # Summary stats
+    total_quotes = queryset.count()
+    total_amount = sum(q.total for q in queryset)
+    total_vat = sum(q.tax_amount for q in queryset)
+    total_subtotal = sum(q.subtotal for q in queryset)
+    
+    y = PAGE_H - 120
+    c.setFillColor(colors.black)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, y, f"Total Quotes: {total_quotes}")
+    y -= 25
+    c.setFont("Helvetica", 12)
+    c.drawString(50, y, f"Total Revenue: KES {total_amount:,.2f}")
+    y -= 20
+    c.drawString(50, y, f"Total VAT: KES {total_vat:,.2f}")
+    y -= 20
+    c.drawString(50, y, f"Total Subtotal: KES {total_subtotal:,.2f}")
+    
+    # Table header
+    y -= 40
+    c.setFillColor(NAVY)
+    c.rect(50, y - 30, PAGE_W - 100, 30, fill=1, stroke=0)
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(55, y - 20, "Quote #")
+    c.drawString(150, y - 20, "Client")
+    c.drawString(350, y - 20, "Status")
+    c.drawString(450, y - 20, "Date")
+    c.drawString(520, y - 20, "Total")
+    
+    # Table rows
+    y -= 30
+    c.setFont("Helvetica", 9)
+    for quote in queryset:
+        if y < 50:
+            c.showPage()
+            y = PAGE_H - 50
+            
+        c.setFillColor(colors.black)
+        c.drawString(55, y - 20, quote.quote_number or "DRAFT")
+        c.drawString(150, y - 20, quote.client_name[:30])
+        c.drawString(350, y - 20, quote.get_status_display())
+        c.drawString(450, y - 20, quote.issue_date.strftime('%d/%m/%Y'))
+        c.drawString(520, y - 20, f"KES {quote.total:,.2f}")
+        y -= 25
+    
+    c.save()
+    return buffer

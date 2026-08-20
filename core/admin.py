@@ -348,7 +348,7 @@ class QuoteAdmin(admin.ModelAdmin):
     autocomplete_fields = ("request", "service")
     date_hierarchy = "issue_date"
     inlines = [QuoteLineItemInline]
-    actions = ["export_csv", "send_quote"]
+    actions = ["export_csv", "send_quote", "generate_sales_report"]
     
     # Custom form layout for better Bootstrap-like appearance
     fieldsets = (
@@ -507,14 +507,21 @@ You can view and manage this quote in the admin panel.
                 failed_count += 1
         
         if sent_count > 0:
-            self.message_user(
-                request,
-                f"{sent_count} quote(s) sent successfully to clients and technician.",
-                level='success'
-            )
+            self.message_user(request, f"{sent_count} quote(s) sent successfully.")
         if failed_count > 0:
-            self.message_user(
-                request,
-                f"{failed_count} quote(s) failed to send (missing email or error).",
-                level='warning'
-            )
+            self.message_user(request, f"{failed_count} quote(s) failed to send.", level="ERROR")
+
+    @admin.action(description="Generate sales report (PDF)")
+    def generate_sales_report(self, request, queryset):
+        from core.pdf import build_sales_report
+        from django.http import HttpResponse
+        from datetime import datetime
+        
+        # Generate sales report PDF
+        buffer = build_sales_report(queryset)
+        
+        response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
+        filename = f"sales_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        
+        return response
