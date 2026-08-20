@@ -146,6 +146,10 @@ class Quote(models.Model):
     client_email = models.EmailField(blank=True)
     client_location = models.CharField(max_length=150, blank=True)
 
+    technician_name = models.CharField(max_length=120, blank=True, help_text="Technician assigned to this quote")
+    technician_phone = models.CharField(max_length=30, blank=True, help_text="Technician contact number")
+    technician_email = models.EmailField(blank=True, help_text="Technician email address")
+
     status = models.CharField(max_length=10, choices=QuoteStatus.choices, default=QuoteStatus.DRAFT)
     issue_date = models.DateField(default=timezone.localdate)
     valid_until = models.DateField(blank=True, null=True)

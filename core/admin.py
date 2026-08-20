@@ -353,7 +353,7 @@ class QuoteAdmin(admin.ModelAdmin):
     # Custom form layout for better Bootstrap-like appearance
     fieldsets = (
         (None, {
-            "fields": (("client_name", "client_phone"), ("client_email", "client_location"), ("service", "status")),
+            "fields": (("client_name", "technician_name"), ("client_phone", "technician_phone"), ("client_email", "technician_email"), ("client_location", "service"), ("status",)),
             "classes": ("wide",),
         }),
         ("Quote Details", {

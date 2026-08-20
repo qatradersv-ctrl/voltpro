@@ -167,6 +167,27 @@ def build_quote_pdf(quote):
 
     y -= 8
 
+    # ---------------- Technician block ----------------
+    if quote.technician_name:
+        c.setFillColor(NAVY)
+        c.rect(x_left, y - 14, x_right - x_left, 14, fill=1, stroke=0)
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(x_left + 4, y - 10.5, "TECHNICIAN")
+        y -= 14 + 4
+
+        c.setFillColor(colors.black)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(x_left, y - 2, quote.technician_name or "")
+        y -= 13
+        c.setFont("Helvetica", 8.5)
+        for val in [quote.technician_phone, quote.technician_email]:
+            if val:
+                c.drawString(x_left, y, val)
+                y -= 11
+
+        y -= 8
+
     # ---------------- Scope notes ----------------
     if quote.notes:
         c.setFont("Helvetica-Bold", 9)
