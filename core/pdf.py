@@ -213,10 +213,10 @@ def build_quote_pdf(quote):
             c.setFillColor(colors.black)
             c.drawCentredString(col_num_x + 0.15 * inch, y - 10, str(i + 1))
             c.drawString(col_desc_x + 4, y - 10, item.description[:70])
-            c.drawRightString(col_unit_x, y - 10, f"{item.unit_price:,.2f}")
+            c.drawRightString(col_unit_x, y - 10, f"KES {item.unit_price:,.2f}")
             c.drawCentredString(col_qty_x, y - 10, f"{item.quantity:g}")
             c.drawCentredString(col_tax_x, y - 10, "No")
-            c.drawRightString(col_amt_x, y - 10, f"{item.line_total:,.2f}")
+            c.drawRightString(col_amt_x, y - 10, f"KES {item.line_total:,.2f}")
         else:
             c.setFillColor(colors.black)
             c.drawRightString(col_amt_x, y - 10, "-")
@@ -230,12 +230,12 @@ def build_quote_pdf(quote):
     # ---------------- Totals block ----------------
     totals_box_x = x_left + 4.2 * inch
     totals = [
-        ("Subtotal", f"{quote.subtotal:,.2f}", False),
-        ("Taxable", f"{quote.subtotal:,.2f}", False),
+        ("Subtotal", f"KES {quote.subtotal:,.2f}", False),
+        ("Taxable", f"KES {quote.subtotal:,.2f}", False),
         (f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%", False),
-        ("Tax due", f"{quote.tax_amount:,.2f}", False),
-        ("Other", "0.00", False),
-        ("TOTAL", f"{quote.total:,.2f}", True),
+        ("Tax due", f"KES {quote.tax_amount:,.2f}", False),
+        ("Other", "KES 0.00", False),
+        ("TOTAL", f"KES {quote.total:,.2f}", True),
     ]
     c.setFont("Helvetica", 9)
     for label, value, is_total in totals:
