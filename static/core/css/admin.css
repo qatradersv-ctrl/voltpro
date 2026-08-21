@@ -477,7 +477,7 @@
 }
 
 /* Inline form improvements */
-.inline-group{
+.js-inline-admin-formset.inline-group{
   margin-top: 28px;
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -486,7 +486,7 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.inline-group h2{
+.js-inline-admin-formset.inline-group h2{
   background: linear-gradient(135deg, var(--secondary) 0%, #1a2d4a 100%);
   color: #FFFFFF;
   padding: 16px 24px;
@@ -502,7 +502,7 @@
   gap: 12px;
 }
 
-.inline-group h2::after{
+.js-inline-admin-formset.inline-group h2::after{
   content: "";
   flex: 1;
   height: 1px;
@@ -513,12 +513,12 @@
   padding: 0;
 }
 
-.inline-group .tabular{
+.js-inline-admin-formset.inline-group .tabular{
   border: none;
   overflow-x: auto;
 }
 
-.inline-group .tabular table{
+.js-inline-admin-formset.inline-group .tabular table{
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
@@ -538,64 +538,64 @@
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
+/* Hide the original column */
+.inline-group .tabular thead th.original,
+.inline-group .tabular tbody td.original,
+.js-inline-admin-formset .tabular thead th.original,
+.js-inline-admin-formset .tabular tbody td.original{
+  display: none;
+}
+
 /* Center align quantity and delete headers */
-.inline-group .tabular thead th:nth-child(2),
-.inline-group .tabular thead th:nth-child(6),
-.inline-group .tabular thead th:last-child{
+.inline-group .tabular thead th:nth-child(3),
+.inline-group .tabular thead th:nth-child(7){
   text-align: center;
 }
 
 /* Right align price headers */
-.inline-group .tabular thead th:nth-child(4),
-.inline-group .tabular thead th:nth-child(5){
+.inline-group .tabular thead th:nth-child(5),
+.inline-group .tabular thead th:nth-child(6){
   text-align: right;
 }
 
 /* Column widths for Quote Line Items */
-.inline-group .tabular thead th:nth-child(1),
-.inline-group .tabular tbody td:nth-child(1){
+.inline-group .tabular thead th:nth-child(2),
+.inline-group .tabular tbody td:nth-child(2){
   width: 35%; /* Description - large flexible */
   min-width: 200px;
 }
 
-.inline-group .tabular thead th:nth-child(2),
-.inline-group .tabular tbody td:nth-child(2){
+.inline-group .tabular thead th:nth-child(3),
+.inline-group .tabular tbody td:nth-child(3){
   width: 10%; /* Quantity - small fixed */
   min-width: 80px;
   text-align: center;
 }
 
-.inline-group .tabular thead th:nth-child(3),
-.inline-group .tabular tbody td:nth-child(3){
+.inline-group .tabular thead th:nth-child(4),
+.inline-group .tabular tbody td:nth-child(4){
   width: 12%; /* Unit - small fixed */
   min-width: 100px;
 }
 
-.inline-group .tabular thead th:nth-child(4),
-.inline-group .tabular tbody td:nth-child(4){
-  width: 15%; /* Unit Price - medium fixed */
-  min-width: 120px;
-  text-align: right;
-}
-
 .inline-group .tabular thead th:nth-child(5),
 .inline-group .tabular tbody td:nth-child(5){
-  width: 15%; /* Line Total - medium fixed */
+  width: 15%; /* Unit Price - medium fixed */
   min-width: 120px;
   text-align: right;
 }
 
 .inline-group .tabular thead th:nth-child(6),
 .inline-group .tabular tbody td:nth-child(6){
-  width: 8%; /* Delete - small fixed */
-  min-width: 60px;
-  text-align: center;
+  width: 15%; /* Line Total - medium fixed */
+  min-width: 120px;
+  text-align: right;
 }
 
-.inline-group .tabular thead th:last-child,
-.inline-group .tabular tbody td:last-child{
-  width: 5%; /* Extra delete column */
-  min-width: 50px;
+.inline-group .tabular thead th:nth-child(7),
+.inline-group .tabular tbody td:nth-child(7){
+  width: 8%; /* Delete - small fixed */
+  min-width: 60px;
   text-align: center;
 }
 
@@ -620,11 +620,65 @@
   border-right: none;
 }
 
+/* Hide the original column cells */
+.inline-group .tabular tbody td.original,
+.js-inline-admin-formset .tabular tbody td.original{
+  display: none;
+}
+
+/* Field-specific styling */
+.inline-group .tabular tbody td.field-description input{
+  width: 100%;
+}
+
+.inline-group .tabular tbody td.field-quantity input{
+  width: 100%;
+  text-align: center;
+}
+
+.inline-group .tabular tbody td.field-unit input{
+  width: 100%;
+}
+
+.inline-group .tabular tbody td.field-unit_price input{
+  width: 100%;
+  text-align: right;
+}
+
+.inline-group .tabular tbody td.field-line_total_display p{
+  margin: 0;
+  font-weight: 700;
+  color: #374151;
+  font-size: 14px;
+  text-align: right;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+  border-radius: 6px;
+  border: 2px solid #E5E7EB;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+}
+
 .inline-group .tabular tbody tr:last-child td{
   border-bottom: none;
 }
 
-.inline-group .tabular tbody tr:hover{
+.inline-group .tabular tbody tr:hover,
+.js-inline-admin-formset .tabular tbody tr:hover{
+  background: #F9FAFB;
+}
+
+/* Dynamic row styling */
+.inline-group .tabular tbody tr.dynamic-line_items,
+.js-inline-admin-formset .tabular tbody tr.dynamic-line_items{
+  transition: background-color 0.2s ease;
+}
+
+.inline-group .tabular tbody tr.dynamic-line_items:hover,
+.js-inline-admin-formset .tabular tbody tr.dynamic-line_items:hover{
   background: #F9FAFB;
 }
 
@@ -645,15 +699,15 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
-/* Center alignment for quantity and unit */
-.inline-group .tabular tbody td:nth-child(2) input,
-.inline-group .tabular tbody td:nth-child(2) select{
+/* Center alignment for quantity */
+.inline-group .tabular tbody td:nth-child(3) input,
+.inline-group .tabular tbody td:nth-child(3) select{
   text-align: center;
 }
 
 /* Right alignment for price fields */
-.inline-group .tabular tbody td:nth-child(4) input,
-.inline-group .tabular tbody td:nth-child(5) input{
+.inline-group .tabular tbody td:nth-child(5) input,
+.inline-group .tabular tbody td:nth-child(6) input{
   text-align: right;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   font-weight: 500;
@@ -687,7 +741,8 @@
 }
 
 /* Remove button styling for original inline */
-.inline-group .tabular tbody td .delete{
+.inline-group .tabular tbody td .delete,
+.js-inline-admin-formset .tabular tbody td .delete{
   color: #EF4444;
   text-decoration: none;
   padding: 8px;
@@ -703,7 +758,8 @@
   border: 1px solid #FECACA;
 }
 
-.inline-group .tabular tbody td .delete:hover{
+.inline-group .tabular tbody td .delete:hover,
+.js-inline-admin-formset .tabular tbody td .delete:hover{
   background: #DC2626;
   color: #FFFFFF;
   border-color: #DC2626;
@@ -720,17 +776,49 @@
 }
 
 /* Make the table container scrollable on small screens */
-.inline-group .tabular{
+.inline-group .tabular,
+.js-inline-admin-formset .tabular{
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-.inline-group .tabular table{
+.inline-group .tabular table,
+.js-inline-admin-formset .tabular table{
   min-width: 800px;
 }
 
+/* Fieldset styling for inline forms */
+.inline-group fieldset.module,
+.js-inline-admin-formset fieldset.module{
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.inline-group fieldset.module h2,
+.js-inline-admin-formset fieldset.module h2{
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Delete column styling */
+.inline-group .tabular tbody td.delete,
+.js-inline-admin-formset .tabular tbody td.delete{
+  text-align: center;
+  vertical-align: middle;
+}
+
+.inline-group .tabular tbody td.delete div,
+.js-inline-admin-formset .tabular tbody td.delete div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Remove button styling */
-.inline-group .tabular tbody td .inline-deletelink{
+.inline-group .tabular tbody td .inline-deletelink,
+.js-inline-admin-formset .tabular tbody td .inline-deletelink{
   color: #EF4444;
   text-decoration: none;
   padding: 8px;
@@ -746,7 +834,8 @@
   border: 1px solid #FECACA;
 }
 
-.inline-group .tabular tbody td .inline-deletelink:hover{
+.inline-group .tabular tbody td .inline-deletelink:hover,
+.js-inline-admin-formset .tabular tbody td .inline-deletelink:hover{
   background: #DC2626;
   color: #FFFFFF;
   border-color: #DC2626;
@@ -770,7 +859,7 @@
 }
 
 /* Center readonly for quantity */
-.inline-group .tabular tbody td:nth-child(2) .readonly{
+.inline-group .tabular tbody td:nth-child(3) .readonly{
   justify-content: center;
 }
 
@@ -792,16 +881,18 @@
 
 
 /* Add button styling */
-.inline-group .add-row{
+.inline-group .add-row,
+.js-inline-admin-formset .add-row{
   padding: 20px 24px;
   background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
   border-top: 2px solid #E5E7EB;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
-.inline-group .add-row a{
+.inline-group .add-row a,
+.js-inline-admin-formset .add-row a{
   background: linear-gradient(135deg, var(--accent) 0%, #FFB84D 100%);
   color: var(--secondary);
   border: none;
@@ -821,14 +912,16 @@
   gap: 8px;
 }
 
-.inline-group .add-row a::before{
+.inline-group .add-row a::before,
+.js-inline-admin-formset .add-row a::before{
   content: "+";
   font-size: 18px;
   font-weight: 700;
   line-height: 1;
 }
 
-.inline-group .add-row a:hover{
+.inline-group .add-row a:hover,
+.js-inline-admin-formset .add-row a:hover{
   background: linear-gradient(135deg, #FFB84D 0%, #FFC857 100%);
   color: var(--secondary);
   transform: translateY(-2px);
