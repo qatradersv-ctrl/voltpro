@@ -4,6 +4,8 @@ from django.core.mail import send_mail
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem
 from .pdf import build_quote_pdf
@@ -168,6 +170,30 @@ def quote_detail(request, public_id):
         return redirect("core:quote_detail", public_id=quote.public_id)
 
     return render(request, "core/quote_detail.html", {"quote": quote})
+
+
+@csrf_exempt
+def quote_toggle_tax(request, public_id):
+    """AJAX endpoint to toggle tax application for a quote."""
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Method not allowed"})
+    
+    quote = get_object_or_404(Quote, public_id=public_id)
+    
+    try:
+        data = json.loads(request.body)
+        apply_tax = data.get('apply_tax', True)
+        quote.apply_tax = apply_tax
+        quote.save(update_fields=["apply_tax", "updated_at"])
+        
+        return JsonResponse({
+            "success": True,
+            "apply_tax": quote.apply_tax,
+            "tax_amount": str(quote.tax_amount),
+            "total": str(quote.total)
+        })
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
 
 
 def quote_pdf(request, public_id):

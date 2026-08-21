@@ -74,6 +74,17 @@
       </div>
     </div>
 
+    <div class="quote-tax-toggle mb-3">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="applyTaxCheckbox" 
+               {% if quote.apply_tax %}checked{% endif %} 
+               onchange="toggleTax()">
+        <label class="form-check-label" for="applyTaxCheckbox">
+          Apply VAT ({{ quote.tax_rate }}%) to this quote
+        </label>
+      </div>
+    </div>
+
     <div class="quote-totals">
       <div class="d-flex justify-content-between mb-2">
         <span class="text-muted">Subtotal</span>
@@ -159,6 +170,52 @@ function shareQuote() {
     'Best regards,\nVoltPro Electrodata Solutions'
   );
   window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+function toggleTax() {
+  const checkbox = document.getElementById('applyTaxCheckbox');
+  const applyTax = checkbox.checked;
+  
+  // Send AJAX request to update the quote
+  fetch("{% url 'core:quote_toggle_tax' quote.public_id %}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: JSON.stringify({ apply_tax: applyTax })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Reload the page to show updated totals
+      location.reload();
+    } else {
+      console.error('Failed to update tax setting');
+      // Revert checkbox on failure
+      checkbox.checked = !applyTax;
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    // Revert checkbox on error
+    checkbox.checked = !applyTax;
+  });
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
 }
 </script>
 {% endblock %}
