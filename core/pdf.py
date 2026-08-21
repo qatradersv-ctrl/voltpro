@@ -182,9 +182,9 @@ def build_quote_pdf(quote):
     # ---------------- Line items table ----------------
     col_num_x = x_left
     col_desc_x = x_left + 0.3 * inch
-    col_unit_x = x_left + 3.0 * inch
-    col_qty_x = x_left + 4.2 * inch
-    col_tax_x = x_left + 4.9 * inch
+    col_unit_x = x_left + 3.5 * inch
+    col_qty_x = x_left + 4.6 * inch
+    col_tax_x = x_left + 5.2 * inch
     col_amt_x = x_right
 
     header_h = 14
@@ -201,7 +201,7 @@ def build_quote_pdf(quote):
     y -= header_h
 
     items = list(quote.line_items.all())
-    row_h = 14
+    row_h = 20
     min_rows = max(len(items), 8)
     c.setFont("Helvetica", 8.5)
     for i in range(min_rows):
@@ -211,11 +211,11 @@ def build_quote_pdf(quote):
         if i < len(items):
             item = items[i]
             c.setFillColor(colors.black)
-            c.drawCentredString(col_num_x + 0.15 * inch, y - 10, str(i + 1))
+            c.drawCentredString(col_num_x + 0.15 * inch, y - 12, str(i + 1))
             
             # Wrap description text if too long
             from reportlab.pdfbase.pdfmetrics import stringWidth
-            desc_max_width = col_unit_x - col_desc_x - 10
+            desc_max_width = col_unit_x - col_desc_x - 15
             words = item.description.split()
             lines = []
             current_line = ""
@@ -231,18 +231,18 @@ def build_quote_pdf(quote):
                 lines.append(current_line)
             
             # Draw description lines (max 2 lines to fit in row)
-            desc_y = y - 10
+            desc_y = y - 12
             for line_idx, line in enumerate(lines[:2]):
                 c.drawString(col_desc_x + 4, desc_y, line)
-                desc_y -= 10
+                desc_y -= 9
             
-            c.drawRightString(col_unit_x, y - 10, f"KES {item.unit_price:,.2f}")
-            c.drawCentredString(col_qty_x, y - 10, f"{item.quantity:g}")
-            c.drawCentredString(col_tax_x, y - 10, "No")
-            c.drawRightString(col_amt_x, y - 10, f"KES {item.line_total:,.2f}")
+            c.drawRightString(col_unit_x, y - 12, f"KES {item.unit_price:,.2f}")
+            c.drawCentredString(col_qty_x, y - 12, f"{item.quantity:g}")
+            c.drawCentredString(col_tax_x, y - 12, "No")
+            c.drawRightString(col_amt_x, y - 12, f"KES {item.line_total:,.2f}")
         else:
             c.setFillColor(colors.black)
-            c.drawRightString(col_amt_x, y - 10, "-")
+            c.drawRightString(col_amt_x, y - 12, "-")
         y -= row_h
 
     c.setStrokeColor(LINE_GREY)
