@@ -276,6 +276,9 @@ class QuoteLineItemInline(admin.TabularInline):
     verbose_name = "Line Item"
     verbose_name_plural = "Line Items"
     
+    class Media:
+        js = ('core/js/line_numbering.js',)
+    
     @admin.display(description="Line Total")
     def line_total_display(self, obj):
         if obj.pk:
