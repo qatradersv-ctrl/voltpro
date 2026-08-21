@@ -478,24 +478,35 @@
 
 /* Inline form improvements */
 .inline-group{
-  margin-top: 24px;
+  margin-top: 28px;
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 12px;
   background: #FFFFFF;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .inline-group h2{
   background: linear-gradient(135deg, var(--secondary) 0%, #1a2d4a 100%);
   color: #FFFFFF;
-  padding: 14px 20px;
+  padding: 16px 24px;
   margin: 0;
-  border-radius: 8px 8px 0 0;
+  border-radius: 12px 12px 0 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.inline-group h2::after{
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
 }
 
 .inline-related{
@@ -514,12 +525,12 @@
 }
 
 .inline-group .tabular thead th{
-  background: #F9FAFB;
-  color: #6B7280;
-  border-bottom: 2px solid #E5E7EB;
+  background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+  color: #374151;
+  border-bottom: 2px solid var(--accent);
   border-right: 1px solid #E5E7EB;
-  padding: 12px 12px;
-  font-weight: 600;
+  padding: 14px 12px;
+  font-weight: 700;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -527,35 +538,65 @@
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
+/* Center align quantity and delete headers */
+.inline-group .tabular thead th:nth-child(2),
+.inline-group .tabular thead th:nth-child(6),
+.inline-group .tabular thead th:last-child{
+  text-align: center;
+}
+
+/* Right align price headers */
+.inline-group .tabular thead th:nth-child(4),
+.inline-group .tabular thead th:nth-child(5){
+  text-align: right;
+}
+
 /* Column widths for Quote Line Items */
 .inline-group .tabular thead th:nth-child(1),
 .inline-group .tabular tbody td:nth-child(1){
-  width: 40%; /* Description - large flexible */
+  width: 35%; /* Description - large flexible */
+  min-width: 200px;
 }
 
 .inline-group .tabular thead th:nth-child(2),
 .inline-group .tabular tbody td:nth-child(2){
   width: 10%; /* Quantity - small fixed */
+  min-width: 80px;
+  text-align: center;
 }
 
 .inline-group .tabular thead th:nth-child(3),
 .inline-group .tabular tbody td:nth-child(3){
-  width: 10%; /* Unit - small fixed */
+  width: 12%; /* Unit - small fixed */
+  min-width: 100px;
 }
 
 .inline-group .tabular thead th:nth-child(4),
 .inline-group .tabular tbody td:nth-child(4){
   width: 15%; /* Unit Price - medium fixed */
+  min-width: 120px;
+  text-align: right;
 }
 
 .inline-group .tabular thead th:nth-child(5),
 .inline-group .tabular tbody td:nth-child(5){
   width: 15%; /* Line Total - medium fixed */
+  min-width: 120px;
+  text-align: right;
 }
 
 .inline-group .tabular thead th:nth-child(6),
 .inline-group .tabular tbody td:nth-child(6){
-  width: 10%; /* Delete - small fixed */
+  width: 8%; /* Delete - small fixed */
+  min-width: 60px;
+  text-align: center;
+}
+
+.inline-group .tabular thead th:last-child,
+.inline-group .tabular tbody td:last-child{
+  width: 5%; /* Extra delete column */
+  min-width: 50px;
+  text-align: center;
 }
 
 .inline-group .tabular thead th:last-child{
@@ -565,9 +606,14 @@
 .inline-group .tabular tbody td{
   border-bottom: 1px solid #E5E7EB;
   border-right: 1px solid #E5E7EB;
-  padding: 12px 10px;
+  padding: 14px 12px;
   vertical-align: middle;
   background: #FFFFFF;
+  transition: background-color 0.2s ease;
+}
+
+.inline-group .tabular tbody td:hover{
+  background: #F9FAFB;
 }
 
 .inline-group .tabular tbody td:last-child{
@@ -599,6 +645,20 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
+/* Center alignment for quantity and unit */
+.inline-group .tabular tbody td:nth-child(2) input,
+.inline-group .tabular tbody td:nth-child(2) select{
+  text-align: center;
+}
+
+/* Right alignment for price fields */
+.inline-group .tabular tbody td:nth-child(4) input,
+.inline-group .tabular tbody td:nth-child(5) input{
+  text-align: right;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 500;
+}
+
 .inline-group .tabular tbody td input::placeholder{
   color: var(--field-placeholder);
   opacity: 0.8;
@@ -621,10 +681,82 @@
   resize: vertical;
 }
 
+/* Empty row styling */
+.inline-group .tabular tbody tr.empty-form{
+  display: none;
+}
+
+/* Remove button styling for original inline */
+.inline-group .tabular tbody td .delete{
+  color: #EF4444;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+}
+
+.inline-group .tabular tbody td .delete:hover{
+  background: #DC2626;
+  color: #FFFFFF;
+  border-color: #DC2626;
+  transform: scale(1.1);
+}
+
+/* Row styling for better visual separation */
+.inline-group .tabular tbody tr:not(:last-child) td{
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.inline-group .tabular tbody tr:last-child td{
+  border-bottom: none;
+}
+
+/* Make the table container scrollable on small screens */
+.inline-group .tabular{
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.inline-group .tabular table{
+  min-width: 800px;
+}
+
+/* Remove button styling */
+.inline-group .tabular tbody td .inline-deletelink{
+  color: #EF4444;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+}
+
+.inline-group .tabular tbody td .inline-deletelink:hover{
+  background: #DC2626;
+  color: #FFFFFF;
+  border-color: #DC2626;
+  transform: scale(1.1);
+}
+
 .inline-group .tabular tbody td .readonly{
   background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
-  color: #6B7280;
-  font-weight: 600;
+  color: #374151;
+  font-weight: 700;
   padding: 10px 12px;
   border-radius: 6px;
   border: 2px solid #E5E7EB;
@@ -632,14 +764,21 @@
   height: 42px;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+  font-size: 14px;
+}
+
+/* Center readonly for quantity */
+.inline-group .tabular tbody td:nth-child(2) .readonly{
+  justify-content: center;
 }
 
 /* Readonly field enhancements for main form */
 .form-row .readonly{
   background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
-  color: #6B7280;
-  font-weight: 600;
+  color: #374151;
+  font-weight: 700;
   padding: 12px 16px;
   border-radius: 8px;
   border: 2px solid #E5E7EB;
@@ -650,54 +789,53 @@
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
 }
 
-/* Delete button styling */
-.inline-group .tabular tbody td .delete{
-  color: #9CA3AF;
-  text-decoration: none;
-  padding: 6px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  font-size: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.inline-group .tabular tbody td .delete:hover{
-  color: #EF4444;
-  background: #FEF2F2;
-}
 
 /* Add button styling */
 .inline-group .add-row{
-  padding: 16px 20px;
+  padding: 20px 24px;
   background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
   border-top: 2px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .inline-group .add-row a{
-  background: #FFFFFF;
-  color: var(--accent);
-  border: 2px solid var(--accent);
-  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--accent) 0%, #FFB84D 100%);
+  color: var(--secondary);
+  border: none;
+  padding: 12px 24px;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 13px;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 6px rgba(245,166,35,0.2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  gap: 8px;
+}
+
+.inline-group .add-row a::before{
+  content: "+";
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .inline-group .add-row a:hover{
-  background: var(--accent);
+  background: linear-gradient(135deg, #FFB84D 0%, #FFC857 100%);
   color: var(--secondary);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(245,166,35,0.3);
+  box-shadow: 0 6px 12px rgba(245,166,35,0.4);
 }
+
+
 
 /* Enhanced styling for Django admin change form */
 .change-form .field-box{
