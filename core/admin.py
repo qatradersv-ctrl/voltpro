@@ -276,9 +276,6 @@ class QuoteLineItemInline(admin.TabularInline):
     verbose_name = "Line Item"
     verbose_name_plural = "Line Items"
     
-    class Media:
-        js = ('core/js/line_numbering.js',)
-    
     @admin.display(description="Line Total")
     def line_total_display(self, obj):
         if obj.pk:
@@ -303,28 +300,22 @@ class QuoteAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Client Information", {
             "fields": ("client_name", "client_phone", "client_email", "client_location"),
-            "description": "Enter the client's contact information for this quote. All fields are required unless otherwise noted.",
-            "classes": ("client-section",),
         }),
         ("Service & Status", {
             "fields": ("service", "request", "status", "issue_date", "valid_until"),
-            "description": "Select the service, quote status, and validity period for this quote.",
-            "classes": ("collapse", "service-section",),
+            "classes": ("collapse",),
         }),
         ("Quote Details", {
             "fields": ("tax_rate", "notes", "terms"),
-            "description": "Configure tax rate, scope notes, and payment terms. Line items can be added in the section below.",
-            "classes": ("collapse", "details-section",),
+            "classes": ("collapse",),
         }),
         ("Totals & Sharing", {
             "fields": ("totals_display", "client_link_display"),
-            "description": "View calculated totals and client sharing links.",
-            "classes": ("collapse", "totals-section",),
+            "classes": ("collapse",),
         }),
         ("System Info", {
             "fields": ("quote_number",),
-            "description": "System-generated quote number and reference information.",
-            "classes": ("collapse", "system-section",),
+            "classes": ("collapse",),
         }),
     )
 
