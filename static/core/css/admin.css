@@ -629,37 +629,54 @@
 /* Field-specific styling */
 .inline-group .tabular tbody td.field-description input{
   width: 100%;
+  font-weight: 500;
+}
+
+.inline-group .tabular tbody td.field-description input:focus{
+  font-weight: 600;
 }
 
 .inline-group .tabular tbody td.field-quantity input{
   width: 100%;
   text-align: center;
+  font-weight: 600;
 }
 
 .inline-group .tabular tbody td.field-unit input{
   width: 100%;
+  text-transform: lowercase;
+  font-weight: 500;
 }
 
 .inline-group .tabular tbody td.field-unit_price input{
   width: 100%;
   text-align: right;
+  font-weight: 600;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 .inline-group .tabular tbody td.field-line_total_display p{
   margin: 0;
   font-weight: 700;
-  color: #374151;
+  color: #1C8A5F;
   font-size: 14px;
   text-align: right;
   padding: 10px 12px;
-  background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+  background: linear-gradient(135deg, #E4F6EE 0%, #D1F2E3 100%);
   border-radius: 6px;
-  border: 2px solid #E5E7EB;
+  border: 2px solid #4FBF8B;
   height: 42px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 3px rgba(28, 138, 95, 0.1);
+  transition: all 0.3s ease;
+}
+
+.inline-group .tabular tbody td.field-line_total_display p:hover{
+  background: linear-gradient(135deg, #D1F2E3 0%, #B8E6CD 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(28, 138, 95, 0.15);
 }
 
 .inline-group .tabular tbody tr:last-child td{
@@ -674,12 +691,71 @@
 /* Dynamic row styling */
 .inline-group .tabular tbody tr.dynamic-line_items,
 .js-inline-admin-formset .tabular tbody tr.dynamic-line_items{
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .inline-group .tabular tbody tr.dynamic-line_items:hover,
 .js-inline-admin-formset .tabular tbody tr.dynamic-line_items:hover{
   background: #F9FAFB;
+  transform: translateX(4px);
+}
+
+/* Required field indicators */
+.inline-group .tabular thead th.required::after{
+  content: " *";
+  color: #E0563F;
+  font-weight: 700;
+}
+
+/* Help tooltip styling */
+.inline-group .tabular thead th .help-tooltip{
+  margin-left: 6px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  cursor: help;
+}
+
+.inline-group .tabular thead th .help-tooltip:hover{
+  opacity: 1;
+}
+
+/* Input field focus enhancements */
+.inline-group .tabular tbody td input:focus{
+  transform: scale(1.02);
+  box-shadow: 0 0 0 3px rgba(245,166,35,0.15), 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Empty form styling */
+.inline-group .tabular tbody tr.empty-form{
+  display: none;
+}
+
+/* Remove animation on delete */
+.inline-group .tabular tbody tr.deleting{
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
 }
 
 .inline-group .tabular tbody td input,
