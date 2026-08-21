@@ -300,6 +300,7 @@ class QuoteAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Client Information", {
             "fields": ("client_name", "client_phone", "client_email", "client_location"),
+            "description": "Enter the client's contact information for this quote. All fields are required unless otherwise noted.",
         }),
         ("Service & Status", {
             "fields": ("service", "request", "status", "issue_date", "valid_until"),
