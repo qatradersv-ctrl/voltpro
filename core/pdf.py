@@ -307,6 +307,7 @@ def build_quote_pdf(quote):
 
     c.showPage()
     c.save()
+    buf.seek(0)
     return buf
 
 
