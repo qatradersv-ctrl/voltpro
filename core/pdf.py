@@ -307,7 +307,7 @@ def build_quote_pdf(quote):
 
     c.showPage()
     c.save()
-    return buffer
+    return buf
 
 
 def build_sales_report(queryset):
