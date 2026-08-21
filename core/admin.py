@@ -17,26 +17,6 @@ admin.site.site_header = "VoltPro Electrodata Solutions"
 admin.site.site_title = "VoltPro Admin"
 admin.site.index_title = "Operations"
 
-_default_index = admin.site.index
-
-
-def _index_with_summary(request, extra_context=None):
-    extra_context = extra_context or {}
-    today = timezone.localdate()
-    extra_context["vp_unhandled_leads"] = QuoteRequest.objects.filter(handled=False).count()
-    extra_context["vp_pending_quotes"] = Quote.objects.filter(
-        status__in=[QuoteStatus.DRAFT, QuoteStatus.SENT]
-    ).count()
-    accepted_this_month = Quote.objects.filter(
-        status=QuoteStatus.ACCEPTED, issue_date__year=today.year, issue_date__month=today.month,
-    )
-    extra_context["vp_accepted_count"] = accepted_this_month.count()
-    extra_context["vp_accepted_total"] = sum((q.total for q in accepted_this_month), 0)
-    return _default_index(request, extra_context)
-
-
-admin.site.index = _index_with_summary
-
 
 def render_badge(text, variant):
     return format_html('<span class="vp-badge vp-badge-{}">{}</span>', variant, text)
@@ -289,9 +269,12 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 
 class QuoteLineItemInline(admin.TabularInline):
     model = QuoteLineItem
-    extra = 3
+    extra = 1
     fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
+    min_num = 1
+    verbose_name = "Line Item"
+    verbose_name_plural = "Line Items"
     
     @admin.display(description="Line Total")
     def line_total_display(self, obj):
@@ -317,24 +300,23 @@ class QuoteAdmin(admin.ModelAdmin):
     fieldsets = (
         ("Client Information", {
             "fields": ("client_name", "client_phone", "client_email", "client_location"),
-            "classes": ("vp-client-section",),
         }),
         ("Service & Status", {
             "fields": ("service", "request", "status", "issue_date", "valid_until"),
-            "classes": ("vp-service-section",),
+            "classes": ("collapse",),
         }),
         ("Quote Details", {
             "fields": ("tax_rate", "notes", "terms"),
             "description": "Configure tax rate, scope notes, and payment terms. Line items can be added in the section below.",
-            "classes": ("vp-details-section",),
+            "classes": ("collapse",),
         }),
         ("Totals & Sharing", {
             "fields": ("totals_display", "client_link_display"),
-            "classes": ("collapse", "vp-totals-section",),
+            "classes": ("collapse",),
         }),
         ("System Info", {
             "fields": ("quote_number",),
-            "classes": ("collapse", "vp-system-section",),
+            "classes": ("collapse",),
         }),
     )
 
