@@ -182,9 +182,9 @@ def build_quote_pdf(quote):
     # ---------------- Line items table ----------------
     col_num_x = x_left
     col_desc_x = x_left + 0.3 * inch
-    col_unit_x = x_left + 3.4 * inch
-    col_qty_x = x_left + 4.5 * inch
-    col_tax_x = x_left + 5.15 * inch
+    col_unit_x = x_left + 3.0 * inch
+    col_qty_x = x_left + 4.2 * inch
+    col_tax_x = x_left + 4.9 * inch
     col_amt_x = x_right
 
     header_h = 14
@@ -212,7 +212,7 @@ def build_quote_pdf(quote):
             item = items[i]
             c.setFillColor(colors.black)
             c.drawCentredString(col_num_x + 0.15 * inch, y - 10, str(i + 1))
-            c.drawString(col_desc_x + 4, y - 10, item.description[:100])
+            c.drawString(col_desc_x + 4, y - 10, item.description[:60])
             c.drawRightString(col_unit_x, y - 10, f"KES {item.unit_price:,.2f}")
             c.drawCentredString(col_qty_x, y - 10, f"{item.quantity:g}")
             c.drawCentredString(col_tax_x, y - 10, "No")
