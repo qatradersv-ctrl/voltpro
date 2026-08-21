@@ -558,46 +558,46 @@
   text-align: right;
 }
 
-/* Column widths for Quote Line Items */
-.inline-group .tabular thead th:nth-child(2),
+/* Column widths for Quote Line Items - Replaced by Tailwind CSS in custom template */
+/* .inline-group .tabular thead th:nth-child(2),
 .inline-group .tabular tbody td:nth-child(2){
-  width: 35%; /* Description - large flexible */
-  min-width: 200px;
+  width: 35%; *//* Description - large flexible */
+/*  min-width: 200px;
 }
 
 .inline-group .tabular thead th:nth-child(3),
 .inline-group .tabular tbody td:nth-child(3){
-  width: 10%; /* Quantity - small fixed */
-  min-width: 80px;
+  width: 10%; *//* Quantity - small fixed */
+/*  min-width: 80px;
   text-align: center;
 }
 
 .inline-group .tabular thead th:nth-child(4),
 .inline-group .tabular tbody td:nth-child(4){
-  width: 12%; /* Unit - small fixed */
-  min-width: 100px;
+  width: 12%; *//* Unit - small fixed */
+/*  min-width: 100px;
 }
 
 .inline-group .tabular thead th:nth-child(5),
 .inline-group .tabular tbody td:nth-child(5){
-  width: 15%; /* Unit Price - medium fixed */
-  min-width: 120px;
+  width: 15%; *//* Unit Price - medium fixed */
+/*  min-width: 120px;
   text-align: right;
 }
 
 .inline-group .tabular thead th:nth-child(6),
 .inline-group .tabular tbody td:nth-child(6){
-  width: 15%; /* Line Total - medium fixed */
-  min-width: 120px;
+  width: 15%; *//* Line Total - medium fixed */
+/*  min-width: 120px;
   text-align: right;
 }
 
 .inline-group .tabular thead th:nth-child(7),
 .inline-group .tabular tbody td:nth-child(7){
-  width: 8%; /* Delete - small fixed */
-  min-width: 60px;
+  width: 8%; *//* Delete - small fixed */
+/*  min-width: 60px;
   text-align: center;
-}
+} */
 
 .inline-group .tabular thead th:last-child{
   border-right: none;
@@ -626,8 +626,8 @@
   display: none;
 }
 
-/* Field-specific styling */
-.inline-group .tabular tbody td.field-description input{
+/* Field-specific styling - Replaced by Tailwind CSS in custom template */
+/* .inline-group .tabular tbody td.field-description input{
   width: 100%;
   font-weight: 500;
 }
@@ -677,7 +677,7 @@
   background: linear-gradient(135deg, #D1F2E3 0%, #B8E6CD 100%);
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(28, 138, 95, 0.15);
-}
+} */
 
 .inline-group .tabular tbody tr:last-child td{
   border-bottom: none;
