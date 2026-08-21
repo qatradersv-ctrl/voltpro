@@ -9,6 +9,10 @@
             var thead = table.find('thead tr');
             var tbody = table.find('tbody');
             
+            // Hide the original column (Django's hidden ID column)
+            thead.find('th.original').hide();
+            tbody.find('td.original').hide();
+            
             // Add header cell for line numbers if it doesn't exist
             if (!thead.find('th.line-number-header').length) {
                 thead.prepend('<th class="line-number-header" style="width: 50px; text-align: center;">#</th>');
