@@ -301,23 +301,27 @@ class QuoteAdmin(admin.ModelAdmin):
         ("Client Information", {
             "fields": ("client_name", "client_phone", "client_email", "client_location"),
             "description": "Enter the client's contact information for this quote. All fields are required unless otherwise noted.",
+            "classes": ("client-section",),
         }),
         ("Service & Status", {
             "fields": ("service", "request", "status", "issue_date", "valid_until"),
-            "classes": ("collapse",),
+            "description": "Select the service, quote status, and validity period for this quote.",
+            "classes": ("collapse", "service-section",),
         }),
         ("Quote Details", {
             "fields": ("tax_rate", "notes", "terms"),
             "description": "Configure tax rate, scope notes, and payment terms. Line items can be added in the section below.",
-            "classes": ("collapse",),
+            "classes": ("collapse", "details-section",),
         }),
         ("Totals & Sharing", {
             "fields": ("totals_display", "client_link_display"),
-            "classes": ("collapse",),
+            "description": "View calculated totals and client sharing links.",
+            "classes": ("collapse", "totals-section",),
         }),
         ("System Info", {
             "fields": ("quote_number",),
-            "classes": ("collapse",),
+            "description": "System-generated quote number and reference information.",
+            "classes": ("collapse", "system-section",),
         }),
     )
 
