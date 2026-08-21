@@ -141,10 +141,24 @@ class Quote(models.Model):
     )
     service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
 
-    client_name = models.CharField(max_length=120)
-    client_phone = models.CharField(max_length=30, blank=True)
-    client_email = models.EmailField(blank=True)
-    client_location = models.CharField(max_length=150, blank=True)
+    client_name = models.CharField(
+        max_length=120, 
+        help_text="Full name of the client or organization contact person"
+    )
+    client_phone = models.CharField(
+        max_length=30, 
+        blank=True,
+        help_text="Client phone number for communication"
+    )
+    client_email = models.EmailField(
+        blank=True,
+        help_text="Client email address for sending quote and updates"
+    )
+    client_location = models.CharField(
+        max_length=150, 
+        blank=True,
+        help_text="Physical address or location where work will be performed"
+    )
 
     status = models.CharField(max_length=10, choices=QuoteStatus.choices, default=QuoteStatus.DRAFT)
     issue_date = models.DateField(default=timezone.localdate)
@@ -152,10 +166,11 @@ class Quote(models.Model):
 
     tax_rate = models.DecimalField(
         max_digits=5, decimal_places=2, default=VAT_RATE_DEFAULT,
-        help_text="VAT %% applied to the subtotal. Set to 0 for a tax-exempt quote.",
+        help_text="VAT percentage applied to the subtotal. Set to 0 for a tax-exempt quote.",
     )
     notes = models.TextField(
-        blank=True, help_text="Scope notes shown on the quote, above the line items."
+        blank=True, 
+        help_text="Scope notes shown on the quote, above the line items. Describe the work scope, inclusions, and exclusions."
     )
     terms = models.TextField(
         blank=True,
@@ -164,6 +179,7 @@ class Quote(models.Model):
             "from issue date unless stated otherwise. Materials sourced to spec unless "
             "an alternative is agreed in writing."
         ),
+        help_text="Payment terms, validity period, and other conditions shown on the quote"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

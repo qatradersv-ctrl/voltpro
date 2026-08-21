@@ -315,16 +315,26 @@ class QuoteAdmin(admin.ModelAdmin):
     actions = ["export_csv", "send_quote", "generate_sales_report"]
     
     fieldsets = (
-        (None, {
-            "fields": ("client_name", "client_phone", "client_email", "client_location", "service", "status", "issue_date", "valid_until", "tax_rate", "notes", "terms"),
+        ("Client Information", {
+            "fields": ("client_name", "client_phone", "client_email", "client_location"),
+            "classes": ("vp-client-section",),
+        }),
+        ("Service & Status", {
+            "fields": ("service", "request", "status", "issue_date", "valid_until"),
+            "classes": ("vp-service-section",),
+        }),
+        ("Quote Details", {
+            "fields": ("tax_rate", "notes", "terms"),
+            "description": "Configure tax rate, scope notes, and payment terms. Line items can be added in the section below.",
+            "classes": ("vp-details-section",),
         }),
         ("Totals & Sharing", {
             "fields": ("totals_display", "client_link_display"),
-            "classes": ("collapse",),
+            "classes": ("collapse", "vp-totals-section",),
         }),
         ("System Info", {
             "fields": ("quote_number",),
-            "classes": ("collapse",),
+            "classes": ("collapse", "vp-system-section",),
         }),
     )
 
