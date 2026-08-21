@@ -215,7 +215,7 @@ def build_quote_pdf(quote):
             
             # Wrap description text if too long
             from reportlab.pdfbase.pdfmetrics import stringWidth
-            desc_max_width = col_unit_x - col_desc_x - 25
+            desc_max_width = col_unit_x - col_desc_x - 30
             words = item.description.split()
             lines = []
             current_line = ""
