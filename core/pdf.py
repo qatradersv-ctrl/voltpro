@@ -215,7 +215,7 @@ def build_quote_pdf(quote):
             c.drawString(col_desc_x + 4, y - 10, item.description[:100])
             c.drawRightString(col_unit_x, y - 10, f"KES {item.unit_price:,.2f}")
             c.drawCentredString(col_qty_x, y - 10, f"{item.quantity:g}")
-            c.drawCentredString(col_tax_x, y - 10, "Yes" if item.taxable else "No")
+            c.drawCentredString(col_tax_x, y - 10, "No")
             c.drawRightString(col_amt_x, y - 10, f"KES {item.line_total:,.2f}")
         else:
             c.setFillColor(colors.black)
@@ -236,7 +236,7 @@ def build_quote_pdf(quote):
     # Only show tax-related lines if tax_rate > 0
     if quote.tax_rate > 0:
         totals.extend([
-            ("Taxable", f"KES {quote.taxable_subtotal:,.2f}", False),
+            ("Taxable", f"KES {quote.subtotal:,.2f}", False),
             (f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%", False),
             ("Tax due", f"KES {quote.tax_amount:,.2f}", False),
         ])
