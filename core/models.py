@@ -164,6 +164,10 @@ class Quote(models.Model):
     issue_date = models.DateField(default=timezone.localdate)
     valid_until = models.DateField(blank=True, null=True)
 
+    tax_rate = models.DecimalField(
+        max_digits=5, decimal_places=2, default=VAT_RATE_DEFAULT,
+        help_text="VAT percentage applied to the subtotal. Set to 0 for a tax-exempt quote.",
+    )
     notes = models.TextField(
         blank=True, 
         help_text="Scope notes shown on the quote, above the line items. Describe the work scope, inclusions, and exclusions."
@@ -202,12 +206,8 @@ class Quote(models.Model):
         return sum((item.line_total for item in self.line_items.all()), Decimal("0.00"))
 
     @property
-    def taxable_subtotal(self):
-        return sum((item.line_total for item in self.line_items.filter(taxable=True)), Decimal("0.00"))
-
-    @property
     def tax_amount(self):
-        return (self.taxable_subtotal * Decimal("16") / Decimal("100")).quantize(Decimal("0.01"))
+        return (self.subtotal * self.tax_rate / Decimal("100")).quantize(Decimal("0.01"))
 
     @property
     def total(self):
@@ -260,7 +260,6 @@ class QuoteLineItem(models.Model):
         help_text="Price per unit in KES"
     )
     order = models.PositiveIntegerField(default=0, help_text="Sort order for line items")
-    taxable = models.BooleanField(default=True, help_text="Whether this item is subject to 16% VAT")
 
     class Meta:
         ordering = ["order", "id"]

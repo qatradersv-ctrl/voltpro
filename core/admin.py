@@ -270,7 +270,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 class QuoteLineItemInline(admin.TabularInline):
     model = QuoteLineItem
     extra = 1
-    fields = ("description", "quantity", "unit", "unit_price", "taxable", "line_total_display")
+    fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
     min_num = 1
     verbose_name = "Line Item"
@@ -309,7 +309,7 @@ class QuoteAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         ("Quote Details", {
-            "fields": ("notes", "terms"),
+            "fields": ("tax_rate", "notes", "terms"),
             "classes": ("collapse",),
         }),
         ("Totals & Sharing", {
@@ -335,9 +335,9 @@ class QuoteAdmin(admin.ModelAdmin):
         if not obj.pk:
             return "Save the quote and add line items to see totals."
         return format_html(
-            "Subtotal: <b>KES {:,.2f}</b> &nbsp;|&nbsp; VAT (16%): <b>KES {:,.2f}</b> "
+            "Subtotal: <b>KES {:,.2f}</b> &nbsp;|&nbsp; VAT ({}%): <b>KES {:,.2f}</b> "
             "&nbsp;|&nbsp; Total: <b>KES {:,.2f}</b>",
-            obj.subtotal, obj.tax_amount, obj.total,
+            obj.subtotal, obj.tax_rate, obj.tax_amount, obj.total,
         )
 
     @admin.display(description="Client link")
