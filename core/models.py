@@ -168,10 +168,6 @@ class Quote(models.Model):
         max_digits=5, decimal_places=2, default=VAT_RATE_DEFAULT,
         help_text="VAT percentage applied to the subtotal. Set to 0 for a tax-exempt quote.",
     )
-    apply_tax = models.BooleanField(
-        default=True,
-        help_text="Whether to apply tax to this quote. If unchecked, no tax will be calculated."
-    )
     notes = models.TextField(
         blank=True, 
         help_text="Scope notes shown on the quote, above the line items. Describe the work scope, inclusions, and exclusions."
