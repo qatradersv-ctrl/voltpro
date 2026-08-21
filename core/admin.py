@@ -270,7 +270,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
 class QuoteLineItemInline(admin.TabularInline):
     model = QuoteLineItem
     extra = 1
-    fields = ("description", "quantity", "unit", "unit_price", "taxable", "line_total_display")
+    fields = ("description", "quantity", "unit", "unit_price", "line_total_display")
     readonly_fields = ("line_total_display",)
     min_num = 1
     verbose_name = "Line Item"
