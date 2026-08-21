@@ -290,7 +290,7 @@ class QuoteLineItemInline(admin.TabularInline):
 class QuoteAdmin(admin.ModelAdmin):
     list_display = (
         "quote_number", "client_name", "service", "status_badge",
-        "issue_date", "total_display", "pdf_link",
+        "issue_date", "total_display", "preview_link_list", "pdf_link",
     )
     list_filter = ("status", "service", "issue_date")
     search_fields = ("quote_number", "client_name", "client_phone", "client_email")
@@ -362,6 +362,11 @@ class QuoteAdmin(admin.ModelAdmin):
             '<a href="{}" target="_blank" style="display: inline-block; padding: 8px 16px; background: #16233A; color: white; text-decoration: none; border-radius: 4px;">Download PDF</a>',
             detail_url, pdf_url,
         )
+
+    @admin.display(description="Preview")
+    def preview_link_list(self, obj):
+        detail_url = reverse("core:quote_detail", args=[obj.public_id])
+        return format_html('<a href="{}" target="_blank">View</a>', detail_url)
 
     @admin.display(description="PDF")
     def pdf_link(self, obj):
