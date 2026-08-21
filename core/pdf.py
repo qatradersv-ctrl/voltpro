@@ -182,9 +182,9 @@ def build_quote_pdf(quote):
     # ---------------- Line items table ----------------
     col_num_x = x_left
     col_desc_x = x_left + 0.3 * inch
-    col_unit_x = x_left + 3.5 * inch
-    col_qty_x = x_left + 4.6 * inch
-    col_tax_x = x_left + 5.2 * inch
+    col_unit_x = x_left + 4.0 * inch
+    col_qty_x = x_left + 5.0 * inch
+    col_tax_x = x_left + 5.5 * inch
     col_amt_x = x_right
 
     header_h = 14
@@ -215,7 +215,7 @@ def build_quote_pdf(quote):
             
             # Wrap description text if too long
             from reportlab.pdfbase.pdfmetrics import stringWidth
-            desc_max_width = col_unit_x - col_desc_x - 20
+            desc_max_width = col_unit_x - col_desc_x - 25
             words = item.description.split()
             lines = []
             current_line = ""
