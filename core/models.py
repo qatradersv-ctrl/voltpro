@@ -259,9 +259,10 @@ class QuoteLineItem(models.Model):
         default=Decimal("0.00"),
         help_text="Price per unit in KES"
     )
+    order = models.PositiveIntegerField(default=0, help_text="Sort order for line items")
 
     class Meta:
-        ordering = ["id"]
+        ordering = ["order", "id"]
         verbose_name = "Quote Line Item"
         verbose_name_plural = "Quote Line Items"
 
