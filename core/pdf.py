@@ -212,7 +212,30 @@ def build_quote_pdf(quote):
             item = items[i]
             c.setFillColor(colors.black)
             c.drawCentredString(col_num_x + 0.15 * inch, y - 10, str(i + 1))
-            c.drawString(col_desc_x + 4, y - 10, item.description[:60])
+            
+            # Wrap description text if too long
+            from reportlab.pdfbase.pdfmetrics import stringWidth
+            desc_max_width = col_unit_x - col_desc_x - 10
+            words = item.description.split()
+            lines = []
+            current_line = ""
+            for word in words:
+                test_line = f"{current_line} {word}".strip() if current_line else word
+                if stringWidth(test_line, "Helvetica", 8.5) <= desc_max_width:
+                    current_line = test_line
+                else:
+                    if current_line:
+                        lines.append(current_line)
+                    current_line = word
+            if current_line:
+                lines.append(current_line)
+            
+            # Draw description lines (max 2 lines to fit in row)
+            desc_y = y - 10
+            for line_idx, line in enumerate(lines[:2]):
+                c.drawString(col_desc_x + 4, desc_y, line)
+                desc_y -= 10
+            
             c.drawRightString(col_unit_x, y - 10, f"KES {item.unit_price:,.2f}")
             c.drawCentredString(col_qty_x, y - 10, f"{item.quantity:g}")
             c.drawCentredString(col_tax_x, y - 10, "No")
