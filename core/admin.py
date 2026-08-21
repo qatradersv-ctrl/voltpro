@@ -294,7 +294,7 @@ class QuoteAdmin(admin.ModelAdmin):
     )
     list_filter = ("status", "service", "issue_date")
     search_fields = ("quote_number", "client_name", "client_phone", "client_email")
-    readonly_fields = ("quote_number", "totals_display", "client_link_display")
+    readonly_fields = ("quote_number", "totals_display", "client_link_display", "preview_link")
     autocomplete_fields = ("request", "service")
     date_hierarchy = "issue_date"
     inlines = [QuoteLineItemInline]
@@ -313,7 +313,7 @@ class QuoteAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         ("Totals & Sharing", {
-            "fields": ("totals_display", "client_link_display"),
+            "fields": ("totals_display", "client_link_display", "preview_link"),
             "classes": ("collapse",),
         }),
         ("System Info", {
@@ -348,6 +348,18 @@ class QuoteAdmin(admin.ModelAdmin):
         pdf_url = reverse("core:quote_pdf", args=[obj.public_id])
         return format_html(
             'Page: <a href="{0}" target="_blank">{0}</a><br>PDF: <a href="{1}" target="_blank">{1}</a>',
+            detail_url, pdf_url,
+        )
+
+    @admin.display(description="Preview")
+    def preview_link(self, obj):
+        if not obj.pk:
+            return "Save the quote first."
+        detail_url = reverse("core:quote_detail", args=[obj.public_id])
+        pdf_url = reverse("core:quote_pdf_admin", args=[obj.pk])
+        return format_html(
+            '<a href="{}" target="_blank" style="display: inline-block; padding: 8px 16px; background: #F5A623; color: white; text-decoration: none; border-radius: 4px; margin-right: 8px;">View Quote</a>'
+            '<a href="{}" target="_blank" style="display: inline-block; padding: 8px 16px; background: #16233A; color: white; text-decoration: none; border-radius: 4px;">Download PDF</a>',
             detail_url, pdf_url,
         )
 
