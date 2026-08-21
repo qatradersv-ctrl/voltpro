@@ -215,7 +215,7 @@ def build_quote_pdf(quote):
             
             # Wrap description text if too long
             from reportlab.pdfbase.pdfmetrics import stringWidth
-            desc_max_width = col_unit_x - col_desc_x - 15
+            desc_max_width = col_unit_x - col_desc_x - 20
             words = item.description.split()
             lines = []
             current_line = ""
@@ -234,7 +234,10 @@ def build_quote_pdf(quote):
             desc_y = y - 12
             for line_idx, line in enumerate(lines[:2]):
                 c.drawString(col_desc_x + 4, desc_y, line)
-                desc_y -= 9
+                if line_idx == 0 and len(lines) > 1:
+                    desc_y -= 10
+                else:
+                    desc_y -= 9
             
             c.drawRightString(col_unit_x, y - 12, f"KES {item.unit_price:,.2f}")
             c.drawCentredString(col_qty_x, y - 12, f"{item.quantity:g}")
