@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
       {% if site_config and site_config.hero_image %}
         <img src="{{ site_config.hero_image.url }}" alt="VoltPro Electrical and Security Solutions" class="hero-side-image">
       {% else %}
-        <img src="{% static 'core/images/hero.png' %}" alt="VoltPro Electrical and Security Solutions" class="hero-side-image">
+        <img src="{% static 'core/images/hero.png' %}" alt="VoltPro technician working on an electrical installation" class="hero-side-image" width="720" height="540" fetchpriority="high" decoding="async">
       {% endif %}
     </div>
   </div>
@@ -114,6 +114,21 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
+<section class="proof-band" aria-label="VoltPro service commitments">
+  <div class="wrap proof-band-grid">
+    <div class="proof-band-intro">
+      <p class="eyebrow">Built around accountability</p>
+      <h2>Less coordination. More certainty.</h2>
+    </div>
+    <dl class="proof-metrics">
+      <div><dt>01</dt><dd>Accountable team from survey to handover</dd></div>
+      <div><dt>13+</dt><dd>Power, electrical and security service lines</dd></div>
+      <div><dt>24/7</dt><dd>Emergency call-out when the system cannot wait</dd></div>
+      <div><dt>4</dt><dd>Clear stages from site survey to support</dd></div>
+    </dl>
+  </div>
+</section>
+
 <section class="section about-section" id="about">
   <div class="wrap about-grid">
     <div class="about-media">
@@ -121,9 +136,8 @@ document.addEventListener('DOMContentLoaded', function() {
         src="{% static 'core/images/hero.png' %}" 
         alt="VoltPro technician installing a solar array" 
         class="about-image" 
-        loading="eager" 
-        decoding="sync" 
-        fetchpriority="high"
+        loading="lazy"
+        decoding="async"
         width="600"
         height="400"
       >
@@ -156,6 +170,48 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       </dl>
       <a href="#contact" class="btn btn-amber">Talk to our team</a>
+    </div>
+  </div>
+</section>
+
+<section class="section solutions-section" aria-labelledby="solutions-heading">
+  <div class="wrap">
+    <div class="solutions-heading-row">
+      <div class="section-head">
+        <p class="eyebrow">Designed around your site</p>
+        <h2 id="solutions-heading">A joined-up system for every critical point</h2>
+        <p class="section-lede">Whether you are upgrading one building or planning a new site, we connect the systems that have to work together.</p>
+      </div>
+      <a href="#contact" class="text-link">Discuss your site <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="solution-grid">
+      <article class="solution-card solution-card-wide">
+        <img src="{% static 'core/images/covers/solar.svg' %}" alt="Illustration of solar power equipment" loading="lazy" decoding="async" width="600" height="320">
+        <div class="solution-card-content">
+          <p class="solution-kicker">Power continuity</p>
+          <h3>Keep essential loads online</h3>
+          <p>Solar, battery storage, UPS and generator integration designed around the equipment your operation cannot afford to lose.</p>
+          <a href="{% url 'core:services' %}" class="solution-card-link">Explore power solutions <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+      <article class="solution-card">
+        <img src="{% static 'core/images/covers/access.svg' %}" alt="Illustration of access control and security equipment" loading="lazy" decoding="async" width="400" height="300">
+        <div class="solution-card-content">
+          <p class="solution-kicker">Secure access</p>
+          <h3>Control who enters, where and when</h3>
+          <p>Integrated access control, CCTV, intercoms and perimeter systems for safer premises.</p>
+          <a href="{% url 'core:services' %}" class="solution-card-link">Explore security solutions <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+      <article class="solution-card">
+        <img src="{% static 'core/images/covers/infra.svg' %}" alt="Illustration of electrical infrastructure" loading="lazy" decoding="async" width="400" height="300">
+        <div class="solution-card-content">
+          <p class="solution-kicker">Infrastructure</p>
+          <h3>Build the right foundation</h3>
+          <p>Wiring, switchgear and distribution work that makes expansion safer, neater and easier to maintain.</p>
+          <a href="{% url 'core:services' %}" class="solution-card-link">Explore infrastructure <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -282,6 +338,24 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 {% endif %}
+
+<section class="section site-ready-section" aria-labelledby="site-ready-heading">
+  <div class="wrap site-ready-grid">
+    <div>
+      <p class="eyebrow">From first visit to future support</p>
+      <h2 id="site-ready-heading">Your project deserves a plan, not a patchwork.</h2>
+      <p class="section-lede">Bring us in early for a practical site review. We will help you map priorities, identify dependencies and turn them into one clear scope of work.</p>
+    </div>
+    <div class="site-ready-card">
+      <span class="site-ready-number">01</span>
+      <div>
+        <h3>Start with a site review</h3>
+        <p>Tell us what needs to be powered, upgraded or secured. A technician will help establish the next practical step.</p>
+      </div>
+      <a href="#contact" class="btn btn-amber">Request a site visit</a>
+    </div>
+  </div>
+</section>
 
 <section class="section contact-section" id="contact">
   <div class="wrap contact-grid">
