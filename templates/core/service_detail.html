@@ -28,7 +28,7 @@
   <div class="wrap">
     <div class="service-hero-grid">
       <div class="service-hero-media">
-        <img src="{{ service.cover_image_url }}" alt="{{ service.title }}" loading="lazy">
+        <img src="{{ service.cover_image_url }}" data-fallback-src="{{ service.fallback_cover_image_url }}" alt="{{ service.title }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=this.dataset.fallbackSrc;">
       </div>
       <div class="service-hero-content">
         <div class="service-hero-cta">

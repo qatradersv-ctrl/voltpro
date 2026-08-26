@@ -55,13 +55,17 @@ class Service(models.Model):
         return reverse("core:service_detail", kwargs={"slug": self.slug})
 
     @property
+    def fallback_cover_image_url(self):
+        """Bundled cover used when a hosted media file is unavailable."""
+        return f"/static/core/images/covers/{self.category}.svg"
+
+    @property
     def cover_image_url(self):
-        """Uploaded photo if the company has added one, otherwise a branded
-        category cover graphic so every card and detail page always shows an image."""
+        """Use the uploaded photo where it is available, with a bundled
+        category illustration as a reliable visual fallback."""
         if self.image:
             return self.image.url
-        # Return the static file path - the template will handle the static tag
-        return f"/static/core/images/covers/{self.category}.svg"
+        return self.fallback_cover_image_url
 
 
 class Project(models.Model):
