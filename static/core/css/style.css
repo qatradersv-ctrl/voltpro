@@ -178,7 +178,6 @@ p{ margin: 0 0 16px; color: var(--text-muted); font-size: 16px; letter-spacing: 
 .brand-logo-container{
   width: 80px;
   height: 80px;
-  background: #0B1220;
   border-radius: 50%;
   display: flex;
   align-items: center;
