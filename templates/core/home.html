@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<section class="hero" aria-label="Hero section">
+<section class="hero" aria-label="Hero section" style="background-image: url('{% static 'core/images/hero-bg.png' %}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <p class="eyebrow">Nairobi &middot; Design–Supply–Install</p>
@@ -81,14 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
           <p class="spec-card-value">Tested &amp; certified, every job</p>
         </div>
       </div>
-    </div>
-
-    <div class="hero-image-wrapper">
-      {% if site_config and site_config.hero_image %}
-        <img src="{{ site_config.hero_image.url }}" alt="VoltPro Electrical and Security Solutions" class="hero-side-image">
-      {% else %}
-        <img src="{% static 'core/images/hero.png' %}" alt="VoltPro technician working on an electrical installation" class="hero-side-image" width="720" height="540" fetchpriority="high" decoding="async">
-      {% endif %}
     </div>
   </div>
 </section>
