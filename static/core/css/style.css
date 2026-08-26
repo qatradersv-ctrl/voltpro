@@ -325,6 +325,61 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
 .trust-item svg{ color: var(--accent); flex-shrink: 0; }
 @media (max-width: 640px){ .trust-strip-row{ gap: 14px 26px; justify-content:flex-start; } .trust-item{ font-size: 11.5px; } }
 
+/* ---------- homepage proof & solution pathways ---------- */
+.proof-band{ background: var(--primary); color: #fff; padding: 38px 0; }
+.proof-band-grid{ display:grid; grid-template-columns: .8fr 1.7fr; gap: 48px; align-items:center; }
+.proof-band .eyebrow{ color: var(--accent); margin-bottom: 10px; }
+.proof-band h2{ color:#fff; font-size: clamp(24px, 3vw, 34px); margin:0; }
+.proof-metrics{ display:grid; grid-template-columns:repeat(4, 1fr); gap:18px; margin:0; }
+.proof-metrics div{ border-left: 1px solid rgba(255,255,255,.2); padding-left:18px; }
+.proof-metrics dt{ color: var(--accent); font-family:var(--font-display); font-size:28px; font-weight:800; line-height:1; margin-bottom:7px; }
+.proof-metrics dd{ color:#dce4f0; font-size:12px; line-height:1.45; margin:0; }
+
+.solutions-section{ overflow:hidden; }
+.solutions-heading-row{ display:flex; justify-content:space-between; align-items:flex-end; gap:24px; }
+.solutions-heading-row .section-head{ margin-bottom:42px; }
+.text-link{ color:var(--primary); font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; white-space:nowrap; margin-bottom:46px; }
+.text-link:hover{ color:var(--accent); }
+.solution-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:24px; }
+.solution-card{ min-height:100%; background:var(--bg-panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.solution-card:hover{ border-color:var(--accent); box-shadow:0 18px 40px rgba(15,23,42,.12); transform:translateY(-5px); }
+.solution-card-wide{ grid-column:span 2; display:grid; grid-template-columns:1.05fr .95fr; }
+.solution-card > img{ width:100%; height:240px; display:block; object-fit:cover; background:#0b1220; }
+.solution-card-wide > img{ height:100%; min-height:310px; }
+.solution-card-content{ padding:28px; }
+.solution-kicker{ font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--accent); letter-spacing:.08em; text-transform:uppercase; margin:0 0 10px; }
+.solution-card h3{ font-size:24px; margin:0 0 10px; }
+.solution-card p:not(.solution-kicker){ color:var(--text-muted); font-size:14px; margin:0 0 20px; }
+.solution-card-link{ color:var(--primary); font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:.03em; text-transform:uppercase; }
+.solution-card-link:hover{ color:var(--accent); }
+
+.site-ready-section{ background:linear-gradient(125deg, #071c50 0%, var(--primary) 56%, #0b816d 140%); color:#fff; }
+.site-ready-grid{ display:grid; grid-template-columns:1fr .9fr; gap:72px; align-items:center; }
+.site-ready-section .eyebrow{ color:var(--accent); }
+.site-ready-section h2{ color:#fff; margin-bottom:16px; }
+.site-ready-section .section-lede{ color:#dce4f0; margin-bottom:0; }
+.site-ready-card{ background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.22); border-radius:var(--radius); padding:32px; backdrop-filter:blur(5px); }
+.site-ready-number{ color:var(--accent); display:block; font-family:var(--font-mono); font-size:13px; font-weight:700; margin-bottom:26px; }
+.site-ready-card h3{ color:#fff; font-size:22px; margin:0 0 8px; }
+.site-ready-card p{ color:#dce4f0; font-size:14px; margin:0 0 24px; }
+
+@media (max-width:900px){
+  .proof-band-grid, .site-ready-grid{ grid-template-columns:1fr; gap:28px; }
+  .proof-metrics{ grid-template-columns:repeat(4, 1fr); }
+}
+@media (max-width:640px){
+  .proof-band{ padding:32px 0; }
+  .proof-metrics{ grid-template-columns:repeat(2, 1fr); gap:24px 12px; }
+  .proof-metrics div:nth-child(odd){ border-left:0; padding-left:0; }
+  .solutions-heading-row{ display:block; }
+  .text-link{ display:inline-block; margin:0 0 28px; }
+  .solution-grid{ grid-template-columns:1fr; }
+  .solution-card-wide{ grid-column:auto; display:block; }
+  .solution-card-wide > img{ min-height:0; height:220px; }
+  .site-ready-grid{ gap:36px; }
+  .site-ready-card{ padding:24px; }
+}
+
 /* ---------- about / company section ---------- */
 .about-grid{ display:grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items:center; }
 .about-media{ position: relative; }
