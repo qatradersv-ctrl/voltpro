@@ -173,6 +173,123 @@ SERVICES = [
             "and coordination with your utility connection."
         ),
     ),
+    dict(
+        title="Solar Power Solutions",
+        slug="solar-power-solutions",
+        category=C.SOLAR,
+        icon="sun",
+        rating_note="Design, supply & install",
+        short_description="Solar system design, supply, and installation for residential and commercial.",
+        description=(
+            "Comprehensive solar power solutions including system design, equipment supply, "
+            "and professional installation. We handle grid-tie, hybrid, and off-grid systems "
+            "tailored to your specific energy needs and site conditions."
+        ),
+    ),
+    dict(
+        title="Backup Power Solutions",
+        slug="backup-power-solutions",
+        category=C.POWER,
+        icon="battery",
+        rating_note="Alternative power systems",
+        short_description="Backup and alternative power systems for uninterrupted operations.",
+        description=(
+            "Complete backup power solutions including generators, UPS systems, and battery "
+            "banks. We design and install systems that ensure your operations continue during "
+            "power outages and grid failures."
+        ),
+    ),
+    dict(
+        title="Electrical Wiring & Installations",
+        slug="electrical-wiring-installations",
+        category=C.INFRA,
+        icon="bolt",
+        rating_note="Design, wiring & loads",
+        short_description="Electrical design, wiring, and load installations for all property types.",
+        description=(
+            "Professional electrical wiring and installation services covering design, load "
+            "calculations, and complete wiring for residential, commercial, and industrial "
+            "properties. All work done to code and certified."
+        ),
+    ),
+    dict(
+        title="Security Systems",
+        slug="security-systems",
+        category=C.ACCESS,
+        icon="shield",
+        rating_note="Integrated protection",
+        short_description="Security installation and integrated protection solutions for premises.",
+        description=(
+            "Comprehensive security system installation including CCTV, alarm systems, and "
+            "integrated protection solutions. We design systems that provide complete coverage "
+            "and seamless integration with your existing infrastructure."
+        ),
+    ),
+    dict(
+        title="Access Control Systems",
+        slug="access-control-systems",
+        category=C.ACCESS,
+        icon="fingerprint",
+        rating_note="Entry management",
+        short_description="Systems for controlling and managing entry to premises and facilities.",
+        description=(
+            "Advanced access control systems for managing entry to your premises. We install "
+            "biometric, card-based, and keypad systems with full audit trails and integration "
+            "capabilities for complete access management."
+        ),
+    ),
+    dict(
+        title="Gate Automation",
+        slug="gate-automation",
+        category=C.GATES,
+        icon="gate",
+        rating_note="Automated gate systems",
+        short_description="Installation and setup of automated gates for residential and commercial.",
+        description=(
+            "Professional gate automation services including motor installation, safety sensor "
+            "setup, and control system integration. We handle sliding, swinging, and barrier "
+            "gate automation with remote access capabilities."
+        ),
+    ),
+    dict(
+        title="Power System Design",
+        slug="power-system-design",
+        category=C.POWER,
+        icon="design",
+        rating_note="SLD & electrical planning",
+        short_description="Including single-line diagrams and electrical planning for projects.",
+        description=(
+            "Professional power system design services including single-line diagrams, load "
+            "studies, and comprehensive electrical planning. We provide detailed designs "
+            "that ensure safe, efficient, and code-compliant power distribution."
+        ),
+    ),
+    dict(
+        title="Site Surveys & Assessments",
+        slug="site-surveys-assessments",
+        category=C.INFRA,
+        icon="clipboard",
+        rating_note="Feasibility studies",
+        short_description="Inspecting sites, existing power supply, loads, and project feasibility.",
+        description=(
+            "Comprehensive site surveys and assessments covering existing power supply, load "
+            "analysis, and project feasibility studies. We provide detailed reports that "
+            "inform accurate quoting and successful project execution."
+        ),
+    ),
+    dict(
+        title="Supply of Electrical & Security Equipment",
+        slug="supply-electrical-security-equipment",
+        category=C.POWER,
+        icon="package",
+        rating_note="Materials & equipment",
+        short_description="Providing the required materials and equipment for installations.",
+        description=(
+            "Supply of high-quality electrical and security equipment for installations. We "
+            "provide all necessary materials including cables, switchgear, security devices, "
+            "and components to ensure project success."
+        ),
+    ),
 ]
 
 TESTIMONIALS = [
