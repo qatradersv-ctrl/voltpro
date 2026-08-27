@@ -61,6 +61,40 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
+{% if projects %}
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Recent installations</p>
+      <h2>Our work gallery</h2>
+      <p class="section-lede">Browse through our completed projects — from solar installations to security systems.</p>
+      <a href="{% url 'core:work' %}" class="btn btn-ghost" style="margin-top: 12px;">View all projects &rarr;</a>
+    </div>
+    <div class="gallery-grid">
+      {% for project in projects %}
+      <div class="gallery-item">
+        {% if project.video %}
+        <div class="gallery-media">
+          <video controls muted class="gallery-video">
+            <source src="{{ project.video.url }}" type="video/mp4">
+          </video>
+        </div>
+        {% elif project.image %}
+        <div class="gallery-media">
+          <img src="{{ project.image.url }}" alt="{{ project.title }}" class="gallery-image">
+        </div>
+        {% endif %}
+        <div class="gallery-info">
+          <p class="gallery-spec">{% if project.service %}{{ project.service.title }}{% endif %}{% if project.location %} &middot; {{ project.location }}{% endif %}</p>
+          <h3>{{ project.title }}</h3>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 <section class="trust-strip">
   <div class="wrap trust-strip-row">
     <div class="trust-item">
@@ -129,40 +163,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </ol>
   </div>
 </section>
-
-{% if projects %}
-<section class="section" id="work">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="eyebrow">Recent installations</p>
-      <h2>Our work gallery</h2>
-      <p class="section-lede">Browse through our completed projects — from solar installations to security systems.</p>
-      <a href="{% url 'core:work' %}" class="btn btn-ghost" style="margin-top: 12px;">View all projects &rarr;</a>
-    </div>
-    <div class="gallery-grid">
-      {% for project in projects %}
-      <div class="gallery-item">
-        {% if project.video %}
-        <div class="gallery-media">
-          <video controls muted class="gallery-video">
-            <source src="{{ project.video.url }}" type="video/mp4">
-          </video>
-        </div>
-        {% elif project.image %}
-        <div class="gallery-media">
-          <img src="{{ project.image.url }}" alt="{{ project.title }}" class="gallery-image">
-        </div>
-        {% endif %}
-        <div class="gallery-info">
-          <p class="gallery-spec">{% if project.service %}{{ project.service.title }}{% endif %}{% if project.location %} &middot; {{ project.location }}{% endif %}</p>
-          <h3>{{ project.title }}</h3>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
 
 {% if testimonials %}
 <section class="section section-alt">
