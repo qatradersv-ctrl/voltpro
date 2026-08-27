@@ -1,7 +1,7 @@
 {% comment %}
 Usage: {% include "core/_service_card.html" with service=service %}
 {% endcomment %}
-<a class="service-card" href="{% url 'core:service_detail' service.slug %}">
+<div class="service-card">
   <div class="service-card-media">
     <img
       src="{{ service.cover_image_url }}"
@@ -20,11 +20,14 @@ Usage: {% include "core/_service_card.html" with service=service %}
   <div class="service-card-content">
     <h3>{{ service.title }}</h3>
     <p>{{ service.short_description }}</p>
-    <span class="service-card-link">
-      View details
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
-    </span>
+    <div class="service-card-actions">
+      <a href="{% url 'core:service_detail' service.slug %}" class="service-card-link">
+        View details
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <a href="#contact" onclick="selectService({{ service.pk }})" class="btn btn-amber btn-sm">Get Quote</a>
+    </div>
   </div>
-</a>
+</div>

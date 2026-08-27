@@ -457,12 +457,12 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
 .service-card{
   background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius);
   overflow: hidden; display:flex; flex-direction:column; transition: all .25s ease;
-  text-decoration:none; color:inherit; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  color:inherit; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .service-card:hover{ border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 16px 36px rgba(15,23,42,0.14); }
+.service-card:hover .service-card-media img{ transform: scale(1.06); }
 .service-card-media{ position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #0B1220; }
 .service-card-media img{ width:100%; height:100%; object-fit: cover; display:block; transition: transform .4s ease; }
-.service-card:hover .service-card-media img{ transform: scale(1.06); }
 .service-card-media::after{
   content:""; position:absolute; inset:0;
   background: linear-gradient(180deg, rgba(11,18,32,0) 45%, rgba(11,18,32,0.55) 100%);
@@ -482,11 +482,13 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
 .service-card-content{ flex:1; padding: 32px 20px 20px; display:flex; flex-direction:column; }
 .service-card h3{ font-size: 17px; margin: 0 0 8px; }
 .service-card-content p{ font-size: 14px; margin: 0 0 16px; line-height: 1.5; flex:1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.service-card-actions{ display: flex; gap: 12px; align-items: center; margin-top: auto; }
 .service-card-link{
   display:inline-flex; align-items:center; gap: 6px; font-family: var(--font-mono); font-size: 12.5px;
   font-weight:600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); transition: all .2s ease;
+  text-decoration: none;
 }
-.service-card:hover .service-card-link{ color: var(--accent); gap: 10px; }
+.service-card-link:hover{ color: var(--accent); gap: 10px; }
 
 /* ---------- process ---------- */
 .process-list{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns: repeat(4,1fr); gap: 24px; counter-reset: none; }

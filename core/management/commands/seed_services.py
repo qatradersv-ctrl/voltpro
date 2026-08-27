@@ -290,6 +290,46 @@ SERVICES = [
             "and components to ensure project success."
         ),
     ),
+    dict(
+        title="Testing & Commissioning",
+        slug="testing-commissioning",
+        category=C.INFRA,
+        icon="check-circle",
+        rating_note="Load & continuity tests",
+        short_description="Electrical testing and commissioning of installed systems to code standards.",
+        description=(
+            "Comprehensive testing and commissioning services for electrical and security "
+            "installations. We perform load testing, continuity testing, insulation resistance "
+            "testing, and full system commissioning to ensure everything operates safely and "
+            "to code before handover."
+        ),
+    ),
+    dict(
+        title="Maintenance & Servicing",
+        slug="maintenance-servicing",
+        category=C.POWER,
+        icon="wrench",
+        rating_note="Preventive & corrective",
+        short_description="Ongoing maintenance and servicing for electrical and security systems.",
+        description=(
+            "Regular maintenance and servicing contracts for electrical and security systems. "
+            "We provide preventive maintenance schedules, corrective repairs, and system "
+            "optimization to keep your installations running efficiently and safely."
+        ),
+    ),
+    dict(
+        title="Emergency Electrical & Security Call-outs",
+        slug="emergency-callouts",
+        category=C.POWER,
+        icon="alert-triangle",
+        rating_note="24/7 response",
+        short_description="24/7 emergency response for electrical faults and security system failures.",
+        description=(
+            "Round-the-clock emergency call-out service for electrical faults, power outages, "
+            "and security system failures. Our technicians are available 24/7 to respond to "
+            "urgent issues and restore critical systems quickly and safely."
+        ),
+    ),
 ]
 
 TESTIMONIALS = [
