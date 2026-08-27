@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<section class="hero" aria-label="Hero section" style="background-image: url('{% static 'core/images/hero-bg.png' %}'); background-size: 60%; background-position: center; background-repeat: no-repeat; min-height: 400px;">
+<section class="hero" aria-label="Hero section" style="background-image: url('{% static 'core/images/hero-bg.png' %}'); background-size: 120%; background-position: center; background-repeat: no-repeat; min-height: 400px;">
 </section>
 
 <section class="trust-strip">
@@ -75,44 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
-<section class="section section-alt" id="services">
-  <div class="wrap">
-    <div class="services-grid">
-      <div class="services-content">
-        <div class="section-head">
-          <p class="eyebrow">Our Services</p>
-          <h2>Comprehensive Power & Security Solutions</h2>
-          <p class="section-lede">We provide end-to-end electrical and security installations — from design to deployment and ongoing maintenance.</p>
-        </div>
-      </div>
-      <div class="video-section">
-        <div class="video-card">
-          <div class="video-container">
-            {% if site_config and site_config.services_video %}
-              <video controls autoplay muted class="video-player">
-                <source src="{{ site_config.services_video.url }}" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            {% else %}
-              <video controls autoplay muted class="video-player">
-                <source src="{% static 'core/images/video.mp4' %}" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <div class="service-grid">
-      {% for service in services %}
-        {% include "core/_service_card.html" with service=service %}
-      {% empty %}
-      <p>Services are being loaded — run <code>python manage.py seed_services</code>.</p>
-      {% endfor %}
-    </div>
-  </div>
-</section>
 
 <section class="section section-alt" id="process">
   <div class="wrap">
