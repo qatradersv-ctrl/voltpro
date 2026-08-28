@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import send_mail
+from django.db import ProgrammingError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
@@ -25,6 +26,9 @@ def home(request):
     # Get blog posts
     try:
         blog_posts = BlogPost.objects.filter(is_published=True)[:3]
+    except ProgrammingError:
+        # Table doesn't exist yet on production
+        blog_posts = []
     except Exception:
         blog_posts = []
 
