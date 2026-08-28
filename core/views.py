@@ -22,6 +22,12 @@ def home(request):
     except Exception:
         site_config = None
 
+    # Get blog posts
+    try:
+        blog_posts = BlogPost.objects.filter(is_published=True)[:3]
+    except Exception:
+        blog_posts = []
+
     if request.method == "POST":
         return _handle_quote_post(request, services)
 
@@ -30,6 +36,7 @@ def home(request):
         "projects": projects,
         "testimonials": testimonials,
         "site_config": site_config,
+        "blog_posts": blog_posts,
     }
     return render(request, "core/home.html", context)
 

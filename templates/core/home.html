@@ -197,6 +197,36 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
+{% if blog_posts %}
+<section class="section" id="blog">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Our Blog</p>
+      <h2>Latest insights & updates</h2>
+      <p class="section-lede">Stay informed with our latest articles on electrical installations, security systems, and industry best practices.</p>
+      <a href="{% url 'core:blog_list' %}" class="btn btn-ghost" style="margin-top: 12px;">View all posts &rarr;</a>
+    </div>
+    <div class="blog-grid">
+      {% for post in blog_posts %}
+      <article class="blog-card">
+        {% if post.image %}
+        <div class="blog-media">
+          <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-image">
+        </div>
+        {% endif %}
+        <div class="blog-content">
+          <p class="blog-date">{{ post.published_date|date:"F d, Y" }}</p>
+          <h3>{{ post.title }}</h3>
+          <p class="blog-excerpt">{{ post.excerpt|truncatewords:30 }}</p>
+          <a href="{% url 'core:blog_detail' post.slug %}" class="blog-link">Read more <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 {% if testimonials %}
 <section class="section section-alt">
   <div class="wrap">
