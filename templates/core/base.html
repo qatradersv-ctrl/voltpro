@@ -75,30 +75,35 @@
 </div>
 
 <header class="site-header" role="banner">
-  <div class="wrap header-row">
-    <a href="{% url 'core:home' %}" class="brand" aria-label="VoltPro Electrodata Solutions - Home">
-      <div class="brand-logo-container">
-        <img src="{% static 'core/images/logo.png' %}" alt="VoltPro Logo" class="brand-logo" loading="eager" decoding="sync" fetchpriority="high">
-      </div>
-      <div class="brand-text">
-        <span class="brand-name">VoltPro</span>
-        <span class="brand-sub">ELECTRODATA SOLUTIONS</span>
-      </div>
-    </a>
+  <div class="header-row">
+    <div class="header-left">
+      <a href="{% url 'core:home' %}" class="brand" aria-label="VoltPro Electrodata Solutions - Home">
+        <div class="brand-logo-container">
+          <img src="{% static 'core/images/logo.png' %}" alt="VoltPro Logo" class="brand-logo" loading="eager" decoding="sync" fetchpriority="high">
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">VoltPro</span>
+          <span class="brand-sub">ELECTRODATA SOLUTIONS</span>
+        </div>
+      </a>
+    </div>
 
-    <nav class="main-nav" aria-label="Primary navigation">
-      <a href="{% url 'core:services' %}">Services</a>
-      <a href="{% url 'core:process' %}">How we work</a>
-      <a href="{% url 'core:work' %}">Our work</a>
-      <a href="{% url 'core:blog_list' %}">Blog</a>
-      <a href="{% url 'core:contact' %}">Contact</a>
-    </nav>
+    <div class="header-center">
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="{% url 'core:services' %}">Services</a>
+        <a href="{% url 'core:process' %}">How we work</a>
+        <a href="{% url 'core:work' %}">Our work</a>
+        <a href="{% url 'core:blog_list' %}">Blog</a>
+        <a href="{% url 'core:contact' %}">Contact</a>
+      </nav>
+    </div>
 
-    <a class="btn btn-amber header-cta btn-sm" href="{% url 'core:contact' %}">Request a quote</a>
-
-    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
-      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
-    </button>
+    <div class="header-right">
+      <a class="btn btn-amber header-cta btn-sm" href="{% url 'core:contact' %}">Request a quote</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
   </div>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primary mobile">

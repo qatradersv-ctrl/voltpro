@@ -173,7 +173,10 @@ p{ margin: 0 0 16px; color: var(--text-muted); font-size: 16px; letter-spacing: 
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
 }
-.header-row{ display:flex; align-items:center; justify-content:space-between; height: 90px; gap: 24px; }
+.header-row{ display:flex; align-items:center; justify-content:space-between; height: 90px; gap: 24px; padding: 0 24px; }
+.header-left{ flex: 0 0 auto; }
+.header-center{ flex: 1; display:flex; justify-content:center; }
+.header-right{ flex: 0 0 auto; display:flex; align-items:center; gap: 16px; }
 .brand{ display:flex; align-items:center; gap: 16px; }
 .brand-logo-container{
   width: 80px;
