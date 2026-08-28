@@ -344,3 +344,60 @@ class SiteConfiguration(models.Model):
         if not self.pk and SiteConfiguration.objects.exists():
             raise ValueError("Only one SiteConfiguration instance can exist. Edit the existing one instead.")
         super().save(*args, **kwargs)
+
+
+class BlogPost(models.Model):
+    """Blog post or news article for the website."""
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True, max_length=200)
+    author = models.CharField(max_length=100, default="VoltPro Team")
+    excerpt = models.CharField(
+        max_length=300,
+        help_text="Short summary shown in blog listing and meta description"
+    )
+    content = models.TextField(
+        help_text="Full article content. You can use HTML for formatting."
+    )
+    featured_image = models.ImageField(
+        upload_to="blog/",
+        blank=True,
+        null=True,
+        help_text="Featured image for the blog post"
+    )
+    category = models.CharField(
+        max_length=50,
+        default="General",
+        help_text="Category for grouping posts (e.g., 'Solar', 'Security', 'Tips')"
+    )
+    is_published = models.BooleanField(default=False, help_text="Whether the post is visible on the site")
+    is_featured = models.BooleanField(default=False, help_text="Featured posts show prominently")
+    published_at = models.DateTimeField(blank=True, null=True, help_text="When the post was published")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    meta_description = models.CharField(
+        max_length=160,
+        blank=True,
+        help_text="SEO meta description for search engines"
+    )
+    meta_keywords = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Comma-separated SEO keywords"
+    )
+
+    class Meta:
+        ordering = ["-published_at", "-created_at"]
+        verbose_name = "Blog Post"
+        verbose_name_plural = "Blog Posts"
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("core:blog_detail", kwargs={"slug": self.slug})
+
+    def save(self, *args, **kwargs):
+        # Set published_at when post is first published
+        if self.is_published and not self.published_at:
+            self.published_at = timezone.now()
+        super().save(*args, **kwargs)

@@ -7,7 +7,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem
+from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost
 from .pdf import build_quote_pdf
 
 
@@ -227,3 +227,37 @@ def inventory_item_json(request, pk):
         'category': item.category,
     }
     return JsonResponse(data)
+
+
+def blog_list(request):
+    """Display all published blog posts."""
+    posts = BlogPost.objects.filter(is_published=True)
+    featured_posts = posts.filter(is_featured=True)[:3]
+    categories = BlogPost.objects.filter(is_published=True).values_list('category', flat=True).distinct()
+    
+    category_filter = request.GET.get('category')
+    if category_filter:
+        posts = posts.filter(category=category_filter)
+    
+    context = {
+        'posts': posts,
+        'featured_posts': featured_posts,
+        'categories': categories,
+        'current_category': category_filter,
+    }
+    return render(request, 'core/blog_list.html', context)
+
+
+def blog_detail(request, slug):
+    """Display a single blog post."""
+    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    related_posts = BlogPost.objects.filter(
+        is_published=True,
+        category=post.category
+    ).exclude(pk=post.pk)[:3]
+    
+    context = {
+        'post': post,
+        'related_posts': related_posts,
+    }
+    return render(request, 'core/blog_detail.html', context)

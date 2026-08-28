@@ -1,0 +1,99 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Blog — VoltPro Electrodata Solutions{% endblock %}
+{% block meta_description %}Latest news, tips, and insights from VoltPro Electrodata Solutions about electrical installations, solar power, security systems, and more.{% endblock %}
+{% block content %}
+{% include "core/_icons.html" %}
+
+<section class="page-header">
+  <div class="wrap">
+    <h1>Blog & News</h1>
+    <p class="section-lede">Stay updated with the latest insights, tips, and news from VoltPro Electrodata Solutions.</p>
+  </div>
+</section>
+
+{% if featured_posts %}
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Featured Posts</p>
+    </div>
+    <div class="blog-featured-grid">
+      {% for post in featured_posts %}
+      <article class="blog-featured-card">
+        {% if post.featured_image %}
+        <div class="blog-featured-image">
+          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div class="blog-featured-content">
+          <div class="blog-meta">
+            <span class="blog-category">{{ post.category }}</span>
+            <span class="blog-date">{{ post.published_at|date:"d M Y" }}</span>
+          </div>
+          <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+          <p class="blog-excerpt">{{ post.excerpt }}</p>
+          <a href="{{ post.get_absolute_url }}" class="btn btn-ghost">Read more &rarr;</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">All Posts</p>
+      <h2>Latest Articles</h2>
+      
+      {% if categories %}
+      <div class="blog-categories">
+        <a href="{% url 'core:blog_list' %}" class="blog-category-btn {% if not current_category %}active{% endif %}">All</a>
+        {% for category in categories %}
+        <a href="{% url 'core:blog_list' %}?category={{ category }}" class="blog-category-btn {% if current_category == category %}active{% endif %}">{{ category }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    
+    {% if posts %}
+    <div class="blog-grid">
+      {% for post in posts %}
+      <article class="blog-card">
+        {% if post.featured_image %}
+        <div class="blog-image">
+          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div class="blog-content">
+          <div class="blog-meta">
+            <span class="blog-category">{{ post.category }}</span>
+            <span class="blog-date">{{ post.published_at|date:"d M Y" }}</span>
+          </div>
+          <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+          <p class="blog-excerpt">{{ post.excerpt }}</p>
+          <a href="{{ post.get_absolute_url }}" class="btn btn-ghost btn-sm">Read more &rarr;</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p>No blog posts found{% if current_category %} in {{ current_category }}{% endif %}.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section section-alt service-cta">
+  <div class="wrap">
+    <div class="service-cta-content">
+      <h2>Need expert electrical or security services?</h2>
+      <p>Contact us today for professional installations, maintenance, and consultations.</p>
+      <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

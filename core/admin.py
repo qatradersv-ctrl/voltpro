@@ -10,7 +10,7 @@ from django.conf import settings
 
 from .models import (
     Service, Project, Testimonial, QuoteRequest, Quote, QuoteLineItem, QuoteStatus,
-    SiteConfiguration, InventoryItem,
+    SiteConfiguration, InventoryItem, BlogPost,
 )
 
 admin.site.site_header = "VoltPro Electrodata Solutions"
@@ -489,3 +489,34 @@ You can view and manage this quote in the admin panel.
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         
         return response
+
+
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ("title", "category", "author", "is_published", "is_featured", "published_at", "created_at")
+    list_editable = ("is_published", "is_featured")
+    list_filter = ("category", "is_published", "is_featured", "published_at")
+    search_fields = ("title", "excerpt", "content", "author")
+    prepopulated_fields = {"slug": ("title",)}
+    date_hierarchy = "published_at"
+    readonly_fields = ("created_at", "updated_at", "featured_image_preview")
+    fields = (
+        "title", "slug", "author", "category", "excerpt", "content",
+        "featured_image", "featured_image_preview", "is_published", "is_featured",
+        "published_at", "meta_description", "meta_keywords",
+        "created_at", "updated_at",
+    )
+
+    @admin.display(description="Featured Image Preview")
+    def featured_image_preview(self, obj):
+        if not obj.pk:
+            return "Save the post to see the image preview."
+        if obj.featured_image:
+            return format_html(
+                '<img src="{}" style="width:280px;height:180px;object-fit:cover;'
+                'border-radius:8px;border:1px solid #ddd;">',
+                obj.featured_image.url,
+            )
+        return format_html(
+            '<span style="color:#888;font-size:13px;">No featured image uploaded yet.</span>'
+        )
