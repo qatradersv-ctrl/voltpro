@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}Services — VoltPro Electrodata Solutions{% endblock %}
+{% block content %}
+{% include "core/_icons.html" %}
+
+<section class="page-header">
+  <div class="wrap">
+    <h1>Comprehensive Power & Security Solutions</h1>
+    <p class="section-lede">We provide end-to-end electrical and security installations — from design to deployment and ongoing maintenance.</p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="services-grid">
+      {% for service in services %}
+        {% include "core/_service_card.html" with service=service %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section service-cta">
+  <div class="wrap">
+    <div class="service-cta-content">
+      <h2>Need a custom solution?</h2>
+      <p>Contact us today for a free consultation and quote for your power and security needs.</p>
+      <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

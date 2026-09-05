@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and quote pages from crawling
+Disallow: /admin/
+Disallow: /quotes/
+
+# Sitemap
+Sitemap: https://voltpro-t3ng.onrender.com/sitemap.xml

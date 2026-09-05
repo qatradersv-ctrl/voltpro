@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+db.sqlite3
+/staticfiles/
+/media/
+.venv/
+add_service_images.py
+update_backup_power.py

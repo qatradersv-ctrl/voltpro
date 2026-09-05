@@ -1,0 +1,89 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}{{ post.title }} — VoltPro Electrodata Solutions{% endblock %}
+{% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+{% block content %}
+{% include "core/_icons.html" %}
+
+<section class="page-header">
+  <div class="wrap">
+    <a href="{% url 'core:blog_list' %}" class="btn btn-ghost btn-sm" style="margin-bottom: 16px;">&larr; Back to Blog</a>
+    <h1>{{ post.title }}</h1>
+    <div class="blog-meta-header">
+      <span class="blog-category">{{ post.category }}</span>
+      <span class="blog-date">{{ post.published_at|date:"d M Y" }}</span>
+      <span class="blog-author">By {{ post.author }}</span>
+    </div>
+  </div>
+</section>
+
+{% if post.featured_image %}
+<section class="section">
+  <div class="wrap">
+    <div class="blog-featured-image-container">
+      <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="blog-hero-image">
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section-alt">
+  <div class="wrap">
+    <article class="blog-article">
+      <div class="blog-content-full">
+        {{ post.content|safe }}
+      </div>
+      
+      <div class="blog-share">
+        <p>Share this article:</p>
+        <div class="blog-share-buttons">
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Facebook</a>
+          <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Twitter</a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">LinkedIn</a>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+{% if related_posts %}
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Related Posts</p>
+      <h2>You might also like</h2>
+    </div>
+    <div class="blog-grid">
+      {% for related_post in related_posts %}
+      <article class="blog-card">
+        {% if related_post.featured_image %}
+        <div class="blog-image">
+          <img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}" loading="lazy">
+        </div>
+        {% endif %}
+        <div class="blog-content">
+          <div class="blog-meta">
+            <span class="blog-category">{{ related_post.category }}</span>
+            <span class="blog-date">{{ related_post.published_at|date:"d M Y" }}</span>
+          </div>
+          <h3><a href="{{ related_post.get_absolute_url }}">{{ related_post.title }}</a></h3>
+          <p class="blog-excerpt">{{ related_post.excerpt }}</p>
+          <a href="{{ related_post.get_absolute_url }}" class="btn btn-ghost btn-sm">Read more &rarr;</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section section-alt service-cta">
+  <div class="wrap">
+    <div class="service-cta-content">
+      <h2>Need expert electrical or security services?</h2>
+      <p>Contact us today for professional installations, maintenance, and consultations.</p>
+      <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

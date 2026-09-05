@@ -1,0 +1,33 @@
+<svg viewBox="0 0 640 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Wiring &amp; Infrastructure">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111C34"/>
+      <stop offset="100%" stop-color="#0B1220"/>
+    </linearGradient>
+    <radialGradient id="glow3" cx="78%" cy="18%" r="65%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.35"/>
+      <stop offset="55%" stop-color="#F59E0B" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid3" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#F8FAFC" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="640" height="440" fill="url(#bgGrad3)"/>
+  <rect width="640" height="440" fill="url(#grid3)"/>
+  <rect width="640" height="440" fill="url(#glow3)"/>
+
+  <line x1="-40" y1="440" x2="352" y2="-40" stroke="#F59E0B" stroke-opacity="0.12" stroke-width="140"/>
+
+  <g transform="translate(250.0,124.0) scale(5.8)" fill="none" stroke="#F59E0B" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.92">
+      <rect x="4" y="3" width="16" height="18" rx="1"/>
+      <path d="M8 7h1.5M8 11h1.5M8 15h1.5"/>
+      <rect x="13" y="6.3" width="4" height="2.4" rx="0.4"/>
+      <rect x="13" y="10.3" width="4" height="2.4" rx="0.4"/>
+      <rect x="13" y="14.3" width="4" height="2.4" rx="0.4"/>
+  </g>
+
+  <text x="40" y="404" font-family="'JetBrains Mono', monospace" font-size="15" letter-spacing="2.4" fill="#F59E0B" font-weight="600">WIRING &amp; INFRASTRUCTURE</text>
+  <rect x="40" y="382" width="46" height="3" fill="#F59E0B"/>
+</svg>

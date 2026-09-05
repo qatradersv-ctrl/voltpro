@@ -1,0 +1,318 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+{% include "core/_icons.html" %}
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="confirmationModal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-content">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+    </div>
+    <h3 class="modal-title" id="modal-title">Request Received!</h3>
+    <p class="modal-message">Thank you for your quote request. Our team will contact you within one business day.</p>
+    <button class="modal-close" onclick="closeModal()">Got it</button>
+  </div>
+</div>
+
+<script>
+function showModal() {
+  document.getElementById('confirmationModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('confirmationModal').classList.remove('active');
+}
+
+function selectService(serviceId) {
+  const serviceSelect = document.getElementById('id_service');
+  if (serviceSelect) {
+    serviceSelect.value = serviceId;
+  }
+}
+
+// Show modal if there's a success message
+document.addEventListener('DOMContentLoaded', function() {
+  const alerts = document.querySelectorAll('.alert-success');
+  if (alerts.length > 0) {
+    showModal();
+  }
+});
+</script>
+
+<section class="hero" aria-label="Hero section" style="background-image: url('{% static 'core/images/hero-bg.png' %}'); background-size: 120%; background-position: center; background-repeat: no-repeat; min-height: 600px;">
+</section>
+
+<section class="section section-blue" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">About VoltPro</p>
+      <h2>Powering Kenya's electrical and security needs</h2>
+      <p class="section-lede">We are a licensed and insured electrical contractor providing comprehensive power and security solutions across Nairobi and beyond.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-content">
+        <p>VoltPro Electrodata Solutions has been at the forefront of electrical and security installations, serving residential, commercial, and industrial clients with excellence and reliability.</p>
+        <p>Our team of certified technicians brings decades of combined experience in electrical wiring, solar installations, access control systems, CCTV security, and emergency power solutions. We pride ourselves on delivering quality workmanship, adhering to safety standards, and providing exceptional customer service.</p>
+        <p>From site surveys to system design, installation to maintenance, we handle every aspect of your electrical and security needs with precision and professionalism. Our commitment to quality and customer satisfaction has made us a trusted partner for businesses and homeowners throughout Kenya.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-item">
+          <span class="stat-number">13+</span>
+          <span class="stat-label">Service Lines</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">24/7</span>
+          <span class="stat-label">Emergency Support</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Certified</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">4</span>
+          <span class="stat-label">Process Stages</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Our Services</p>
+    </div>
+    <div class="service-grid">
+      {% for service in services %}
+        {% include "core/_service_card.html" with service=service %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if projects %}
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Recent installations</p>
+      <h2>Our work gallery</h2>
+      <p class="section-lede">Browse through our completed projects — from solar installations to security systems.</p>
+      <a href="{% url 'core:work' %}" class="btn btn-ghost" style="margin-top: 12px;">View all projects &rarr;</a>
+    </div>
+    <div class="gallery-grid">
+      {% for project in projects %}
+      <div class="gallery-item">
+        {% if project.video %}
+        <div class="gallery-media">
+          <video controls muted class="gallery-video">
+            <source src="{{ project.video.url }}" type="video/mp4">
+          </video>
+        </div>
+        {% elif project.image %}
+        <div class="gallery-media">
+          <img src="{{ project.image.url }}" alt="{{ project.title }}" class="gallery-image">
+        </div>
+        {% endif %}
+        <div class="gallery-info">
+          <p class="gallery-spec">{% if project.service %}{{ project.service.title }}{% endif %}{% if project.location %} &middot; {{ project.location }}{% endif %}</p>
+          <h3>{{ project.title }}</h3>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="trust-strip">
+  <div class="wrap trust-strip-row">
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 4 6v6c0 5 3.4 7.6 8 9 4.6-1.4 8-4 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+      Licensed &amp; insured contractor
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      Certified, in-house technicians
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+      24/7 emergency call-out
+    </div>
+    <div class="trust-item">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Tested, certified &amp; warrantied
+    </div>
+  </div>
+</section>
+
+<section class="proof-band" aria-label="VoltPro service commitments">
+  <div class="wrap proof-band-grid">
+    <div class="proof-band-intro">
+      <p class="eyebrow">Built around accountability</p>
+      <h2>Less coordination. More certainty.</h2>
+    </div>
+    <dl class="proof-metrics">
+      <div><dt>01</dt><dd>Accountable team from survey to handover</dd></div>
+      <div><dt>13+</dt><dd>Power, electrical and security service lines</dd></div>
+      <div><dt>24/7</dt><dd>Emergency call-out when the system cannot wait</dd></div>
+      <div><dt>4</dt><dd>Clear stages from site survey to support</dd></div>
+    </dl>
+  </div>
+</section>
+
+
+
+<section class="section section-blue" id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">How we work</p>
+      <h2>Four stages, same order every time</h2>
+    </div>
+    <ol class="process-list">
+      <li>
+        <span class="process-num">01</span>
+        <h3>Site survey</h3>
+        <p>We walk the site, check the existing supply and loads, and confirm what's actually feasible before we quote.</p>
+      </li>
+      <li>
+        <span class="process-num">02</span>
+        <h3>Design &amp; quote</h3>
+        <p>A written scope and single-line diagram where relevant, priced against materials and labour — no verbal estimates.</p>
+      </li>
+      <li>
+        <span class="process-num">03</span>
+        <h3>Install &amp; test</h3>
+        <p>Installation to code, with load and continuity testing before anything is energised for use.</p>
+      </li>
+      <li>
+        <span class="process-num">04</span>
+        <h3>Handover &amp; support</h3>
+        <p>Documentation, a walkthrough of your system, and a direct line for servicing or emergency call-out.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+{% if blog_posts %}
+<section class="section section-blue" id="blog">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Our Blog</p>
+      <h2>Latest insights & updates</h2>
+      <p class="section-lede">Stay informed with our latest articles on electrical installations, security systems, and industry best practices.</p>
+      <a href="{% url 'core:blog_list' %}" class="btn btn-ghost" style="margin-top: 12px;">View all posts &rarr;</a>
+    </div>
+    <div class="blog-grid">
+      {% for post in blog_posts %}
+      <article class="blog-card">
+        {% if post.image %}
+        <div class="blog-media">
+          <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-image">
+        </div>
+        {% endif %}
+        <div class="blog-content">
+          <p class="blog-date">{{ post.published_date|date:"F d, Y" }}</p>
+          <h3>{{ post.title }}</h3>
+          <p class="blog-excerpt">{{ post.excerpt|truncatewords:30 }}</p>
+          <a href="{% url 'core:blog_detail' post.slug %}" class="blog-link">Read more <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if testimonials %}
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Client feedback</p>
+      <h2>What it's like on site</h2>
+    </div>
+    <div class="testimonial-grid">
+      {% for t in testimonials %}
+      <blockquote class="testimonial">
+        <p>&ldquo;{{ t.quote }}&rdquo;</p>
+        <footer>{{ t.client_name }}{% if t.client_role %}<span>{{ t.client_role }}</span>{% endif %}</footer>
+      </blockquote>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="section site-ready-section" aria-labelledby="site-ready-heading">
+  <div class="wrap site-ready-grid">
+    <div>
+      <p class="eyebrow">From first visit to future support</p>
+      <h2 id="site-ready-heading">Your project deserves a plan, not a patchwork.</h2>
+      <p class="section-lede">Bring us in early for a practical site review. We will help you map priorities, identify dependencies and turn them into one clear scope of work.</p>
+    </div>
+    <div class="site-ready-card">
+      <span class="site-ready-number">01</span>
+      <div>
+        <h3>Start with a site review</h3>
+        <p>Tell us what needs to be powered, upgraded or secured. A technician will help establish the next practical step.</p>
+      </div>
+      <a href="#contact" class="btn btn-amber">Request a site visit</a>
+    </div>
+  </div>
+</section>
+
+<section class="section contact-section" id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact-copy">
+      <p class="eyebrow">Get a quote</p>
+      <h2>Tell us what you're powering, wiring or securing</h2>
+      <p class="section-lede">Send the details below and a technician — not a call-centre — will call you back to confirm scope and book a site visit.</p>
+      <dl class="hero-specs">
+        <div><dt>Call</dt><dd><a href="tel:+254715117855">0715 117855</a></dd></div>
+        <div><dt>Email</dt><dd><a href="mailto:info@voltproelectrodata.co.ke">info@voltproelectrodata.co.ke</a></dd></div>
+        <div><dt>Emergency</dt><dd>24/7 call-out available</dd></div>
+      </dl>
+    </div>
+
+    <form class="quote-form" method="post" action="{% url 'core:home' %}#contact">
+      {% csrf_token %}
+      <div class="form-row">
+        <label for="id_name">Full Name</label>
+        <input id="id_name" type="text" name="name" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-row">
+        <label for="id_phone">Phone Number</label>
+        <input id="id_phone" type="tel" name="phone" placeholder="e.g. 0715 117855" required>
+      </div>
+      <div class="form-row">
+        <label for="id_email">Email Address <span class="optional">(optional)</span></label>
+        <input id="id_email" type="email" name="email" placeholder="your@email.com">
+      </div>
+      <div class="form-row">
+        <label for="id_location">Site Location</label>
+        <input id="id_location" type="text" name="location" placeholder="e.g. Industrial Area, Nairobi">
+      </div>
+      <div class="form-row">
+        <label for="id_service">Service Needed</label>
+        <select id="id_service" name="service">
+          <option value="">Not sure yet</option>
+          {% for service in services %}
+          <option value="{{ service.pk }}">{{ service.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-row full-width">
+        <label for="id_message">Project Details <span class="optional">(optional)</span></label>
+        <textarea id="id_message" name="message" rows="4" placeholder="Tell us about your project requirements..."></textarea>
+      </div>
+      <div class="form-row full-width">
+        <button type="submit" class="btn btn-amber btn-block btn-sm">Send Quote Request</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+{% endblock %}
