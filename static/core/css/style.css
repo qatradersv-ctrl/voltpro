@@ -544,8 +544,11 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
 .service-card:hover{ border-color: var(--accent); transform: translateY(-6px); box-shadow: 0 16px 36px rgba(15,23,42,0.14); }
 .service-card-media{ position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #0B1220; }
 .service-card-media img{
-  width:100%; height:100%; object-fit: contain; object-position: center;
-  display:block; padding: 10px; box-sizing: border-box;
+  width:100%; height:100%; object-fit: cover; object-position: center;
+  display:block; transition: transform 0.4s ease;
+}
+.service-card:hover .service-card-media img{
+  transform: scale(1.05);
 }
 .service-card-media::after{
   content:""; position:absolute; inset:0;
