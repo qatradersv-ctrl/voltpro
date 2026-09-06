@@ -47,15 +47,23 @@ class ServiceAdmin(admin.ModelAdmin):
     )
 
     def save_model(self, request, obj, form, change):
+        # Store original image to handle save failures
+        original_image = obj.image if change else None
+        new_image = form.cleaned_data.get('image') if 'image' in form.cleaned_data else None
+        
         try:
             super().save_model(request, obj, form, change)
         except Exception as e:
-            # If S3 upload fails, save without the image
-            if 'image' in form.cleaned_data and form.cleaned_data['image']:
-                from django.contrib import messages
-                messages.error(request, f"Image upload failed due to S3 permissions. Service saved without image. Error: {str(e)}")
-                # Remove the image and save without it
-                obj.image = None
+            from django.contrib import messages
+            import os
+            
+            # Handle read-only filesystem or S3 permission errors
+            if new_image and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
+                messages.error(request, f"Image upload failed (read-only filesystem/S3 permissions). Service saved without image.")
+                # Reset to original image and try saving again
+                obj.image = original_image
+                # Clear the form's image to prevent retry
+                form.cleaned_data['image'] = None
                 super().save_model(request, obj, form, change)
             else:
                 raise
@@ -106,17 +114,28 @@ class ProjectAdmin(admin.ModelAdmin):
     )
 
     def save_model(self, request, obj, form, change):
+        # Store original media to handle save failures
+        original_image = obj.image if change else None
+        original_video = obj.video if change else None
+        new_image = form.cleaned_data.get('image') if 'image' in form.cleaned_data else None
+        new_video = form.cleaned_data.get('video') if 'video' in form.cleaned_data else None
+        
         try:
             super().save_model(request, obj, form, change)
         except Exception as e:
             from django.contrib import messages
-            if 'image' in form.cleaned_data and form.cleaned_data['image']:
-                messages.error(request, f"Image upload failed due to S3 permissions. Project saved without image. Error: {str(e)}")
-                obj.image = None
-                super().save_model(request, obj, form, change)
-            elif 'video' in form.cleaned_data and form.cleaned_data['video']:
-                messages.error(request, f"Video upload failed due to S3 permissions. Project saved without video. Error: {str(e)}")
-                obj.video = None
+            
+            # Handle read-only filesystem or S3 permission errors
+            if (new_image or new_video) and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
+                messages.error(request, f"Media upload failed (read-only filesystem/S3 permissions). Project saved without media.")
+                # Reset to original media and try saving again
+                obj.image = original_image
+                obj.video = original_video
+                # Clear the form's media to prevent retry
+                if 'image' in form.cleaned_data:
+                    form.cleaned_data['image'] = None
+                if 'video' in form.cleaned_data:
+                    form.cleaned_data['video'] = None
                 super().save_model(request, obj, form, change)
             else:
                 raise
@@ -221,17 +240,28 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
     )
 
     def save_model(self, request, obj, form, change):
+        # Store original media to handle save failures
+        original_hero_image = obj.hero_image if change else None
+        original_services_video = obj.services_video if change else None
+        new_hero_image = form.cleaned_data.get('hero_image') if 'hero_image' in form.cleaned_data else None
+        new_services_video = form.cleaned_data.get('services_video') if 'services_video' in form.cleaned_data else None
+        
         try:
             super().save_model(request, obj, form, change)
         except Exception as e:
             from django.contrib import messages
-            if 'hero_image' in form.cleaned_data and form.cleaned_data['hero_image']:
-                messages.error(request, f"Hero image upload failed due to S3 permissions. Configuration saved without image. Error: {str(e)}")
-                obj.hero_image = None
-                super().save_model(request, obj, form, change)
-            elif 'services_video' in form.cleaned_data and form.cleaned_data['services_video']:
-                messages.error(request, f"Services video upload failed due to S3 permissions. Configuration saved without video. Error: {str(e)}")
-                obj.services_video = None
+            
+            # Handle read-only filesystem or S3 permission errors
+            if (new_hero_image or new_services_video) and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
+                messages.error(request, f"Media upload failed (read-only filesystem/S3 permissions). Configuration saved without media.")
+                # Reset to original media and try saving again
+                obj.hero_image = original_hero_image
+                obj.services_video = original_services_video
+                # Clear the form's media to prevent retry
+                if 'hero_image' in form.cleaned_data:
+                    form.cleaned_data['hero_image'] = None
+                if 'services_video' in form.cleaned_data:
+                    form.cleaned_data['services_video'] = None
                 super().save_model(request, obj, form, change)
             else:
                 raise
@@ -589,13 +619,22 @@ class BlogPostAdmin(admin.ModelAdmin):
     )
 
     def save_model(self, request, obj, form, change):
+        # Store original image to handle save failures
+        original_featured_image = obj.featured_image if change else None
+        new_featured_image = form.cleaned_data.get('featured_image') if 'featured_image' in form.cleaned_data else None
+        
         try:
             super().save_model(request, obj, form, change)
         except Exception as e:
             from django.contrib import messages
-            if 'featured_image' in form.cleaned_data and form.cleaned_data['featured_image']:
-                messages.error(request, f"Featured image upload failed due to S3 permissions. Blog post saved without image. Error: {str(e)}")
-                obj.featured_image = None
+            
+            # Handle read-only filesystem or S3 permission errors
+            if new_featured_image and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
+                messages.error(request, f"Image upload failed (read-only filesystem/S3 permissions). Blog post saved without image.")
+                # Reset to original image and try saving again
+                obj.featured_image = original_featured_image
+                # Clear the form's image to prevent retry
+                form.cleaned_data['featured_image'] = None
                 super().save_model(request, obj, form, change)
             else:
                 raise
