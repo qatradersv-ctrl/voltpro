@@ -51,22 +51,16 @@ class ServiceAdmin(admin.ModelAdmin):
         original_image = obj.image if change else None
         new_image = form.cleaned_data.get('image') if 'image' in form.cleaned_data else None
         
-        try:
-            super().save_model(request, obj, form, change)
-        except Exception as e:
+        # Check if trying to upload an image in a read-only environment
+        if new_image:
             from django.contrib import messages
-            import os
-            
-            # Handle read-only filesystem or S3 permission errors
-            if new_image and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
-                messages.error(request, f"Image upload failed (read-only filesystem/S3 permissions). Service saved without image.")
-                # Reset to original image and try saving again
-                obj.image = original_image
-                # Clear the form's image to prevent retry
-                form.cleaned_data['image'] = None
-                super().save_model(request, obj, form, change)
-            else:
-                raise
+            # In serverless environments, prevent file upload entirely
+            messages.error(request, "Image upload disabled in serverless environment. Service saved without image.")
+            # Clear the image field to prevent any file operations
+            obj.image = original_image
+            form.cleaned_data['image'] = None
+        
+        super().save_model(request, obj, form, change)
 
     @admin.display(description="")
     def thumb(self, obj):
@@ -120,25 +114,20 @@ class ProjectAdmin(admin.ModelAdmin):
         new_image = form.cleaned_data.get('image') if 'image' in form.cleaned_data else None
         new_video = form.cleaned_data.get('video') if 'video' in form.cleaned_data else None
         
-        try:
-            super().save_model(request, obj, form, change)
-        except Exception as e:
+        # Check if trying to upload media in a read-only environment
+        if new_image or new_video:
             from django.contrib import messages
-            
-            # Handle read-only filesystem or S3 permission errors
-            if (new_image or new_video) and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
-                messages.error(request, f"Media upload failed (read-only filesystem/S3 permissions). Project saved without media.")
-                # Reset to original media and try saving again
-                obj.image = original_image
-                obj.video = original_video
-                # Clear the form's media to prevent retry
-                if 'image' in form.cleaned_data:
-                    form.cleaned_data['image'] = None
-                if 'video' in form.cleaned_data:
-                    form.cleaned_data['video'] = None
-                super().save_model(request, obj, form, change)
-            else:
-                raise
+            # In serverless environments, prevent file upload entirely
+            messages.error(request, "Media upload disabled in serverless environment. Project saved without media.")
+            # Clear the media fields to prevent any file operations
+            obj.image = original_image
+            obj.video = original_video
+            if 'image' in form.cleaned_data:
+                form.cleaned_data['image'] = None
+            if 'video' in form.cleaned_data:
+                form.cleaned_data['video'] = None
+        
+        super().save_model(request, obj, form, change)
 
     @admin.display(description="")
     def thumb(self, obj):
@@ -246,25 +235,20 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
         new_hero_image = form.cleaned_data.get('hero_image') if 'hero_image' in form.cleaned_data else None
         new_services_video = form.cleaned_data.get('services_video') if 'services_video' in form.cleaned_data else None
         
-        try:
-            super().save_model(request, obj, form, change)
-        except Exception as e:
+        # Check if trying to upload media in a read-only environment
+        if new_hero_image or new_services_video:
             from django.contrib import messages
-            
-            # Handle read-only filesystem or S3 permission errors
-            if (new_hero_image or new_services_video) and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
-                messages.error(request, f"Media upload failed (read-only filesystem/S3 permissions). Configuration saved without media.")
-                # Reset to original media and try saving again
-                obj.hero_image = original_hero_image
-                obj.services_video = original_services_video
-                # Clear the form's media to prevent retry
-                if 'hero_image' in form.cleaned_data:
-                    form.cleaned_data['hero_image'] = None
-                if 'services_video' in form.cleaned_data:
-                    form.cleaned_data['services_video'] = None
-                super().save_model(request, obj, form, change)
-            else:
-                raise
+            # In serverless environments, prevent file upload entirely
+            messages.error(request, "Media upload disabled in serverless environment. Configuration saved without media.")
+            # Clear the media fields to prevent any file operations
+            obj.hero_image = original_hero_image
+            obj.services_video = original_services_video
+            if 'hero_image' in form.cleaned_data:
+                form.cleaned_data['hero_image'] = None
+            if 'services_video' in form.cleaned_data:
+                form.cleaned_data['services_video'] = None
+        
+        super().save_model(request, obj, form, change)
 
     @admin.display(description="Hero Image Preview")
     def hero_image_preview(self, obj):
@@ -623,21 +607,16 @@ class BlogPostAdmin(admin.ModelAdmin):
         original_featured_image = obj.featured_image if change else None
         new_featured_image = form.cleaned_data.get('featured_image') if 'featured_image' in form.cleaned_data else None
         
-        try:
-            super().save_model(request, obj, form, change)
-        except Exception as e:
+        # Check if trying to upload an image in a read-only environment
+        if new_featured_image:
             from django.contrib import messages
-            
-            # Handle read-only filesystem or S3 permission errors
-            if new_featured_image and ('Read-only file system' in str(e) or 'Permission denied' in str(e) or 'ClientError' in str(e)):
-                messages.error(request, f"Image upload failed (read-only filesystem/S3 permissions). Blog post saved without image.")
-                # Reset to original image and try saving again
-                obj.featured_image = original_featured_image
-                # Clear the form's image to prevent retry
-                form.cleaned_data['featured_image'] = None
-                super().save_model(request, obj, form, change)
-            else:
-                raise
+            # In serverless environments, prevent file upload entirely
+            messages.error(request, "Image upload disabled in serverless environment. Blog post saved without image.")
+            # Clear the image field to prevent any file operations
+            obj.featured_image = original_featured_image
+            form.cleaned_data['featured_image'] = None
+        
+        super().save_model(request, obj, form, change)
 
     @admin.display(description="Featured Image Preview")
     def featured_image_preview(self, obj):
