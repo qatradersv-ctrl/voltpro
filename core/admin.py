@@ -41,26 +41,11 @@ class ServiceAdmin(admin.ModelAdmin):
     ordering = ("order", "title")
     list_per_page = 50
     readonly_fields = ("image_preview",)
+    # Temporarily remove image field to prevent upload errors in serverless environment
     fields = (
-        "title", "slug", "category", "icon", "image", "image_preview",
+        "title", "slug", "category", "icon", "image_preview",
         "rating_note", "short_description", "description", "order", "is_featured",
     )
-
-    def save_model(self, request, obj, form, change):
-        # Store original image to handle save failures
-        original_image = obj.image if change else None
-        new_image = form.cleaned_data.get('image') if 'image' in form.cleaned_data else None
-        
-        # Check if trying to upload an image in a read-only environment
-        if new_image:
-            from django.contrib import messages
-            # In serverless environments, prevent file upload entirely
-            messages.error(request, "Image upload disabled in serverless environment. Service saved without image.")
-            # Clear the image field to prevent any file operations
-            obj.image = original_image
-            form.cleaned_data['image'] = None
-        
-        super().save_model(request, obj, form, change)
 
     @admin.display(description="")
     def thumb(self, obj):
@@ -102,32 +87,11 @@ class ProjectAdmin(admin.ModelAdmin):
     autocomplete_fields = ("service",)
     date_hierarchy = "completed_on"
     readonly_fields = ("image_preview", "video_preview")
+    # Temporarily remove media fields to prevent upload errors in serverless environment
     fields = (
-        "title", "service", "location", "image", "image_preview",
-        "video", "video_preview", "summary", "completed_on", "order",
+        "title", "service", "location", "image_preview",
+        "video_preview", "summary", "completed_on", "order",
     )
-
-    def save_model(self, request, obj, form, change):
-        # Store original media to handle save failures
-        original_image = obj.image if change else None
-        original_video = obj.video if change else None
-        new_image = form.cleaned_data.get('image') if 'image' in form.cleaned_data else None
-        new_video = form.cleaned_data.get('video') if 'video' in form.cleaned_data else None
-        
-        # Check if trying to upload media in a read-only environment
-        if new_image or new_video:
-            from django.contrib import messages
-            # In serverless environments, prevent file upload entirely
-            messages.error(request, "Media upload disabled in serverless environment. Project saved without media.")
-            # Clear the media fields to prevent any file operations
-            obj.image = original_image
-            obj.video = original_video
-            if 'image' in form.cleaned_data:
-                form.cleaned_data['image'] = None
-            if 'video' in form.cleaned_data:
-                form.cleaned_data['video'] = None
-        
-        super().save_model(request, obj, form, change)
 
     @admin.display(description="")
     def thumb(self, obj):
@@ -218,37 +182,15 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
     readonly_fields = ("hero_image_preview", "services_video_preview")
     fieldsets = (
         ("Hero Section", {
-            "fields": ("hero_image", "hero_image_preview")
+            "fields": ("hero_image_preview")
         }),
         ("Services Section", {
-            "fields": ("services_video", "services_video_preview")
+            "fields": ("services_video_preview")
         }),
         ("Email Configuration", {
             "fields": ("email_host", "email_port", "email_use_tls", "email_host_user", "email_host_password", "contact_email", "technician_email")
         }),
     )
-
-    def save_model(self, request, obj, form, change):
-        # Store original media to handle save failures
-        original_hero_image = obj.hero_image if change else None
-        original_services_video = obj.services_video if change else None
-        new_hero_image = form.cleaned_data.get('hero_image') if 'hero_image' in form.cleaned_data else None
-        new_services_video = form.cleaned_data.get('services_video') if 'services_video' in form.cleaned_data else None
-        
-        # Check if trying to upload media in a read-only environment
-        if new_hero_image or new_services_video:
-            from django.contrib import messages
-            # In serverless environments, prevent file upload entirely
-            messages.error(request, "Media upload disabled in serverless environment. Configuration saved without media.")
-            # Clear the media fields to prevent any file operations
-            obj.hero_image = original_hero_image
-            obj.services_video = original_services_video
-            if 'hero_image' in form.cleaned_data:
-                form.cleaned_data['hero_image'] = None
-            if 'services_video' in form.cleaned_data:
-                form.cleaned_data['services_video'] = None
-        
-        super().save_model(request, obj, form, change)
 
     @admin.display(description="Hero Image Preview")
     def hero_image_preview(self, obj):
@@ -595,28 +537,13 @@ class BlogPostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     date_hierarchy = "published_at"
     readonly_fields = ("created_at", "updated_at", "featured_image_preview")
+    # Temporarily remove featured image field to prevent upload errors in serverless environment
     fields = (
         "title", "slug", "author", "category", "excerpt", "content",
-        "featured_image", "featured_image_preview", "is_published", "is_featured",
+        "featured_image_preview", "is_published", "is_featured",
         "published_at", "meta_description", "meta_keywords",
         "created_at", "updated_at",
     )
-
-    def save_model(self, request, obj, form, change):
-        # Store original image to handle save failures
-        original_featured_image = obj.featured_image if change else None
-        new_featured_image = form.cleaned_data.get('featured_image') if 'featured_image' in form.cleaned_data else None
-        
-        # Check if trying to upload an image in a read-only environment
-        if new_featured_image:
-            from django.contrib import messages
-            # In serverless environments, prevent file upload entirely
-            messages.error(request, "Image upload disabled in serverless environment. Blog post saved without image.")
-            # Clear the image field to prevent any file operations
-            obj.featured_image = original_featured_image
-            form.cleaned_data['featured_image'] = None
-        
-        super().save_model(request, obj, form, change)
 
     @admin.display(description="Featured Image Preview")
     def featured_image_preview(self, obj):

@@ -107,36 +107,53 @@ if os.environ.get('DATABASE_URL'):
     DATABASES['default'] = dj_database_url.config(conn_max_age=0, ssl_require=True)
 
 
-# AWS S3 / Supabase Storage configuration for media files
-if os.environ.get('AWS_ACCESS_KEY_ID'):
+# Media files: local disk in development; S3 (Supabase) in production.
+# Vercel’s filesystem is read-only, so uploads must not use FileSystemStorage there.
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+_USE_S3_MEDIA = bool(os.environ.get('AWS_ACCESS_KEY_ID'))
+
+if _USE_S3_MEDIA:
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL')
     AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
+    AWS_S3_ADDRESSING_STYLE = 'path'
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
     AWS_DEFAULT_ACL = None
     AWS_S3_FILE_OVERWRITE = False
-    
-    # Django 5.2 STORAGES format
-    STORAGES = {
-        'default': {
-            'BACKEND': 'django.core.files.storage.FileSystemStorage',
-        },
-        'staticfiles': {
-            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
-        },
-    }
-else:
-    # Use local file storage when S3 credentials are not available
-    STORAGES = {
-        'default': {
-            'BACKEND': 'django.core.files.storage.FileSystemStorage',
-        },
-        'staticfiles': {
-            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
-        },
-    }
+    AWS_QUERYSTRING_AUTH = False
+
+    # Public object URL for Supabase Storage (S3 API endpoint is not the browser URL).
+    _custom_domain = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
+    if not _custom_domain and AWS_S3_ENDPOINT_URL and AWS_STORAGE_BUCKET_NAME:
+        _supabase_host = (
+            AWS_S3_ENDPOINT_URL
+            .replace('https://', '')
+            .replace('http://', '')
+            .replace('/storage/v1/s3', '')
+            .rstrip('/')
+        )
+        _custom_domain = f'{_supabase_host}/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}'
+    if _custom_domain:
+        AWS_S3_CUSTOM_DOMAIN = _custom_domain
+        MEDIA_URL = f'https://{_custom_domain}/'
+
+STORAGES = {
+    'default': {
+        'BACKEND': (
+            'storages.backends.s3.S3Storage'
+            if _USE_S3_MEDIA
+            else 'django.core.files.storage.FileSystemStorage'
+        ),
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 
 # Password validation
@@ -176,10 +193,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Email Configuration
