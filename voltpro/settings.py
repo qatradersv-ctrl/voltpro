@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 import os
 from pathlib import Path
 
+# boto3 1.36+ checksum headers are rejected by Supabase's S3-compatible API.
+os.environ.setdefault("AWS_REQUEST_CHECKSUM_CALCULATION", "when_required")
+os.environ.setdefault("AWS_RESPONSE_CHECKSUM_VALIDATION", "when_required")
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -122,10 +126,24 @@ if _USE_S3_MEDIA:
     AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', 'us-east-1')
     AWS_S3_ADDRESSING_STYLE = 'path'
     AWS_S3_SIGNATURE_VERSION = 's3v4'
-    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_S3_OBJECT_PARAMETERS = {}
     AWS_DEFAULT_ACL = None
     AWS_S3_FILE_OVERWRITE = True
     AWS_QUERYSTRING_AUTH = False
+    try:
+        from botocore.config import Config as _BotoConfig
+        AWS_S3_CLIENT_CONFIG = _BotoConfig(
+            request_checksum_calculation='when_required',
+            response_checksum_validation='when_required',
+            signature_version='s3v4',
+            s3={'addressing_style': 'path'},
+        )
+    except TypeError:
+        from botocore.config import Config as _BotoConfig
+        AWS_S3_CLIENT_CONFIG = _BotoConfig(
+            signature_version='s3v4',
+            s3={'addressing_style': 'path'},
+        )
 
     # Public object URL for Supabase Storage (S3 API endpoint is not the browser URL).
     _custom_domain = os.environ.get('AWS_S3_CUSTOM_DOMAIN')
