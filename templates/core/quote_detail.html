@@ -49,6 +49,7 @@
           <thead class="table-light">
             <tr>
               <th style="width: 50px;">#</th>
+              <th>Taxable</th>
               <th>Description</th>
               <th>Qty</th>
               <th>Unit</th>
@@ -60,6 +61,14 @@
             {% for item in quote.line_items.all %}
             <tr>
               <td>{{ forloop.counter }}</td>
+              <td>
+                <input type="checkbox" 
+                       class="form-check-input taxable-checkbox" 
+                       data-item-id="{{ item.id }}"
+                       {% if item.taxable %}checked{% endif %}
+                       onchange="toggleItemTax({{ item.id }}, this.checked)"
+                       {% if quote.status != "draft" %}disabled{% endif %}>
+              </td>
               <td>{{ item.description }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.unit }}</td>
@@ -67,21 +76,10 @@
               <td>KES {{ item.line_total|floatformat:2|intcomma }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="6" class="text-center text-muted">No line items added yet — check back once the quote has been finalised.</td></tr>
+            <tr><td colspan="7" class="text-center text-muted">No line items added yet — check back once the quote has been finalised.</td></tr>
             {% endfor %}
           </tbody>
         </table>
-      </div>
-    </div>
-
-    <div class="quote-tax-toggle mb-3">
-      <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="applyTaxCheckbox" 
-               {% if quote.apply_tax %}checked{% endif %} 
-               onchange="toggleTax()">
-        <label class="form-check-label" for="applyTaxCheckbox">
-          Apply VAT ({{ quote.tax_rate }}%) to this quote
-        </label>
       </div>
     </div>
 
@@ -172,18 +170,18 @@ function shareQuote() {
   window.location.href = `mailto:?subject=${subject}&body=${body}`;
 }
 
-function toggleTax() {
-  const checkbox = document.getElementById('applyTaxCheckbox');
-  const applyTax = checkbox.checked;
-  
-  // Send AJAX request to update the quote
-  fetch("{% url 'core:quote_toggle_tax' quote.public_id %}", {
+function toggleItemTax(itemId, isTaxable) {
+  // Send AJAX request to update the line item
+  fetch("{% url 'core:quote_toggle_item_tax' quote.public_id %}", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRFToken': getCookie('csrftoken')
     },
-    body: JSON.stringify({ apply_tax: applyTax })
+    body: JSON.stringify({ 
+      item_id: itemId, 
+      taxable: isTaxable 
+    })
   })
   .then(response => response.json())
   .then(data => {
@@ -191,15 +189,21 @@ function toggleTax() {
       // Reload the page to show updated totals
       location.reload();
     } else {
-      console.error('Failed to update tax setting');
+      console.error('Failed to update item tax setting');
       // Revert checkbox on failure
-      checkbox.checked = !applyTax;
+      const checkbox = document.querySelector(`[data-item-id="${itemId}"]`);
+      if (checkbox) {
+        checkbox.checked = !isTaxable;
+      }
     }
   })
   .catch(error => {
     console.error('Error:', error);
     // Revert checkbox on error
-    checkbox.checked = !applyTax;
+    const checkbox = document.querySelector(`[data-item-id="${itemId}"]`);
+    if (checkbox) {
+      checkbox.checked = !isTaxable;
+    }
   });
 }
 

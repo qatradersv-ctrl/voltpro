@@ -225,8 +225,13 @@ class Quote(models.Model):
         return sum((item.line_total for item in self.line_items.all()), Decimal("0.00"))
 
     @property
+    def taxable_subtotal(self):
+        """Calculate subtotal of only taxable items."""
+        return sum((item.line_total for item in self.line_items.all() if item.taxable), Decimal("0.00"))
+
+    @property
     def tax_amount(self):
-        return (self.subtotal * self.tax_rate / Decimal("100")).quantize(Decimal("0.01"))
+        return (self.taxable_subtotal * self.tax_rate / Decimal("100")).quantize(Decimal("0.01"))
 
     @property
     def total(self):
@@ -277,6 +282,10 @@ class QuoteLineItem(models.Model):
         decimal_places=2, 
         default=Decimal("0.00"),
         help_text="Price per unit in KES"
+    )
+    taxable = models.BooleanField(
+        default=True,
+        help_text="Whether tax (VAT) should be applied to this line item"
     )
     order = models.PositiveIntegerField(default=0, help_text="Sort order for line items")
 

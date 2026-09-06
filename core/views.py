@@ -8,7 +8,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber
+from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber, QuoteLineItem
 from .pdf import build_quote_pdf
 
 
@@ -193,8 +193,8 @@ def quote_detail(request, public_id):
 
 
 @csrf_exempt
-def quote_toggle_tax(request, public_id):
-    """AJAX endpoint to toggle tax application for a quote."""
+def quote_toggle_item_tax(request, public_id):
+    """AJAX endpoint to toggle tax application for a specific line item."""
     if request.method != "POST":
         return JsonResponse({"success": False, "error": "Method not allowed"})
     
@@ -202,13 +202,20 @@ def quote_toggle_tax(request, public_id):
     
     try:
         data = json.loads(request.body)
-        apply_tax = data.get('apply_tax', True)
-        quote.apply_tax = apply_tax
-        quote.save(update_fields=["apply_tax", "updated_at"])
+        item_id = data.get('item_id')
+        taxable = data.get('taxable', True)
+        
+        # Get the line item
+        line_item = get_object_or_404(QuoteLineItem, id=item_id, quote=quote)
+        
+        # Update the taxable status
+        line_item.taxable = taxable
+        line_item.save(update_fields=["taxable"])
         
         return JsonResponse({
             "success": True,
-            "apply_tax": quote.apply_tax,
+            "item_id": item_id,
+            "taxable": line_item.taxable,
             "tax_amount": str(quote.tax_amount),
             "total": str(quote.total)
         })
