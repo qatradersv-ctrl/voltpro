@@ -43,25 +43,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<section class="hero" aria-label="Hero section" style="background-image: url('{% static 'core/images/hero-bg.png' %}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 600px;">
+<section class="hero" aria-label="Hero section">
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-content">
-        <h1>Power, Access & Security Solutions for Kenya</h1>
-        <p class="hero-lede">From solar installations to security systems, we deliver reliable electrical and security solutions across Nairobi and beyond.</p>
-        <div class="hero-actions">
-          <a href="#contact" class="btn btn-amber">Get a Quote</a>
-          <a href="{% url 'core:services' %}" class="btn btn-ghost">Our Services</a>
-        </div>
-        <dl class="hero-specs">
-          <div><dt>13+</dt><dd>Service Lines</dd></div>
-          <div><dt>24/7</dt><dd>Emergency Support</dd></div>
-          <div><dt>100%</dt><dd>Certified</dd></div>
-        </dl>
       </div>
-      <div class="hero-image-wrapper">
-        <img src="{% static 'core/images/hero.png' %}" alt="Electrical and security installation" class="hero-side-image">
-      </div>
+
     </div>
   </div>
 </section>
