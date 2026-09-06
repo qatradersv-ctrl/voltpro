@@ -7,7 +7,17 @@
   <div class="wrap">
     <p class="eyebrow">Our Portfolio</p>
     <h1>Our Work Gallery</h1>
-    <p class="section-lede">Browse through our completed projects — from solar installations to security systems.</p>
+    <p class="section-lede">Browse through our completed projects — from solar installations to security systems. Each project showcases our commitment to quality, safety, and customer satisfaction across residential, commercial, and industrial applications.</p>
+  </div>
+</section>
+
+<section class="section section-blue">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Recent Projects</p>
+      <h2>What we've been working on</h2>
+      <p class="section-lede">Explore our diverse portfolio of successful installations across Nairobi and beyond. Each project represents our dedication to excellence and our ability to deliver customized solutions for unique challenges.</p>
+    </div>
   </div>
 </section>
 
@@ -34,8 +44,67 @@
         </div>
       </div>
       {% empty %}
-      <p>No projects yet.</p>
+      <div class="empty-state">
+        <p>No projects to display yet. Check back soon to see our latest work!</p>
+      </div>
       {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Project Categories</p>
+      <h2>Industries we serve</h2>
+      <p class="section-lede">Our expertise spans multiple sectors, delivering specialized solutions for each industry's unique requirements.</p>
+    </div>
+    <div class="services-grid">
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">Residential</h3>
+        <p>Home electrical systems, solar installations, security systems, and smart home automation for modern living.</p>
+      </div>
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
+            <line x1="9" y1="22" x2="9" y2="22.01"/>
+            <line x1="15" y1="22" x2="15" y2="22.01"/>
+            <line x1="12" y1="22" x2="12" y2="22.01"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">Commercial</h3>
+        <p>Office building electrical infrastructure, security systems, and power backup solutions for business continuity.</p>
+      </div>
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 22h20"/>
+            <path d="M2 6h20"/>
+            <path d="M2 14h20"/>
+            <path d="M6 2v20"/>
+            <path d="M18 2v20"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">Industrial</h3>
+        <p>Heavy-duty electrical systems, machinery power distribution, and industrial security solutions.</p>
+      </div>
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">Institutional</h3>
+        <p>Schools, hospitals, and government facility electrical and security installations meeting strict standards.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -45,7 +114,7 @@
     <div class="contact-copy">
       <p class="eyebrow">Get a quote</p>
       <h2>Tell us what you're powering, wiring or securing</h2>
-      <p class="section-lede">Send the details below and a technician — not a call-centre — will call you back to confirm scope and book a site visit.</p>
+      <p class="section-lede">Send the details below and a technician — not a call-centre — will call you back to confirm scope and book a site visit. We provide personalized service and expert advice for your specific needs.</p>
       <dl class="hero-specs">
         <div><dt>Call</dt><dd><a href="tel:+254715117855">0715 117855</a></dd></div>
         <div><dt>Email</dt><dd><a href="mailto:info@voltproelectrodata.co.ke">info@voltproelectrodata.co.ke</a></dd></div>

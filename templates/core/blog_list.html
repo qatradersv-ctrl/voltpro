@@ -7,8 +7,9 @@
 
 <section class="page-header">
   <div class="wrap">
-    <h1>Blog & News</h1>
-    <p class="section-lede">Stay updated with the latest insights, tips, and news from VoltPro Electrodata Solutions.</p>
+    <p class="eyebrow">Blog & News</p>
+    <h1>Insights & Updates</h1>
+    <p class="section-lede">Stay updated with the latest insights, tips, and news from VoltPro Electrodata Solutions. Our blog covers electrical best practices, solar energy trends, security system innovations, and industry updates to help you make informed decisions about your power and security needs.</p>
   </div>
 </section>
 
@@ -17,6 +18,8 @@
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Featured Posts</p>
+      <h2>Highlighted articles</h2>
+      <p class="section-lede">Must-read content selected by our team for its relevance and value to our clients.</p>
     </div>
     <div class="blog-featured-grid">
       {% for post in featured_posts %}
@@ -47,6 +50,7 @@
     <div class="section-head">
       <p class="eyebrow">All Posts</p>
       <h2>Latest Articles</h2>
+      <p class="section-lede">Browse our collection of articles covering electrical systems, solar installations, security solutions, and industry best practices.</p>
       
       {% if categories %}
       <div class="blog-categories">
@@ -81,19 +85,88 @@
     </div>
     {% else %}
     <div class="empty-state">
-      <p>No blog posts found{% if current_category %} in {{ current_category }}{% endif %}.</p>
+      <p>No blog posts found{% if current_category %} in {{ current_category }}{% endif %}. Check back soon for new content!</p>
     </div>
     {% endif %}
   </div>
 </section>
 
-<section class="section section-alt service-cta">
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Newsletter</p>
+      <h2>Stay informed</h2>
+      <p class="section-lede">Subscribe to our newsletter to receive the latest articles, tips, and updates directly in your inbox.</p>
+    </div>
+    <div class="newsletter-section">
+      <form id="blog-newsletter-form" class="newsletter-form-inline">
+        {% csrf_token %}
+        <input type="email" id="blog-newsletter-email" placeholder="Enter your email address" required style="flex: 1; padding: 14px 18px; border: 2px solid var(--line); border-radius: var(--radius); font-size: 15px;">
+        <button type="submit" class="btn btn-amber">Subscribe</button>
+      </form>
+      <div id="blog-newsletter-message" style="margin-top: 12px; font-size: 14px;"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section service-cta">
   <div class="wrap">
     <div class="service-cta-content">
       <h2>Need expert electrical or security services?</h2>
-      <p>Contact us today for professional installations, maintenance, and consultations.</p>
+      <p>Contact us today for professional installations, maintenance, and consultations. Our team is ready to help with all your power and security needs.</p>
       <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
     </div>
   </div>
 </section>
+
+<script>
+// Blog newsletter subscription form handling
+document.addEventListener('DOMContentLoaded', function() {
+  const blogNewsletterForm = document.getElementById('blog-newsletter-form');
+  if (blogNewsletterForm) {
+    blogNewsletterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('blog-newsletter-email').value;
+      const messageDiv = document.getElementById('blog-newsletter-message');
+      const submitBtn = blogNewsletterForm.querySelector('button[type="submit"]');
+      const csrfToken = blogNewsletterForm.querySelector('[name=csrfmiddlewaretoken]')?.value;
+      
+      // Disable button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Subscribing...';
+      
+      fetch("{% url 'core:newsletter_subscribe' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken || ''
+        },
+        body: JSON.stringify({
+          email: email
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          messageDiv.textContent = data.message;
+          messageDiv.style.color = '#10B981';
+          blogNewsletterForm.reset();
+        } else {
+          messageDiv.textContent = data.error || 'Subscription failed. Please try again.';
+          messageDiv.style.color = '#EF4444';
+        }
+      })
+      .catch(error => {
+        messageDiv.textContent = 'An error occurred. Please try again.';
+        messageDiv.style.color = '#EF4444';
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Subscribe';
+      });
+    });
+  }
+});
+</script>
 {% endblock %}

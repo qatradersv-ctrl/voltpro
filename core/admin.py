@@ -10,7 +10,7 @@ from django.conf import settings
 
 from .models import (
     Service, Project, Testimonial, QuoteRequest, Quote, QuoteLineItem, QuoteStatus,
-    SiteConfiguration, InventoryItem, BlogPost,
+    SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber,
 )
 
 admin.site.site_header = "VoltPro Electrodata Solutions"
@@ -568,3 +568,37 @@ class BlogPostAdmin(admin.ModelAdmin):
         return format_html(
             '<span style="color:#888;font-size:13px;">No featured image uploaded yet.</span>'
         )
+
+
+@admin.register(NewsletterSubscriber)
+class NewsletterSubscriberAdmin(admin.ModelAdmin):
+    list_display = ("email", "name", "is_active", "subscribed_at", "unsubscribed_at")
+    list_editable = ("is_active",)
+    list_filter = ("is_active", "subscribed_at")
+    search_fields = ("email", "name")
+    readonly_fields = ("subscribed_at",)
+    actions = ["export_csv", "mark_active", "mark_inactive"]
+
+    @admin.action(description="Export selected subscribers as CSV")
+    def export_csv(self, request, queryset):
+        rows = [
+            [sub.email, sub.name or "", "Active" if sub.is_active else "Inactive",
+             sub.subscribed_at.strftime("%Y-%m-%d %H:%M") if sub.subscribed_at else "",
+             sub.unsubscribed_at.strftime("%Y-%m-%d %H:%M") if sub.unsubscribed_at else ""]
+            for sub in queryset
+        ]
+        return csv_response(
+            "voltpro_newsletter_subscribers.csv",
+            ["Email", "Name", "Status", "Subscribed At", "Unsubscribed At"],
+            rows,
+        )
+
+    @admin.action(description="Mark selected subscribers as active")
+    def mark_active(self, request, queryset):
+        updated = queryset.update(is_active=True)
+        self.message_user(request, f"{updated} subscriber(s) marked as active.")
+
+    @admin.action(description="Mark selected subscribers as inactive")
+    def mark_inactive(self, request, queryset):
+        updated = queryset.update(is_active=False)
+        self.message_user(request, f"{updated} subscriber(s) marked as inactive.")

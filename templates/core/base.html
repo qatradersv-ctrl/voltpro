@@ -90,6 +90,7 @@
 
     <div class="header-center">
       <nav class="main-nav" aria-label="Primary navigation">
+        <a href="{% url 'core:about' %}">About</a>
         <div class="nav-item dropdown">
           <a href="{% url 'core:services' %}" class="nav-link dropdown-toggle">Services</a>
           <div class="dropdown-menu">
@@ -116,6 +117,7 @@
   </div>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primary mobile">
+    <a href="{% url 'core:about' %}">About</a>
     <div class="mobile-dropdown">
       <button class="mobile-dropdown-toggle" aria-expanded="false">Services</button>
       <div class="mobile-dropdown-menu">
@@ -192,6 +194,17 @@
         <li><span>Saturday</span><span>9:00 – 15:00</span></li>
         <li><span>Emergency</span><span>24/7 call-out</span></li>
       </ul>
+    </div>
+
+    <div class="footer-col">
+      <h3>Newsletter</h3>
+      <p style="margin-bottom: 12px; font-size: 13px; color: #FFFFFF;">Subscribe for latest updates and tips.</p>
+      <form id="newsletter-form" class="newsletter-form">
+        {% csrf_token %}
+        <input type="email" id="newsletter-email" placeholder="Your email" required style="width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #FFFFFF; border-radius: 4px; font-size: 13px;">
+        <button type="submit" class="btn btn-amber btn-sm" style="width: 100%; padding: 8px 12px; font-size: 12px;">Subscribe</button>
+      </form>
+      <div id="newsletter-message" style="margin-top: 8px; font-size: 12px;"></div>
     </div>
 
     <div class="footer-col">
@@ -278,5 +291,56 @@
 </a>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Newsletter subscription form handling
+document.addEventListener('DOMContentLoaded', function() {
+  const newsletterForm = document.getElementById('newsletter-form');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('newsletter-email').value;
+      const messageDiv = document.getElementById('newsletter-message');
+      const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+      const csrfToken = newsletterForm.querySelector('[name=csrfmiddlewaretoken]')?.value;
+      
+      // Disable button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Subscribing...';
+      
+      fetch("{% url 'core:newsletter_subscribe' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken || ''
+        },
+        body: JSON.stringify({
+          email: email
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          messageDiv.textContent = data.message;
+          messageDiv.style.color = '#10B981';
+          newsletterForm.reset();
+        } else {
+          messageDiv.textContent = data.error || 'Subscription failed. Please try again.';
+          messageDiv.style.color = '#EF4444';
+        }
+      })
+      .catch(error => {
+        messageDiv.textContent = 'An error occurred. Please try again.';
+        messageDiv.style.color = '#EF4444';
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Subscribe';
+      });
+    });
+  }
+});
+</script>
 </body>
 </html>

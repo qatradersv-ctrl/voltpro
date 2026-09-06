@@ -8,7 +8,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost
+from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber
 from .pdf import build_quote_pdf
 
 
@@ -167,6 +167,12 @@ def contact(request):
     return render(request, "core/contact.html")
 
 
+def about(request):
+    """About page with company information."""
+    context = {}
+    return render(request, "core/about.html", context)
+
+
 def quote_detail(request, public_id):
     """Client-facing quote page — no login required, reachable only with the UUID link."""
     quote = get_object_or_404(Quote, public_id=public_id)
@@ -275,3 +281,41 @@ def blog_detail(request, slug):
         'related_posts': related_posts,
     }
     return render(request, 'core/blog_detail.html', context)
+
+
+@csrf_exempt
+def newsletter_subscribe(request):
+    """Handle newsletter subscription via AJAX."""
+    if request.method != "POST":
+        return JsonResponse({"success": False, "error": "Method not allowed"})
+    
+    try:
+        data = json.loads(request.body)
+        email = data.get('email', '').strip()
+        name = data.get('name', '').strip()
+        
+        if not email:
+            return JsonResponse({"success": False, "error": "Email is required"})
+        
+        # Check if email already exists
+        if NewsletterSubscriber.objects.filter(email=email).exists():
+            # Reactivate if was unsubscribed
+            subscriber = NewsletterSubscriber.objects.get(email=email)
+            if not subscriber.is_active:
+                subscriber.is_active = True
+                subscriber.subscribed_at = timezone.now()
+                subscriber.unsubscribed_at = None
+                subscriber.save()
+                return JsonResponse({"success": True, "message": "Subscription reactivated successfully"})
+            return JsonResponse({"success": True, "message": "Already subscribed"})
+        
+        # Create new subscriber
+        subscriber = NewsletterSubscriber.objects.create(
+            email=email,
+            name=name
+        )
+        
+        return JsonResponse({"success": True, "message": "Successfully subscribed to newsletter"})
+    
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})

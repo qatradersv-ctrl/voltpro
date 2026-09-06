@@ -6,13 +6,19 @@
 
 <section class="page-header">
   <div class="wrap">
+    <p class="eyebrow">Our Services</p>
     <h1>Comprehensive Power & Security Solutions</h1>
-    <p class="section-lede">We provide end-to-end electrical and security installations — from design to deployment and ongoing maintenance.</p>
+    <p class="section-lede">We provide end-to-end electrical and security installations — from design to deployment and ongoing maintenance. Our certified team delivers quality workmanship across residential, commercial, and industrial projects.</p>
   </div>
 </section>
 
 <section class="section section-alt">
   <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Service Categories</p>
+      <h2>Find the solution you need</h2>
+      <p class="section-lede">Browse our comprehensive range of electrical and security services designed to meet all your power and protection needs.</p>
+    </div>
     <div class="category-tabs">
       <a href="{% url 'core:services' %}" class="category-tab {% if not current_category %}active{% endif %}">All Services</a>
       <a href="{% url 'core:services' %}?category=power" class="category-tab {% if current_category == 'power' %}active{% endif %}">Power & Backup</a>
@@ -21,10 +27,62 @@
       <a href="{% url 'core:services' %}?category=infra" class="category-tab {% if current_category == 'infra' %}active{% endif %}">Wiring & Infrastructure</a>
       <a href="{% url 'core:services' %}?category=gates" class="category-tab {% if current_category == 'gates' %}active{% endif %}">Gates & Perimeter</a>
     </div>
-    <div class="services-grid">
+    <div class="service-grid">
       {% for service in services %}
         {% include "core/_service_card.html" with service=service %}
       {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-blue">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Why Choose Us</p>
+      <h2>Expertise you can trust</h2>
+      <p class="section-lede">Our commitment to quality, safety, and customer satisfaction sets us apart in the industry.</p>
+    </div>
+    <div class="services-grid">
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3 4 6v6c0 5 3.4 7.6 8 9 4.6-1.4 8-4 8-9V6l-8-3Z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">Licensed & Insured</h3>
+        <p>Fully licensed electrical contractor with comprehensive insurance coverage for your peace of mind.</p>
+      </div>
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">Certified Technicians</h3>
+        <p>Our in-house team of certified technicians brings decades of combined experience to every project.</p>
+      </div>
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3.5 2"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">24/7 Emergency Support</h3>
+        <p>Round-the-clock emergency call-out services when your systems cannot wait.</p>
+      </div>
+      <div class="services-card">
+        <div class="services-card-img">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3 class="services-card-label">Quality Guarantee</h3>
+        <p>Tested, certified, and warrantied installations backed by our commitment to excellence.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -33,7 +91,7 @@
   <div class="wrap">
     <div class="service-cta-content">
       <h2>Need a custom solution?</h2>
-      <p>Contact us today for a free consultation and quote for your power and security needs.</p>
+      <p>Contact us today for a free consultation and quote for your power and security needs. Our team will assess your requirements and provide tailored recommendations.</p>
       <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
     </div>
   </div>
