@@ -145,15 +145,19 @@ if _USE_S3_MEDIA:
 STORAGES = {
     'default': {
         'BACKEND': (
-            'storages.backends.s3.S3Storage'
+            'core.storage.MediaStorage'
             if _USE_S3_MEDIA
             else 'django.core.files.storage.FileSystemStorage'
         ),
     },
     'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
     },
 }
+
+# Vercel’s Lambda filesystem is read-only except /tmp.
+if os.environ.get('VERCEL'):
+    FILE_UPLOAD_TEMP_DIR = '/tmp'
 
 
 # Password validation

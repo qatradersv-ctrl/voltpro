@@ -41,9 +41,8 @@ class ServiceAdmin(admin.ModelAdmin):
     ordering = ("order", "title")
     list_per_page = 50
     readonly_fields = ("image_preview",)
-    # Temporarily remove image field to prevent upload errors in serverless environment
     fields = (
-        "title", "slug", "category", "icon", "image_preview",
+        "title", "slug", "category", "icon", "image", "image_preview",
         "rating_note", "short_description", "description", "order", "is_featured",
     )
 
@@ -87,10 +86,9 @@ class ProjectAdmin(admin.ModelAdmin):
     autocomplete_fields = ("service",)
     date_hierarchy = "completed_on"
     readonly_fields = ("image_preview", "video_preview")
-    # Temporarily remove media fields to prevent upload errors in serverless environment
     fields = (
-        "title", "service", "location", "image_preview",
-        "video_preview", "summary", "completed_on", "order",
+        "title", "service", "location", "image", "image_preview",
+        "video", "video_preview", "summary", "completed_on", "order",
     )
 
     @admin.display(description="")
@@ -545,10 +543,9 @@ class BlogPostAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     date_hierarchy = "published_at"
     readonly_fields = ("created_at", "updated_at", "featured_image_preview")
-    # Temporarily remove featured image field to prevent upload errors in serverless environment
     fields = (
         "title", "slug", "author", "category", "excerpt", "content",
-        "featured_image_preview", "is_published", "is_featured",
+        "featured_image", "featured_image_preview", "is_published", "is_featured",
         "published_at", "meta_description", "meta_keywords",
         "created_at", "updated_at",
     )

@@ -2,6 +2,7 @@ import uuid
 from decimal import Decimal
 
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
 
@@ -57,7 +58,7 @@ class Service(models.Model):
     @property
     def fallback_cover_image_url(self):
         """Bundled cover used when a hosted media file is unavailable."""
-        return f"/static/core/images/covers/{self.category}.svg"
+        return static(f"core/images/covers/{self.category}.svg")
 
     @property
     def cover_image_url(self):
