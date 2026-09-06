@@ -182,13 +182,21 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
     readonly_fields = ("hero_image_preview", "services_video_preview")
     fieldsets = (
         ("Hero Section", {
-            "fields": ("hero_image_preview")
+            "fields": ("hero_image", "hero_image_preview"),
         }),
         ("Services Section", {
-            "fields": ("services_video_preview")
+            "fields": ("services_video", "services_video_preview"),
         }),
         ("Email Configuration", {
-            "fields": ("email_host", "email_port", "email_use_tls", "email_host_user", "email_host_password", "contact_email", "technician_email")
+            "fields": (
+                "email_host",
+                "email_port",
+                "email_use_tls",
+                "email_host_user",
+                "email_host_password",
+                "contact_email",
+                "technician_email",
+            ),
         }),
     )
 
