@@ -41,6 +41,56 @@ document.addEventListener('DOMContentLoaded', function() {
     showModal();
   }
 });
+
+// Function to animate stat numbers when they come into view
+function animateStats() {
+  const statNumbers = document.querySelectorAll('.stat-number');
+  
+  statNumbers.forEach(stat => {
+    const targetValue = stat.getAttribute('data-target');
+    const suffix = stat.getAttribute('data-suffix') || '';
+    
+    // Skip if no data-target attribute
+    if (!targetValue) {
+      return;
+    }
+    
+    const numericTarget = parseInt(targetValue);
+    
+    if (!isNaN(numericTarget) && numericTarget > 0) {
+      const duration = 2000; // 2 seconds animation
+      let start = 0;
+      const increment = numericTarget / (duration / 16); // 60fps
+      
+      const animate = () => {
+        start += increment;
+        if (start < numericTarget) {
+          stat.textContent = Math.floor(start) + suffix;
+          requestAnimationFrame(animate);
+        } else {
+          stat.textContent = numericTarget + suffix;
+        }
+      };
+      
+      animate();
+    }
+  });
+}
+
+// Intersection Observer to trigger animation when about section is visible
+const aboutSection = document.getElementById('about');
+if (aboutSection) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateStats();
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  
+  observer.observe(aboutSection);
+}
 </script>
 
 <section class="hero" aria-label="Hero section">
@@ -68,19 +118,19 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
       <div class="about-stats">
         <div class="stat-item">
-          <span class="stat-number">13+</span>
+          <span class="stat-number" data-target="13" data-suffix="+">13+</span>
           <span class="stat-label">Service Lines</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">24/7</span>
+          <span class="stat-number" data-target="24" data-suffix="/7">24/7</span>
           <span class="stat-label">Emergency Support</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">100%</span>
+          <span class="stat-number" data-target="100" data-suffix="%">100%</span>
           <span class="stat-label">Certified</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">4</span>
+          <span class="stat-number" data-target="4" data-suffix="">4</span>
           <span class="stat-label">Process Stages</span>
         </div>
       </div>
