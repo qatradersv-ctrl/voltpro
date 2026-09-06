@@ -64,7 +64,11 @@ class Service(models.Model):
         """Use the uploaded photo where it is available, with a bundled
         category illustration as a reliable visual fallback."""
         if self.image:
-            return self.image.url
+            try:
+                return self.image.url
+            except Exception:
+                # Fall back to default if S3 access fails
+                pass
         return self.fallback_cover_image_url
 
 

@@ -48,23 +48,33 @@ class ServiceAdmin(admin.ModelAdmin):
 
     @admin.display(description="")
     def thumb(self, obj):
-        return format_html(
-            '<img src="{}" style="width:44px;height:44px;object-fit:cover;'
-            'border-radius:6px;">', obj.cover_image_url,
-        )
+        try:
+            return format_html(
+                '<img src="{}" style="width:44px;height:44px;object-fit:cover;'
+                'border-radius:6px;">', obj.cover_image_url,
+            )
+        except Exception:
+            return format_html(
+                '<span style="color:#888;font-size:12px;">No image</span>'
+            )
 
     @admin.display(description="Preview")
     def image_preview(self, obj):
         if not obj.pk:
             return "Save the service to see the live preview."
-        return format_html(
-            '<img src="{}" style="width:280px;height:180px;object-fit:cover;'
-            'border-radius:8px;border:1px solid #ddd;"><p style="color:#888;'
-            'font-size:12px;margin-top:6px;">{}</p>',
-            obj.cover_image_url,
-            "Your uploaded photo." if obj.image else
-            "No photo uploaded yet — showing the default category cover.",
-        )
+        try:
+            return format_html(
+                '<img src="{}" style="width:280px;height:180px;object-fit:cover;'
+                'border-radius:8px;border:1px solid #ddd;"><p style="color:#888;'
+                'font-size:12px;margin-top:6px;">{}</p>',
+                obj.cover_image_url,
+                "Your uploaded photo." if obj.image else
+                "No photo uploaded yet — showing the default category cover.",
+            )
+        except Exception:
+            return format_html(
+                '<span style="color:#888;font-size:13px;">Unable to load image preview due to storage access issues.</span>'
+            )
 
 
 @admin.register(Project)
@@ -83,11 +93,14 @@ class ProjectAdmin(admin.ModelAdmin):
 
     @admin.display(description="")
     def thumb(self, obj):
-        if obj.image:
-            return format_html(
-                '<img src="{}" style="width:44px;height:44px;object-fit:cover;'
-                'border-radius:6px;">', obj.image.url,
-            )
+        try:
+            if obj.image:
+                return format_html(
+                    '<img src="{}" style="width:44px;height:44px;object-fit:cover;'
+                    'border-radius:6px;">', obj.image.url,
+                )
+        except Exception:
+            pass
         return format_html(
             '<span style="color:#888;font-size:12px;">No image</span>'
         )
@@ -96,12 +109,15 @@ class ProjectAdmin(admin.ModelAdmin):
     def image_preview(self, obj):
         if not obj.pk:
             return "Save the project to see the live preview."
-        if obj.image:
-            return format_html(
-                '<img src="{}" style="width:280px;height:180px;object-fit:cover;'
-                'border-radius:8px;border:1px solid #ddd;">',
-                obj.image.url,
-            )
+        try:
+            if obj.image:
+                return format_html(
+                    '<img src="{}" style="width:280px;height:180px;object-fit:cover;'
+                    'border-radius:8px;border:1px solid #ddd;">',
+                    obj.image.url,
+                )
+        except Exception:
+            pass
         return format_html(
             '<span style="color:#888;font-size:13px;">No image uploaded yet.</span>'
         )
@@ -110,12 +126,15 @@ class ProjectAdmin(admin.ModelAdmin):
     def video_preview(self, obj):
         if not obj.pk:
             return "Save the project to see the video preview."
-        if obj.video:
-            return format_html(
-                '<video controls style="width:280px;height:180px;border-radius:8px;border:1px solid #ddd;">'
-                '<source src="{}" type="video/mp4">Your browser does not support the video tag.</video>',
-                obj.video.url,
-            )
+        try:
+            if obj.video:
+                return format_html(
+                    '<video controls style="width:280px;height:180px;border-radius:8px;border:1px solid #ddd;">'
+                    '<source src="{}" type="video/mp4">Your browser does not support the video tag.</video>',
+                    obj.video.url,
+                )
+        except Exception:
+            pass
         return format_html(
             '<span style="color:#888;font-size:13px;">No video uploaded yet.</span>'
         )
@@ -167,24 +186,30 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
 
     @admin.display(description="Hero Image Preview")
     def hero_image_preview(self, obj):
-        if obj.hero_image:
-            return format_html(
-                '<img src="{}" style="width:400px;height:250px;object-fit:cover;'
-                'border-radius:8px;border:1px solid #ddd;">',
-                obj.hero_image.url,
-            )
+        try:
+            if obj.hero_image:
+                return format_html(
+                    '<img src="{}" style="width:400px;height:250px;object-fit:cover;'
+                    'border-radius:8px;border:1px solid #ddd;">',
+                    obj.hero_image.url,
+                )
+        except Exception:
+            pass
         return format_html(
             '<span style="color:#888;font-size:13px;">No hero image uploaded yet.</span>'
         )
 
     @admin.display(description="Services Video Preview")
     def services_video_preview(self, obj):
-        if obj.services_video:
-            return format_html(
-                '<video controls style="width:400px;height:250px;border-radius:8px;border:1px solid #ddd;">'
-                '<source src="{}" type="video/mp4">Your browser does not support the video tag.</video>',
-                obj.services_video.url,
-            )
+        try:
+            if obj.services_video:
+                return format_html(
+                    '<video controls style="width:400px;height:250px;border-radius:8px;border:1px solid #ddd;">'
+                    '<source src="{}" type="video/mp4">Your browser does not support the video tag.</video>',
+                    obj.services_video.url,
+                )
+        except Exception:
+            pass
         return format_html(
             '<span style="color:#888;font-size:13px;">No video uploaded yet.</span>'
         )
@@ -511,12 +536,15 @@ class BlogPostAdmin(admin.ModelAdmin):
     def featured_image_preview(self, obj):
         if not obj.pk:
             return "Save the post to see the image preview."
-        if obj.featured_image:
-            return format_html(
-                '<img src="{}" style="width:280px;height:180px;object-fit:cover;'
-                'border-radius:8px;border:1px solid #ddd;">',
-                obj.featured_image.url,
-            )
+        try:
+            if obj.featured_image:
+                return format_html(
+                    '<img src="{}" style="width:280px;height:180px;object-fit:cover;'
+                    'border-radius:8px;border:1px solid #ddd;">',
+                    obj.featured_image.url,
+                )
+        except Exception:
+            pass
         return format_html(
             '<span style="color:#888;font-size:13px;">No featured image uploaded yet.</span>'
         )
