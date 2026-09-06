@@ -29,4 +29,8 @@ class MediaStorage(S3Boto3Storage):
             return False
 
     def get_available_name(self, name, max_length=None):
-        return self._clean_name(name)
+        # Unique UUID keys are generated in upload_to; do not call HeadObject.
+        name = name.replace("\\", "/").lstrip("/")
+        if max_length and len(name) > max_length:
+            name = name[:max_length]
+        return name
