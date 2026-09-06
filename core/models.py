@@ -7,6 +7,17 @@ from django.urls import reverse
 from django.utils import timezone
 
 
+def unique_upload_to(folder):
+    """Store uploads under unique keys so S3 HeadObject checks are unnecessary."""
+
+    def _upload_to(instance, filename):
+        ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "bin"
+        ext = "".join(c for c in ext if c.isalnum())[:8] or "bin"
+        return f"{folder}/{uuid.uuid4().hex}.{ext}"
+
+    return _upload_to
+
+
 class ServiceCategory(models.TextChoices):
     POWER = "power", "Power & Backup"
     SOLAR = "solar", "Solar & Clean Energy"
@@ -32,7 +43,7 @@ class Service(models.Model):
         help_text="Icon key used by the SVG icon set in the template.",
     )
     image = models.ImageField(
-        upload_to="services/",
+        upload_to=unique_upload_to("services"),
         blank=True,
         null=True,
         help_text="Photo shown on the service card and detail page. Falls back to a "
@@ -81,8 +92,8 @@ class Project(models.Model):
         related_name="projects",
     )
     summary = models.CharField(max_length=200)
-    image = models.ImageField(upload_to="projects/", blank=True, null=True)
-    video = models.FileField(upload_to="project_videos/", blank=True, null=True, help_text="Video file for this project.")
+    image = models.ImageField(upload_to=unique_upload_to("projects"), blank=True, null=True)
+    video = models.FileField(upload_to=unique_upload_to("project_videos"), blank=True, null=True, help_text="Video file for this project.")
     completed_on = models.DateField(blank=True, null=True)
     order = models.PositiveIntegerField(default=0)
 
@@ -291,13 +302,13 @@ class QuoteLineItem(models.Model):
 class SiteConfiguration(models.Model):
     """Singleton model for managing site-wide images and videos."""
     hero_image = models.ImageField(
-        upload_to="hero/",
+        upload_to=unique_upload_to("hero"),
         blank=True,
         null=True,
         help_text="Hero section image displayed on the home page."
     )
     services_video = models.FileField(
-        upload_to="videos/",
+        upload_to=unique_upload_to("videos"),
         blank=True,
         null=True,
         help_text="Video shown in the services section."
@@ -363,7 +374,7 @@ class BlogPost(models.Model):
         help_text="Full article content. You can use HTML for formatting."
     )
     featured_image = models.ImageField(
-        upload_to="blog/",
+        upload_to=unique_upload_to("blog"),
         blank=True,
         null=True,
         help_text="Featured image for the blog post"

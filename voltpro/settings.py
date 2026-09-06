@@ -124,7 +124,7 @@ if _USE_S3_MEDIA:
     AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
     AWS_DEFAULT_ACL = None
-    AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_FILE_OVERWRITE = True
     AWS_QUERYSTRING_AUTH = False
 
     # Public object URL for Supabase Storage (S3 API endpoint is not the browser URL).
