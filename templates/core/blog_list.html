@@ -100,7 +100,6 @@
     </div>
     <div class="newsletter-section">
       <form id="blog-newsletter-form" class="newsletter-form-inline">
-        {% csrf_token %}
         <input type="email" id="blog-newsletter-email" placeholder="Enter your email address" required style="flex: 1; padding: 14px 18px; border: 2px solid var(--line); border-radius: var(--radius); font-size: 15px;">
         <button type="submit" class="btn btn-amber">Subscribe</button>
       </form>
@@ -130,7 +129,24 @@ document.addEventListener('DOMContentLoaded', function() {
       const email = document.getElementById('blog-newsletter-email').value;
       const messageDiv = document.getElementById('blog-newsletter-message');
       const submitBtn = blogNewsletterForm.querySelector('button[type="submit"]');
-      const csrfToken = blogNewsletterForm.querySelector('[name=csrfmiddlewaretoken]')?.value;
+      
+      // Get CSRF token from cookie
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      
+      const csrfToken = getCookie('csrftoken');
       
       // Disable button and show loading state
       submitBtn.disabled = true;

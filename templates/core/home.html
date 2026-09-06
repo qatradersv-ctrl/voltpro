@@ -78,7 +78,7 @@ function animateStats() {
 }
 
 // Intersection Observer to trigger animation when about section is visible
-const aboutSection = document.getElementById('about');
+const aboutSection = document.getElementById('about-section');
 if (aboutSection) {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -103,7 +103,7 @@ if (aboutSection) {
   </div>
 </section>
 
-<section class="section section-blue" id="about">
+<section class="section section-blue" id="about-section">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">About VoltPro</p>
@@ -115,6 +115,7 @@ if (aboutSection) {
         <p>VoltPro Electrodata Solutions has been at the forefront of electrical and security installations, serving residential, commercial, and industrial clients with excellence and reliability.</p>
         <p>Our team of certified technicians brings decades of combined experience in electrical wiring, solar installations, access control systems, CCTV security, and emergency power solutions. We pride ourselves on delivering quality workmanship, adhering to safety standards, and providing exceptional customer service.</p>
         <p>From site surveys to system design, installation to maintenance, we handle every aspect of your electrical and security needs with precision and professionalism. Our commitment to quality and customer satisfaction has made us a trusted partner for businesses and homeowners throughout Kenya.</p>
+        <p><a href="{% url 'core:about' %}" style="color: var(--accent); font-weight: 600;">Learn more about our company &rarr;</a></p>
       </div>
       <div class="about-stats">
         <div class="stat-item">
