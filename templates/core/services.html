@@ -13,6 +13,14 @@
 
 <section class="section section-alt">
   <div class="wrap">
+    <div class="category-tabs">
+      <a href="{% url 'core:services' %}" class="category-tab {% if not current_category %}active{% endif %}">All Services</a>
+      <a href="{% url 'core:services' %}?category=power" class="category-tab {% if current_category == 'power' %}active{% endif %}">Power & Backup</a>
+      <a href="{% url 'core:services' %}?category=solar" class="category-tab {% if current_category == 'solar' %}active{% endif %}">Solar & Clean Energy</a>
+      <a href="{% url 'core:services' %}?category=access" class="category-tab {% if current_category == 'access' %}active{% endif %}">Access & Security</a>
+      <a href="{% url 'core:services' %}?category=infra" class="category-tab {% if current_category == 'infra' %}active{% endif %}">Wiring & Infrastructure</a>
+      <a href="{% url 'core:services' %}?category=gates" class="category-tab {% if current_category == 'gates' %}active{% endif %}">Gates & Perimeter</a>
+    </div>
     <div class="services-grid">
       {% for service in services %}
         {% include "core/_service_card.html" with service=service %}

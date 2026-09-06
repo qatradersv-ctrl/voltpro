@@ -90,7 +90,16 @@
 
     <div class="header-center">
       <nav class="main-nav" aria-label="Primary navigation">
-        <a href="{% url 'core:services' %}">Services</a>
+        <div class="nav-item dropdown">
+          <a href="{% url 'core:services' %}" class="nav-link dropdown-toggle">Services</a>
+          <div class="dropdown-menu">
+            <a href="{% url 'core:services' %}?category=power" class="dropdown-item">Power & Backup</a>
+            <a href="{% url 'core:services' %}?category=solar" class="dropdown-item">Solar & Clean Energy</a>
+            <a href="{% url 'core:services' %}?category=access" class="dropdown-item">Access & Security</a>
+            <a href="{% url 'core:services' %}?category=infra" class="dropdown-item">Wiring & Infrastructure</a>
+            <a href="{% url 'core:services' %}?category=gates" class="dropdown-item">Gates & Perimeter</a>
+          </div>
+        </div>
         <a href="{% url 'core:process' %}">How we work</a>
         <a href="{% url 'core:work' %}">Our work</a>
         <a href="{% url 'core:blog_list' %}">Blog</a>
@@ -107,7 +116,16 @@
   </div>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Primary mobile">
-    <a href="{% url 'core:services' %}">Services</a>
+    <div class="mobile-dropdown">
+      <button class="mobile-dropdown-toggle" aria-expanded="false">Services</button>
+      <div class="mobile-dropdown-menu">
+        <a href="{% url 'core:services' %}?category=power">Power & Backup</a>
+        <a href="{% url 'core:services' %}?category=solar">Solar & Clean Energy</a>
+        <a href="{% url 'core:services' %}?category=access">Access & Security</a>
+        <a href="{% url 'core:services' %}?category=infra">Wiring & Infrastructure</a>
+        <a href="{% url 'core:services' %}?category=gates">Gates & Perimeter</a>
+      </div>
+    </div>
     <a href="{% url 'core:process' %}">How we work</a>
     <a href="{% url 'core:work' %}">Our work</a>
     <a href="{% url 'core:blog_list' %}">Blog</a>
@@ -228,6 +246,18 @@
   });
   window.addEventListener('resize', function(){
     if(window.innerWidth > 860) closeMenu();
+  });
+
+  // Mobile dropdown toggle
+  var dropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+  dropdownToggles.forEach(function(dropdownToggle){
+    dropdownToggle.addEventListener('click', function(e){
+      e.preventDefault();
+      var isExpanded = this.getAttribute('aria-expanded') === 'true';
+      var dropdownMenu = this.nextElementSibling;
+      this.setAttribute('aria-expanded', !isExpanded);
+      dropdownMenu.setAttribute('aria-expanded', !isExpanded);
+    });
   });
 })();
 </script>

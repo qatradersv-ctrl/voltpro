@@ -151,8 +151,11 @@ def work(request):
 
 
 def services(request):
+    category = request.GET.get('category')
     services = Service.objects.all()
-    context = {"services": services}
+    if category:
+        services = services.filter(category=category)
+    context = {"services": services, "current_category": category}
     return render(request, "core/services.html", context)
 
 
