@@ -46,6 +46,20 @@ class ServiceAdmin(admin.ModelAdmin):
         "rating_note", "short_description", "description", "order", "is_featured",
     )
 
+    def save_model(self, request, obj, form, change):
+        try:
+            super().save_model(request, obj, form, change)
+        except Exception as e:
+            # If S3 upload fails, save without the image
+            if 'image' in form.cleaned_data and form.cleaned_data['image']:
+                from django.contrib import messages
+                messages.error(request, f"Image upload failed due to S3 permissions. Service saved without image. Error: {str(e)}")
+                # Remove the image and save without it
+                obj.image = None
+                super().save_model(request, obj, form, change)
+            else:
+                raise
+
     @admin.display(description="")
     def thumb(self, obj):
         try:
@@ -90,6 +104,22 @@ class ProjectAdmin(admin.ModelAdmin):
         "title", "service", "location", "image", "image_preview",
         "video", "video_preview", "summary", "completed_on", "order",
     )
+
+    def save_model(self, request, obj, form, change):
+        try:
+            super().save_model(request, obj, form, change)
+        except Exception as e:
+            from django.contrib import messages
+            if 'image' in form.cleaned_data and form.cleaned_data['image']:
+                messages.error(request, f"Image upload failed due to S3 permissions. Project saved without image. Error: {str(e)}")
+                obj.image = None
+                super().save_model(request, obj, form, change)
+            elif 'video' in form.cleaned_data and form.cleaned_data['video']:
+                messages.error(request, f"Video upload failed due to S3 permissions. Project saved without video. Error: {str(e)}")
+                obj.video = None
+                super().save_model(request, obj, form, change)
+            else:
+                raise
 
     @admin.display(description="")
     def thumb(self, obj):
@@ -189,6 +219,22 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
             "fields": ("email_host", "email_port", "email_use_tls", "email_host_user", "email_host_password", "contact_email", "technician_email")
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        try:
+            super().save_model(request, obj, form, change)
+        except Exception as e:
+            from django.contrib import messages
+            if 'hero_image' in form.cleaned_data and form.cleaned_data['hero_image']:
+                messages.error(request, f"Hero image upload failed due to S3 permissions. Configuration saved without image. Error: {str(e)}")
+                obj.hero_image = None
+                super().save_model(request, obj, form, change)
+            elif 'services_video' in form.cleaned_data and form.cleaned_data['services_video']:
+                messages.error(request, f"Services video upload failed due to S3 permissions. Configuration saved without video. Error: {str(e)}")
+                obj.services_video = None
+                super().save_model(request, obj, form, change)
+            else:
+                raise
 
     @admin.display(description="Hero Image Preview")
     def hero_image_preview(self, obj):
@@ -541,6 +587,18 @@ class BlogPostAdmin(admin.ModelAdmin):
         "published_at", "meta_description", "meta_keywords",
         "created_at", "updated_at",
     )
+
+    def save_model(self, request, obj, form, change):
+        try:
+            super().save_model(request, obj, form, change)
+        except Exception as e:
+            from django.contrib import messages
+            if 'featured_image' in form.cleaned_data and form.cleaned_data['featured_image']:
+                messages.error(request, f"Featured image upload failed due to S3 permissions. Blog post saved without image. Error: {str(e)}")
+                obj.featured_image = None
+                super().save_model(request, obj, form, change)
+            else:
+                raise
 
     @admin.display(description="Featured Image Preview")
     def featured_image_preview(self, obj):

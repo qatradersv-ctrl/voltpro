@@ -12,31 +12,6 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 
 import os
 from pathlib import Path
-from storages.backends.s3boto3 import S3Boto3Storage
-
-
-class CustomS3Storage(S3Boto3Storage):
-    """Custom S3 storage that skips file existence checks to avoid permission errors"""
-    def exists(self, name):
-        # Always return False to skip the existence check that causes 403 errors
-        return False
-    
-    def get_available_name(self, name, max_length=None):
-        """Override to generate unique names without checking existence"""
-        # Use timestamp-based naming to avoid conflicts
-        from django.utils import timezone
-        import os
-        
-        name_root, name_ext = os.path.splitext(name)
-        timestamp = timezone.now().strftime('%Y%m%d_%H%M%S')
-        unique_name = f"{name_root}_{timestamp}{name_ext}"
-        
-        if max_length and len(unique_name) > max_length:
-            # Truncate if needed
-            name_root = name_root[:max_length - len(timestamp) - len(name_ext) - 1]
-            unique_name = f"{name_root}_{timestamp}{name_ext}"
-        
-        return unique_name
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -146,7 +121,17 @@ if os.environ.get('AWS_ACCESS_KEY_ID'):
     # Django 5.2 STORAGES format
     STORAGES = {
         'default': {
-            'BACKEND': 'voltpro.settings.CustomS3Storage',
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+        },
+    }
+else:
+    # Use local file storage when S3 credentials are not available
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
         },
         'staticfiles': {
             'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
