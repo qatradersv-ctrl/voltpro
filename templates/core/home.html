@@ -30,13 +30,6 @@ function closeModal() {
   document.getElementById('confirmationModal').classList.remove('active');
 }
 
-function selectService(serviceId) {
-  const serviceSelect = document.getElementById('id_service');
-  if (serviceSelect) {
-    serviceSelect.value = serviceId;
-  }
-}
-
 // Confirm the quote request without losing the page context
 document.addEventListener('DOMContentLoaded', function() {
   const alerts = document.querySelectorAll('.alert-success');

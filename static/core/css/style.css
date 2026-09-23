@@ -907,12 +907,6 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   content:""; position:absolute; inset:0;
   background: linear-gradient(180deg, rgba(11,18,32,0) 45%, rgba(11,18,32,0.6) 100%);
 }
-.service-card-chip{
-  position:absolute; top: 14px; right: 14px; z-index: 2;
-  background: rgba(11,18,32,0.72); backdrop-filter: blur(6px); color: var(--accent);
-  font-family: var(--font-mono); font-size: 11px; font-weight:600; letter-spacing: 0.05em; text-transform: uppercase;
-  padding: 6px 11px; border-radius: 999px; border: 1px solid rgba(255,255,255,.22);
-}
 .service-card-icon{
   position:absolute; left: 16px; bottom: -20px; z-index: 2;
   width: 44px; height: 44px; display:flex; align-items:center; justify-content:center;
@@ -2868,4 +2862,67 @@ p{ text-wrap: pretty; }
 }
 @media (max-width: 700px){
   .hero-shot::before, .hero-shot::after{ width: 26px; height: 26px; }
+}
+
+/* =========================================================
+   PASS 5 — service cards
+   ========================================================= */
+.service-card{
+  position: relative;
+  background: var(--bg-alt);
+}
+/* an amber rule draws across the top of the card on hover or keyboard focus */
+.service-card::before{
+  content: ""; position: absolute; z-index: 3; top: 0; left: 0; width: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dim) 100%);
+  transition: width .4s cubic-bezier(.22,.61,.36,1);
+}
+.service-card:hover::before, .service-card:focus-within::before{ width: 100%; }
+
+/* tighter media band — the spec chip moved into the copy so the photo stays clear */
+.service-card-media{ aspect-ratio: 16 / 10; }
+/* the tile sits inside the media box — the media clips its own overflow for
+   the zoom, so a tile straddling its edge would be cut in half */
+.service-card-icon{
+  left: 16px; bottom: 16px; width: 42px; height: 42px; border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.22), 0 10px 22px rgba(11,18,32,.42);
+  transition: transform .28s cubic-bezier(.22,.61,.36,1);
+}
+.service-card:hover .service-card-icon{ transform: translateY(-3px); }
+
+.service-card-content{ padding: 22px 20px 20px; }
+.service-card-meta{
+  display:flex; align-items:center; flex-wrap:wrap; gap: 4px 9px; margin: 0 0 9px;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .09em;
+  text-transform: uppercase; line-height: 1.3;
+}
+.service-card-cat{ color: var(--accent-ink); font-weight: 600; }
+.service-card-spec{ display:inline-flex; align-items:center; gap: 9px; color: var(--text-muted); font-weight: 500; }
+.service-card-spec::before{
+  content: ""; width: 3px; height: 3px; border-radius: 50%;
+  background: currentColor; opacity: .45; flex: none;
+}
+.service-card h3{
+  font-size: 18px; line-height: 1.28; margin: 0 0 9px;
+  display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.service-card h3 a{ color: inherit; }
+.service-card:hover h3 a{ color: var(--primary); }
+
+/* one text link for the page, one pill for the action */
+.service-card-actions{
+  margin-top: auto; padding-top: 15px; border-top: 1px solid var(--line-bright);
+  justify-content: space-between; gap: 14px;
+}
+.service-card-link--quote{
+  padding: 7px 13px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--bg-panel); color: var(--primary);
+}
+.service-card-link--quote:hover{
+  border-color: var(--primary); background: #EEF2FB; color: var(--primary);
+}
+@media (max-width: 640px){
+  .service-card-media{ aspect-ratio: 4 / 3; }
+  .service-card-content{ padding: 18px 16px 16px; }
+  .service-card h3{ font-size: 16.5px; }
 }

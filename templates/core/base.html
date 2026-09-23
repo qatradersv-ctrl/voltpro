@@ -428,6 +428,23 @@
     });
   });
 })();
+
+/* "Get quote" on a service card: prefill the form when it is on the page and
+   stay put, otherwise let the link carry the visitor to the home form. */
+window.selectService = function(serviceId){
+  var select = document.getElementById('id_service');
+  if(!select) return false;
+  select.value = serviceId;
+  select.dispatchEvent(new Event('change', { bubbles: true }));
+  var panel = select.closest('.quote-form') || select;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  select.focus({ preventScroll: true });
+  return true;
+};
+(function(){
+  var wanted = new URLSearchParams(window.location.search).get('service');
+  if(wanted) window.selectService(wanted);
+})();
 </script>
 <div class="mobile-actionbar" aria-hidden="false">
   <a href="tel:+254715117855" class="btn btn-ghost">

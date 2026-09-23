@@ -1,7 +1,7 @@
 {% comment %}
 Usage: {% include "core/_service_card.html" with service=service %}
 {% endcomment %}
-<div class="service-card">
+<article class="service-card">
   <div class="service-card-media">
     <img
       src="{{ service.cover_image_url }}"
@@ -12,22 +12,25 @@ Usage: {% include "core/_service_card.html" with service=service %}
       fetchpriority="low"
       onerror="this.onerror=null;this.src=this.dataset.fallbackSrc;"
     >
-    {% if service.rating_note %}<span class="service-card-chip">{{ service.rating_note }}</span>{% endif %}
     <span class="service-card-icon">
       <svg class="card-icon"><use href="#icon-{{ service.icon }}"/></svg>
     </span>
   </div>
   <div class="service-card-content">
-    <h3>{{ service.title }}</h3>
+    <p class="service-card-meta">
+      <span class="service-card-cat">{{ service.get_category_display }}</span>
+      {% if service.rating_note %}<span class="service-card-spec">{{ service.rating_note }}</span>{% endif %}
+    </p>
+    <h3><a href="{% url 'core:service_detail' service.slug %}">{{ service.title }}</a></h3>
     <p>{{ service.short_description }}</p>
     <div class="service-card-actions">
       <a href="{% url 'core:service_detail' service.slug %}" class="service-card-link">
         View details
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M5 12h14M12 5l7 7-7 7"/>
         </svg>
       </a>
-      <a href="#contact" onclick="selectService({{ service.pk }})" class="service-card-link service-card-link--quote">Get quote</a>
+      <a href="{% url 'core:home' %}?service={{ service.pk }}#contact" class="service-card-link service-card-link--quote" onclick="return !selectService({{ service.pk }})">Get quote</a>
     </div>
   </div>
-</div>
+</article>
