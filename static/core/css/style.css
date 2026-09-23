@@ -594,18 +594,6 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   position:absolute; inset:0;
   background: linear-gradient(200deg, rgba(3,43,122,0) 52%, rgba(2,10,34,.62) 100%);
 }
-.hero-badge{
-  position:absolute; left: 20px; bottom: 20px; z-index: 2;
-  display:flex; align-items:center; gap: 12px;
-  padding: 12px 16px;
-  border-radius: var(--radius);
-  background: rgba(11,18,32,.72);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,.16);
-  box-shadow: var(--elev-2);
-}
-.hero-badge strong{ display:block; font-family: var(--font-display); font-size: 18px; color: var(--accent); line-height:1; }
-.hero-badge span{ font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-on-dark); }
 .hero-chip-row{ display:flex; flex-wrap:wrap; gap: 8px; margin: 0 0 26px; padding: 0; list-style: none; }
 .hero-chip{
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
@@ -639,8 +627,6 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   .hero-frame{ aspect-ratio: 5 / 4; }
 }
 @media (max-width: 480px){
-  .hero-badge{ left: 12px; bottom: 12px; padding: 10px 12px; }
-  .hero-badge strong{ font-size: 16px; }
   .brand-text{ display: none; }
   .brand-logo-container{
     width: 56px;
@@ -2705,28 +2691,181 @@ a.value-card{ color: inherit; }
 }
 .proof-band-intro h2{ font-size: clamp(24px, 3.2vw, 34px); }
 
-/* ---------- hero: real site photography, not render ---------- */
+/* ---------- hero: graded site photography, not a render ---------- */
 .hero-frame{
   aspect-ratio: 3 / 2;
-  background: #0A1424;
-  box-shadow: 0 22px 48px rgba(2,8,26,.38), 0 0 0 1px rgba(255,255,255,.12);
+  background: #08111F;
+  box-shadow: 0 26px 58px rgba(2,8,26,.46), 0 0 0 1px rgba(255,255,255,.14);
 }
-.hero-frame img{ object-position: 62% 46%; filter: saturate(.95) contrast(1.04) brightness(1.02); }
+.hero-frame img{ object-position: 30% 44%; filter: saturate(.98) contrast(1.03); }
 /* fine film grain keeps the frame reading as a photograph */
 .hero-frame::before{
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  opacity: .17; mix-blend-mode: overlay;
+  opacity: .13; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .hero-frame::after{
   z-index: 2;
-  background: linear-gradient(200deg, rgba(3,43,122,0) 44%, rgba(2,10,34,.28) 76%, rgba(2,10,34,.66) 100%);
+  background:
+    linear-gradient(190deg, rgba(3,43,122,0) 40%, rgba(2,10,34,.34) 78%, rgba(2,10,34,.72) 100%),
+    linear-gradient(90deg, rgba(2,10,34,.32) 0%, rgba(2,10,34,0) 48%);
 }
-.hero-badge{ z-index: 3; }
 @media (max-width: 600px){
   .hero-frame{ aspect-ratio: 4 / 3; }
-  .hero-frame img{ object-position: 68% 42%; }
+  .hero-frame img{ object-position: 25% 40%; }
 }
 @media (prefers-reduced-motion: reduce){
   .hero-frame img{ transform: none !important; }
+}
+
+/* =========================================================
+   PASS 4 — premium hero rebuild and shared refinements
+   ========================================================= */
+
+/* anchor links must land below the sticky header */
+section[id]{ scroll-margin-top: 108px; }
+
+/* editorial wrapping for display type */
+h1,h2,h3{ text-wrap: balance; }
+p{ text-wrap: pretty; }
+
+/* ---------- hero: status pill headline and overlays ---------- */
+.hero-eyebrow{
+  display:inline-flex; align-items:center; gap: 9px;
+  margin: 0 0 20px; padding: 7px 14px 7px 12px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: #EAF1FF;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.2);
+  border-radius: 999px;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.hero-led{
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none;
+  box-shadow: 0 0 0 0 rgba(255,204,0,.55);
+  animation: led-pulse 2.8s ease-out infinite;
+}
+@keyframes led-pulse{
+  0%{ box-shadow: 0 0 0 0 rgba(255,204,0,.55) }
+  70%,100%{ box-shadow: 0 0 0 10px rgba(255,204,0,0) }
+}
+.hero h1{ letter-spacing: -0.035em; }
+/* highlighter stroke under the emphasised phrase — background-based so it
+   repeats per line when the headline wraps */
+.hero-accent{
+  padding-bottom: 5px;
+  background-image: linear-gradient(90deg, rgba(255,204,0,.85) 0%, rgba(255,204,0,.45) 72%, rgba(255,204,0,.1) 100%);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 3px;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.js .hero-accent{ background-size: 0 3px; animation: accent-sweep 1s .3s cubic-bezier(.22,.61,.36,1) forwards; }
+@keyframes accent-sweep{ to{ background-size: 100% 3px } }
+
+/* chips read as a capability index, each with its service icon */
+.hero-chip{ display:inline-flex; align-items:center; gap: 7px; }
+.hero-chip-ico{ width: 13px; height: 13px; flex: none; color: var(--accent); }
+
+/* primary action nudges forward on hover */
+.btn-ico{ width: 16px; height: 16px; flex: none; transition: transform .2s ease; }
+.btn:hover .btn-ico{ transform: translateX(4px); }
+
+/* the phone line is the fastest route for someone already failing */
+.hero-actions{ margin: 30px 0 14px; }
+.hero-call{ margin: 0 0 26px; font-size: 13.5px; color: rgba(220,228,240,.78); }
+.hero-call a{ color: #FFFFFF; font-weight: 600; border-bottom: 1px solid rgba(255,204,0,.55); }
+.hero-call a:hover{ color: var(--accent); }
+
+/* ---------- hero: framed photograph ---------- */
+.hero-photo-tag{
+  position: absolute; z-index: 3; top: 14px; right: 14px; margin: 0; padding: 6px 11px;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: #EAF1FF; background: rgba(6,14,32,.58);
+  border: 1px solid rgba(255,255,255,.18); border-radius: 999px;
+  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+}
+.hero-card{
+  position: absolute; z-index: 3; right: 16px; bottom: 16px; width: min(300px, 60%);
+  padding: 14px 16px; border-radius: var(--radius);
+  background: rgba(6,14,32,.74);
+  border: 1px solid rgba(255,255,255,.17);
+  box-shadow: var(--elev-2);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.hero-card-rail{
+  display:flex; align-items:center; gap: 7px; margin: 0 0 9px;
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--accent); line-height: 1.2;
+}
+.hero-card-rail i{ flex: 1 1 auto; height: 1px; background: rgba(255,204,0,.4); }
+.hero-card-copy{ margin: 0; font-size: 12.5px; line-height: 1.55; font-weight: 300; color: rgba(226,234,247,.88); }
+.hero-strip{
+  display:flex; flex-wrap:wrap; gap: 8px 20px; margin: 18px 0 0; padding: 0;
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .07em;
+  text-transform: uppercase; color: rgba(220,228,240,.72);
+}
+.hero-strip span{ display:inline-flex; align-items:center; gap: 8px; }
+.hero-strip span::before{ content:""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex: none; }
+
+@media (max-width: 1040px){
+  .hero-card{ width: min(360px, 70%); }
+}
+@media (max-width: 700px){
+  /* the frame is too small to carry an overlay card — the strip below does it */
+  .hero-card{ display: none; }
+  .hero-strip{ gap: 6px 14px; font-size: 9.5px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .js .hero-accent{ background-size: 100% 3px; animation: none; }
+  .hero-led{ animation: none; }
+}
+
+/* ---------- media depth: every photo tile gets the same scrim ---------- */
+.gallery-media::after{
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(190deg, rgba(3,43,122,0) 58%, rgba(2,10,34,.34) 100%);
+  transition: opacity .28s ease;
+}
+.gallery-item:hover .gallery-media::after{ opacity: .55; }
+
+/* ---------- photographic cohesion ----------
+   The image catalogue mixes field photos with stock of very different colour,
+   so every tile is graded the same way and only reaches full colour on hover. */
+.service-card-media img{
+  filter: saturate(.62) contrast(1.06) brightness(.95);
+  transition: transform .5s cubic-bezier(.22,.61,.36,1), filter .35s ease;
+}
+.service-card:hover .service-card-media img{ filter: saturate(1) contrast(1.03) brightness(1); }
+.gallery-image{ filter: saturate(.92) contrast(1.04); transition: transform .5s cubic-bezier(.22,.61,.36,1), filter .35s ease; }
+.gallery-item:hover .gallery-image{ filter: none; }
+
+/* ---------- navy bands carry the same blueprint texture as the hero ---------- */
+.section-blue{ position: relative; overflow: hidden; }
+.section-blue > .wrap{ position: relative; z-index: 1; }
+.section-blue::before{
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(115% 85% at 88% 4%, #000 10%, transparent 62%);
+  -webkit-mask-image: radial-gradient(115% 85% at 88% 4%, #000 10%, transparent 62%);
+}
+
+/* ---------- hero: surveyor corner brackets on the photograph ---------- */
+.hero-shot{ position: relative; }
+.hero-shot::before, .hero-shot::after{
+  content: ""; position: absolute; width: 44px; height: 44px; pointer-events: none; z-index: 2;
+  border: 2px solid rgba(255,204,0,.5);
+}
+.hero-shot::before{
+  top: -12px; right: -12px; border-left: 0; border-bottom: 0;
+  border-radius: 0 var(--radius-lg) 0 0;
+}
+.hero-shot::after{
+  bottom: -12px; left: -12px; border-right: 0; border-top: 0;
+  border-radius: 0 0 0 var(--radius-lg);
+}
+@media (max-width: 700px){
+  .hero-shot::before, .hero-shot::after{ width: 26px; height: 26px; }
 }
