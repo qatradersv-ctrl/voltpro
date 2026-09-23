@@ -1,5 +1,6 @@
 import uuid
 from decimal import Decimal
+from functools import partial
 
 from django.db import models
 from django.templatetags.static import static
@@ -7,15 +8,16 @@ from django.urls import reverse
 from django.utils import timezone
 
 
+def _unique_upload_to(folder, instance, filename):
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "bin"
+    ext = "".join(c for c in ext if c.isalnum())[:8] or "bin"
+    return f"{folder}/{uuid.uuid4().hex}.{ext}"
+
+
 def unique_upload_to(folder):
     """Store uploads under unique keys so S3 HeadObject checks are unnecessary."""
 
-    def _upload_to(instance, filename):
-        ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "bin"
-        ext = "".join(c for c in ext if c.isalnum())[:8] or "bin"
-        return f"{folder}/{uuid.uuid4().hex}.{ext}"
-
-    return _upload_to
+    return partial(_unique_upload_to, folder)
 
 
 class ServiceCategory(models.TextChoices):

@@ -3,36 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, follow">
 <title>Something tripped — VoltPro Electrodata Solutions</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='6' fill='%230B1220'/%3E%3Cpolygon points='20,3 36,11 36,29 20,37 4,29 4,11' fill='none' stroke='%23F5A623' stroke-width='2'/%3E%3Cpath d='M22 9 L13 21 L19 21 L17 31 L28 18 L21 18 Z' fill='%23F5A623'/%3E%3C/svg%3E">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/static/core/images/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{ --bg:#0B1220; --bg-panel:#101A2C; --line:#26374F; --amber:#F5A623; --danger:#E0563F; --text:#E9EEF5; --text-muted:#90A0B7; }
+  :root{
+    --primary:#032B7A; --accent:#FFCC00; --accent-on:#0B1220;
+    --bg:#F6F6F2; --line:#DFE1DA; --text:#16202E; --text-muted:#5C6675;
+  }
   *{ box-sizing:border-box; }
   body{
     margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-    background: var(--bg); color: var(--text); font-family:"Inter",sans-serif; text-align:center; padding: 24px;
+    background: var(--bg); color: var(--text); padding: 28px;
+    font-family:"Plus Jakarta Sans",system-ui,sans-serif; -webkit-font-smoothing:antialiased;
   }
-  .wrap{ max-width: 420px; }
-  .eyebrow{ font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--danger); margin-bottom:14px; }
-  h1{ font-family:"Space Grotesk",sans-serif; font-size:clamp(38px,9vw,52px); margin:0 0 10px; line-height:1.1; }
-  p{ color:var(--text-muted); font-size:15px; margin:0 0 28px; }
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; padding:12px 22px; border-radius:4px;
-    font-family:"JetBrains Mono",monospace; font-size:14px; background:var(--amber); color:#16130a; font-weight:500; text-decoration:none;
+  .wrap{ max-width: 520px; text-align:center; }
+  .badge{
+    width:64px; height:64px; margin:0 auto 26px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg,#0B3E9E 0%,var(--primary) 55%,#02194a 100%);
+    box-shadow:0 16px 40px rgba(3,43,122,.28);
   }
-  .diagram{ margin: 0 auto 28px; width:64px; height:64px; border:1px solid var(--danger); border-radius:6px; background:var(--bg-panel); display:flex; align-items:center; justify-content:center; }
+  .badge svg{ width:30px; height:30px; }
+  .eyebrow{
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:11.5px; letter-spacing:.13em;
+    text-transform:uppercase; color:#8A6A00; margin:0 0 12px; font-weight:600;
+  }
+  h1{ font-size:clamp(30px,6vw,44px); line-height:1.1; letter-spacing:-.02em; margin:0 0 14px; color:var(--primary); }
+  p{ color:var(--text-muted); font-size:16px; line-height:1.65; margin:0 0 28px; }
+  .actions{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  a.btn{
+    display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:12px 22px;
+    border-radius:10px; font-size:14.5px; font-weight:700; text-decoration:none; transition:transform .2s ease, box-shadow .2s ease;
+  }
+  a.btn:hover{ transform:translateY(-2px); }
+  .btn-solid{ background:var(--accent); color:var(--accent-on); box-shadow:0 10px 24px rgba(255,204,0,.35); }
+  .btn-line{ border:1px solid var(--line); color:var(--primary); background:#FFFFFF; }
+  .foot{ margin-top:30px; font-family:"JetBrains Mono",monospace; font-size:11.5px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-muted); }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="diagram" aria-hidden="true">
-      <svg width="30" height="30" viewBox="0 0 40 40"><polygon points="20,1 38,10.5 38,29.5 20,39 2,29.5 2,10.5" fill="none" stroke="#E0563F" stroke-width="2"/><path d="M22 8 L12 21 L19 21 L17 32 L29 17 L21 17 Z" fill="#E0563F"/></svg>
+  <main class="wrap">
+    <div class="badge" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#FFCC00" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13 2 4.5 13.5H11l-1 8.5 8.5-11.5H12l1-8.5Z"/>
+      </svg>
     </div>
-    <p class="eyebrow">Error 500</p>
-    <h1>Something tripped on our end</h1>
-    <p>Our team's been notified. Try again in a moment, or call us directly if it's urgent.</p>
-    <a class="btn" href="/">Back to VoltPro</a>
-  </div>
+    <p class="eyebrow">Error 500 &middot; Tripped, not broken</p>
+    <h1>Something went wrong on our end</h1>
+    <p>This request didn't complete. The site is otherwise unaffected &mdash; reload in a moment, or call us directly if it's urgent and it concerns a live installation.</p>
+    <div class="actions">
+      <a class="btn btn-solid" href="/">Back to VoltPro</a>
+      <a class="btn btn-line" href="tel:+254715117855">Call 0715 117855</a>
+    </div>
+    <p class="foot">VoltPro Electrodata Solutions &middot; Nairobi</p>
+  </main>
 </body>
 </html>

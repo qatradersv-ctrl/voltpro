@@ -2,224 +2,194 @@
 {% load humanize %}
 {% load static %}
 {% block title %}Quote {{ quote.quote_number }} — VoltPro Electrodata Solutions{% endblock %}
+{% block meta_description %}Quotation {{ quote.quote_number }} from VoltPro Electrodata Solutions.{% endblock %}
 {% block content %}
-<section class="section quote-page py-5">
-  <div class="container quote-wrap">
+<section class="quote-page">
+  <div class="quote-wrap">
+    <div class="quote-sheet">
 
-    <div class="quote-header-logo text-center mb-4">
-      <div class="quote-logo-container d-inline-block">
-        <img src="{% static 'core/images/logo.png' %}" alt="VoltPro Logo" class="quote-logo" style="height: 60px; width: auto; object-fit: contain;">
-      </div>
-    </div>
-
-    {% if messages %}
-      <div class="row mb-4">
-        <div class="col-12">
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          {% endfor %}
+      <header class="quote-brand">
+        <div class="quote-logo-container">
+          <img src="{% static 'core/images/logo.png' %}" alt="VoltPro Electrodata Solutions" class="quote-logo" width="68" height="68">
         </div>
-      </div>
-    {% endif %}
-
-    <div class="quote-head card mb-4">
-      <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col-md-8">
-            <p class="eyebrow text-muted small text-uppercase mb-2">Quotation {{ quote.quote_number }}</p>
-            <h1 class="mb-2">{{ quote.client_name }}</h1>
-            <p class="section-lede text-muted mb-0">
-              Issued {{ quote.issue_date|date:"d M Y" }}
-              {% if quote.valid_until %} &middot; valid until {{ quote.valid_until|date:"d M Y" }}{% endif %}
-            </p>
-          </div>
-          <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <span class="badge quote-status quote-status-{{ quote.status }} fs-6">{{ quote.get_status_display }}</span>
-          </div>
+        <div class="quote-brand-text">
+          <p class="quote-eyebrow">VoltPro Electrodata Solutions</p>
+          <h2>Quotation</h2>
+          <p class="quote-brand-meta">Nairobi, Kenya &middot; 0715 117855 &middot; info@voltproelectrodata.co.ke</p>
         </div>
-      </div>
-    </div>
+        <span class="quote-status quote-status-{{ quote.status }}">{{ quote.get_status_display }}</span>
+      </header>
 
-    <div class="quote-table-wrap mb-4">
-      <div class="table-responsive">
-        <table class="quote-table table table-bordered table-hover mb-0">
-          <thead class="table-light">
+      {% if messages %}
+      <div class="quote-messages">
+        {% for message in messages %}
+        <p class="alert alert-{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="quote-head">
+        <div>
+          <p class="quote-eyebrow">Quote {{ quote.quote_number }}</p>
+          <h1>{{ quote.client_name }}</h1>
+          <p class="quote-meta">Issued {{ quote.issue_date|date:"d M Y" }}{% if quote.valid_until %} &middot; valid until {{ quote.valid_until|date:"d M Y" }}{% endif %}</p>
+        </div>
+        {% if quote.service %}<p class="quote-meta quote-meta--right">{{ quote.service.title }}</p>{% endif %}
+      </div>
+
+      <div class="quote-table-wrap">
+        <table class="quote-table">
+          <caption class="sr-only">Line items included in this quotation</caption>
+          <thead>
             <tr>
-              <th style="width: 50px;">#</th>
-              <th>Taxable</th>
-              <th>Description</th>
-              <th>Qty</th>
-              <th>Unit</th>
-              <th>Unit price</th>
-              <th>Line total</th>
+              <th scope="col">#</th>
+              <th scope="col">Description</th>
+              <th scope="col">Qty</th>
+              <th scope="col">Unit</th>
+              <th scope="col">Unit price</th>
+              <th scope="col">Line total</th>
+              <th scope="col"><span class="sr-only">Charge VAT</span>VAT</th>
             </tr>
           </thead>
           <tbody>
             {% for item in quote.line_items.all %}
             <tr>
               <td>{{ forloop.counter }}</td>
-              <td>
-                <input type="checkbox" 
-                       class="form-check-input taxable-checkbox" 
-                       data-item-id="{{ item.id }}"
-                       {% if item.taxable %}checked{% endif %}
-                       onchange="toggleItemTax({{ item.id }}, this.checked)"
-                       {% if quote.status != "draft" %}disabled{% endif %}>
-              </td>
-              <td>{{ item.description }}</td>
+              <td class="quote-cell-desc">{{ item.description }}</td>
               <td>{{ item.quantity }}</td>
               <td>{{ item.unit }}</td>
               <td>KES {{ item.unit_price|floatformat:2|intcomma }}</td>
-              <td>KES {{ item.line_total|floatformat:2|intcomma }}</td>
+              <td class="quote-cell-total">KES {{ item.line_total|floatformat:2|intcomma }}</td>
+              <td class="quote-cell-tax">
+                <input type="checkbox"
+                       class="taxable-checkbox"
+                       id="tax-{{ item.id }}"
+                       data-item-id="{{ item.id }}"
+                       aria-label="Charge VAT on item {{ forloop.counter }}"
+                       {% if item.taxable %}checked{% endif %}
+                       onchange="toggleItemTax({{ item.id }}, this.checked)"
+                       {% if quote.status != "draft" %}disabled{% endif %}>
+                <label class="sr-only" for="tax-{{ item.id }}">Charge VAT on item {{ forloop.counter }}</label>
+              </td>
             </tr>
             {% empty %}
-            <tr><td colspan="7" class="text-center text-muted">No line items added yet — check back once the quote has been finalised.</td></tr>
+            <tr><td colspan="7" class="quote-empty">No line items have been added to this quote yet &mdash; it will be itemised before it is sent.</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-    </div>
 
-    <div class="quote-totals">
-      <div class="d-flex justify-content-between mb-2">
-        <span class="text-muted">Subtotal</span>
-        <span class="fw-bold">KES {{ quote.subtotal|floatformat:2|intcomma }}</span>
+      <div class="quote-totals">
+        <div>
+          <span>Subtotal</span>
+          <b>KES {{ quote.subtotal|floatformat:2|intcomma }}</b>
+        </div>
+        <div>
+          <span>VAT ({{ quote.tax_rate }}%)</span>
+          <b>KES {{ quote.tax_amount|floatformat:2|intcomma }}</b>
+        </div>
+        <div class="quote-total-final">
+          <span>Total due</span>
+          <b>KES {{ quote.total|floatformat:2|intcomma }}</b>
+        </div>
       </div>
-      <div class="d-flex justify-content-between mb-2">
-        <span class="text-muted">VAT ({{ quote.tax_rate }}%)</span>
-        <span class="fw-bold">KES {{ quote.tax_amount|floatformat:2|intcomma }}</span>
-      </div>
-      <div class="d-flex justify-content-between pt-3 border-top">
-        <span class="fw-bold fs-5">Total due</span>
-        <span class="fw-bold fs-5 text-primary">KES {{ quote.total|floatformat:2|intcomma }}</span>
-      </div>
-    </div>
 
-    {% if quote.notes %}
-    <div class="quote-block card mb-4">
-      <div class="card-body">
-        <h5 class="card-title mb-3">Scope</h5>
-        <p class="card-text text-muted">{{ quote.notes|linebreaksbr }}</p>
+      {% if quote.notes %}
+      <div class="quote-block">
+        <h3 class="quote-block-title">Scope of work</h3>
+        <p>{{ quote.notes|linebreaksbr }}</p>
       </div>
-    </div>
-    {% endif %}
+      {% endif %}
 
-    {% if quote.terms %}
-    <div class="quote-block card mb-4">
-      <div class="card-body">
-        <h5 class="card-title mb-3">Terms</h5>
-        <p class="card-text text-muted">{{ quote.terms|linebreaksbr }}</p>
+      {% if quote.terms %}
+      <div class="quote-block">
+        <h3 class="quote-block-title">Terms</h3>
+        <p>{{ quote.terms|linebreaksbr }}</p>
       </div>
-    </div>
-    {% endif %}
+      {% endif %}
 
-    <div class="quote-actions">
-      <div class="d-flex gap-2 flex-wrap align-items-center">
-        <a class="btn btn-primary" href="{% url 'core:quote_pdf' quote.public_id %}" target="_blank">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
-            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
-            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-          </svg>
-          Download PDF
-        </a>
-        <button class="btn btn-outline-secondary" onclick="window.print()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
-            <path d="M2.5 8a.5.5 0 1 0 0-1h11a.5.5 0 0 0 0 1h-11z"/>
-            <path d="M1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4zm1-1a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h12a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5H2z"/>
-          </svg>
-          Print
-        </button>
-        <button class="btn btn-outline-secondary" onclick="shareQuote()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 6px;">
-            <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"/>
-          </svg>
-          Share via Email
-        </button>
+      <div class="quote-actions">
         {% if quote.status == "sent" %}
-        <form method="post" class="quote-decision-form d-inline ms-auto">
+        <form method="post" class="quote-decision-form">
           {% csrf_token %}
-          <button type="submit" name="decision" value="reject" class="btn btn-outline-danger">Decline</button>
-          <button type="submit" name="decision" value="accept" class="btn btn-success">Accept quote</button>
+          <p class="quote-decided">Happy with this scope? Accept it here and we will schedule the site work.</p>
+          <div class="quote-decision-buttons">
+            <button type="submit" name="decision" value="reject" class="btn btn-ghost btn-sm">Decline</button>
+            <button type="submit" name="decision" value="accept" class="btn btn-amber btn-sm">Accept quote</button>
+          </div>
         </form>
         {% elif quote.status == "accepted" %}
-        <p class="quote-decided alert alert-success ms-auto">Accepted — our team will be in touch to schedule the work.</p>
+        <p class="quote-decided alert alert-success">Accepted &mdash; our team will be in touch to schedule the work.</p>
         {% elif quote.status == "rejected" %}
-        <p class="quote-decided alert alert-warning ms-auto">Marked as declined. Contact us if anything changes.</p>
+        <p class="quote-decided alert alert-warning">Marked as declined. Contact us if anything changes.</p>
         {% else %}
-        <p class="quote-decided alert alert-info ms-auto">This quote is still in draft — you'll be able to accept it once it's sent.</p>
+        <p class="quote-decided alert alert-info">This quote is still in draft &mdash; it becomes acceptable once it has been sent.</p>
         {% endif %}
+        <div class="quote-doc-buttons">
+          <a class="btn btn-amber btn-sm" href="{% url 'core:quote_pdf' quote.public_id %}" target="_blank" rel="noopener">Download PDF</a>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="window.print()">Print</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="shareQuote()">Share by email</button>
+        </div>
       </div>
-    </div>
 
+      <footer class="quote-foot">
+        <p>Prepared by VoltPro Electrodata Solutions. Questions about any line above? Call <a href="tel:+254715117855">0715 117855</a> or write to <a href="mailto:info@voltproelectrodata.co.ke">info@voltproelectrodata.co.ke</a>.</p>
+      </footer>
+
+    </div>
   </div>
 </section>
 
 <script>
+function getCookie(name) {
+  if (!document.cookie || document.cookie === '') return null;
+  var parts = document.cookie.split(';');
+  for (var i = 0; i < parts.length; i++) {
+    var cookie = parts[i].trim();
+    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+      return decodeURIComponent(cookie.substring(name.length + 1));
+    }
+  }
+  return null;
+}
+
 function shareQuote() {
-  const subject = encodeURIComponent('Quote {{ quote.quote_number }} from VoltPro Electrodata Solutions');
-  const body = encodeURIComponent(
+  var subject = encodeURIComponent('Quote {{ quote.quote_number }} from VoltPro Electrodata Solutions');
+  var body = encodeURIComponent(
     'Hello,\n\nPlease find attached quote {{ quote.quote_number }} for {{ quote.client_name }}.\n\n' +
     'Total Amount: KES {{ quote.total|floatformat:2|intcomma }}\n' +
     'Valid until: {{ quote.valid_until|date:"d M Y" }}\n\n' +
     'You can view the quote online at: {{ request.build_absolute_uri }}\n\n' +
     'Best regards,\nVoltPro Electrodata Solutions'
   );
-  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+}
+
+function revertTax(itemId, isTaxable) {
+  var checkbox = document.querySelector('[data-item-id="' + itemId + '"]');
+  if (checkbox) checkbox.checked = !isTaxable;
 }
 
 function toggleItemTax(itemId, isTaxable) {
-  // Send AJAX request to update the line item
   fetch("{% url 'core:quote_toggle_item_tax' quote.public_id %}", {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken')
+      'X-CSRFToken': getCookie('csrftoken') || ''
     },
-    body: JSON.stringify({ 
-      item_id: itemId, 
-      taxable: isTaxable 
-    })
+    body: JSON.stringify({ item_id: itemId, taxable: isTaxable })
   })
-  .then(response => response.json())
-  .then(data => {
+  .then(function(response){ return response.json(); })
+  .then(function(data){
     if (data.success) {
-      // Reload the page to show updated totals
       location.reload();
     } else {
-      console.error('Failed to update item tax setting');
-      // Revert checkbox on failure
-      const checkbox = document.querySelector(`[data-item-id="${itemId}"]`);
-      if (checkbox) {
-        checkbox.checked = !isTaxable;
-      }
+      revertTax(itemId, isTaxable);
     }
   })
-  .catch(error => {
-    console.error('Error:', error);
-    // Revert checkbox on error
-    const checkbox = document.querySelector(`[data-item-id="${itemId}"]`);
-    if (checkbox) {
-      checkbox.checked = !isTaxable;
-    }
+  .catch(function(){
+    revertTax(itemId, isTaxable);
   });
-}
-
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
 }
 </script>
 {% endblock %}

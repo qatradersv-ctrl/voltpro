@@ -34,74 +34,52 @@ function selectService(serviceId) {
   }
 }
 
-// Show modal if there's a success message
+// Confirm the quote request without losing the page context
 document.addEventListener('DOMContentLoaded', function() {
   const alerts = document.querySelectorAll('.alert-success');
   if (alerts.length > 0) {
     showModal();
   }
 });
-
-// Function to animate stat numbers when they come into view
-function animateStats() {
-  const statNumbers = document.querySelectorAll('.stat-number');
-  
-  statNumbers.forEach(stat => {
-    const targetValue = stat.getAttribute('data-target');
-    const suffix = stat.getAttribute('data-suffix') || '';
-    
-    // Skip if no data-target attribute
-    if (!targetValue) {
-      return;
-    }
-    
-    const numericTarget = parseInt(targetValue);
-    
-    if (!isNaN(numericTarget) && numericTarget > 0) {
-      const duration = 2000; // 2 seconds animation
-      let start = 0;
-      const increment = numericTarget / (duration / 16); // 60fps
-      
-      const animate = () => {
-        start += increment;
-        if (start < numericTarget) {
-          stat.textContent = Math.floor(start) + suffix;
-          requestAnimationFrame(animate);
-        } else {
-          stat.textContent = numericTarget + suffix;
-        }
-      };
-      
-      animate();
-    }
-  });
-}
-
-// Intersection Observer to trigger animation when about section is visible
-const aboutSection = document.getElementById('about-section');
-if (aboutSection) {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animateStats();
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-  
-  observer.observe(aboutSection);
-}
 </script>
 
 <section class="hero" aria-label="Hero section">
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-content">
+        <p class="eyebrow">Licensed &amp; insured contractor &middot; Nairobi</p>
+        <h1>Power, access and security <span class="hero-accent">installed to one accountable spec.</span></h1>
+        <p class="hero-lede">Solar, backup power, wiring, CCTV and access control &mdash; surveyed, designed, installed and tested by the same team, from first site visit to handover documentation.</p>
+        <ul class="hero-chip-row">
+          <li class="hero-chip">Solar &amp; clean energy</li>
+          <li class="hero-chip">UPS &amp; backup power</li>
+          <li class="hero-chip">Access &amp; CCTV</li>
+          <li class="hero-chip">Wiring &amp; switchgear</li>
+        </ul>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-amber">Request a quote</a>
+          <a href="{% url 'core:services' %}" class="btn btn-ghost">Explore services</a>
+        </div>
+        <dl class="hero-specs">
+          <div><dt>13+</dt><dd>Service lines under one contract</dd></div>
+          <div><dt>24/7</dt><dd>Emergency call-out response</dd></div>
+          <div><dt>4</dt><dd>Stages from survey to handover</dd></div>
+        </dl>
       </div>
-
+      <div class="hero-media">
+        <div class="hero-frame">
+          <img src="{% static 'core/images/hero.jpg' %}" alt="VoltPro technician fixing panels into the roof array on a solar installation site" width="978" height="652" loading="eager" decoding="async" fetchpriority="high">
+        </div>
+        <div class="hero-badge">
+          <strong>Tested</strong>
+          <span>Load &amp; continuity checks before energising</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+{% include "core/_trust_marquee.html" %}
 
 <section class="section section-blue" id="about-section">
   <div class="wrap">
@@ -115,7 +93,7 @@ if (aboutSection) {
         <p>VoltPro Electrodata Solutions has been at the forefront of electrical and security installations, serving residential, commercial, and industrial clients with excellence and reliability.</p>
         <p>Our team of certified technicians brings decades of combined experience in electrical wiring, solar installations, access control systems, CCTV security, and emergency power solutions. We pride ourselves on delivering quality workmanship, adhering to safety standards, and providing exceptional customer service.</p>
         <p>From site surveys to system design, installation to maintenance, we handle every aspect of your electrical and security needs with precision and professionalism. Our commitment to quality and customer satisfaction has made us a trusted partner for businesses and homeowners throughout Kenya.</p>
-        <p><a href="{% url 'core:about' %}" style="color: var(--accent); font-weight: 600;">Learn more about our company &rarr;</a></p>
+        <p><a href="{% url 'core:about' %}" class="link-arrow">Learn more about our company</a></p>
       </div>
       <div class="about-stats">
         <div class="stat-item">
@@ -143,6 +121,9 @@ if (aboutSection) {
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Our Services</p>
+      <h2>One team for power, wiring and security</h2>
+      <p class="section-lede">Each line below is surveyed, priced and tested by the same accountable crew — pick the one that matches the problem.</p>
+      <a href="{% url 'core:services' %}" class="btn btn-ghost section-head-cta">Browse every service line &rarr;</a>
     </div>
     <div class="service-grid">
       {% for service in services %}
@@ -159,7 +140,7 @@ if (aboutSection) {
       <p class="eyebrow">Recent installations</p>
       <h2>Our work gallery</h2>
       <p class="section-lede">Browse through our completed projects — from solar installations to security systems.</p>
-      <a href="{% url 'core:work' %}" class="btn btn-ghost" style="margin-top: 12px;">View all projects &rarr;</a>
+      <a href="{% url 'core:work' %}" class="btn btn-ghost section-head-cta">View all projects &rarr;</a>
     </div>
     <div class="gallery-grid">
       {% for project in projects %}
@@ -207,6 +188,8 @@ if (aboutSection) {
   </div>
 </section>
 
+{% include "core/_coverage.html" %}
+
 <section class="proof-band" aria-label="VoltPro service commitments">
   <div class="wrap proof-band-grid">
     <div class="proof-band-intro">
@@ -224,13 +207,14 @@ if (aboutSection) {
 
 
 
-<section class="section section-blue" id="process">
+<section class="section" id="process">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">How we work</p>
       <h2>Four stages, same order every time</h2>
+      <p class="section-lede">The stage you are in is always written down — from the first walk of the site to the line you call if something trips.</p>
     </div>
-    <ol class="process-list">
+    <ol class="process-list" data-rail>
       <li>
         <span class="process-num">01</span>
         <h3>Site survey</h3>
@@ -252,17 +236,20 @@ if (aboutSection) {
         <p>Documentation, a walkthrough of your system, and a direct line for servicing or emergency call-out.</p>
       </li>
     </ol>
+    <a href="{% url 'core:process' %}" class="btn btn-ghost section-head-cta">See the full process &rarr;</a>
   </div>
 </section>
 
+{% include "core/_assurance.html" %}
+
 {% if blog_posts %}
-<section class="section section-blue" id="blog">
+<section class="section" id="blog">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Our Blog</p>
       <h2>Latest insights & updates</h2>
       <p class="section-lede">Stay informed with our latest articles on electrical installations, security systems, and industry best practices.</p>
-      <a href="{% url 'core:blog_list' %}" class="btn btn-ghost" style="margin-top: 12px;">View all posts &rarr;</a>
+      <a href="{% url 'core:blog_list' %}" class="btn btn-ghost section-head-cta">View all posts &rarr;</a>
     </div>
     <div class="blog-grid">
       {% for post in blog_posts %}
@@ -303,6 +290,8 @@ if (aboutSection) {
   </div>
 </section>
 {% endif %}
+
+{% include "core/_faq.html" with faq_heading="Questions worth asking before you book" faq_lede="Short answers on response times, quotes and what happens at handover." %}
 
 <section class="section site-ready-section" aria-labelledby="site-ready-heading">
   <div class="wrap site-ready-grid">

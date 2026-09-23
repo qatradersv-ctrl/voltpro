@@ -1,14 +1,26 @@
 {% extends "core/base.html" %}
 {% load static %}
 {% block title %}Services — VoltPro Electrodata Solutions{% endblock %}
+{% block meta_description %}Solar, backup power, UPS, wiring, structured cabling, switchgear, CCTV, biometric access control, electric fencing and gate automation in Nairobi — surveyed, installed and tested by one team.{% endblock %}
 {% block content %}
 {% include "core/_icons.html" %}
 
 <section class="page-header">
   <div class="wrap">
+    <ol class="breadcrumb">
+      <li><a href="{% url 'core:home' %}">Home</a></li>
+      <li><span aria-current="page">Services</span></li>
+    </ol>
     <p class="eyebrow">Our Services</p>
-    <h1>Comprehensive Power & Security Solutions</h1>
+    <h1>Comprehensive Power &amp; Security Solutions</h1>
     <p class="section-lede">We provide end-to-end electrical and security installations — from design to deployment and ongoing maintenance. Our certified team delivers quality workmanship across residential, commercial, and industrial projects.</p>
+    <ul class="chip-row">
+      <li class="chip chip--dark">Power &amp; backup</li>
+      <li class="chip chip--dark">Solar &amp; clean energy</li>
+      <li class="chip chip--dark">Access &amp; security</li>
+      <li class="chip chip--dark">Wiring &amp; infrastructure</li>
+      <li class="chip chip--dark">Gates &amp; perimeter</li>
+    </ul>
   </div>
 </section>
 
@@ -17,15 +29,67 @@
     <div class="section-head">
       <p class="eyebrow">Service Categories</p>
       <h2>Find the solution you need</h2>
-      <p class="section-lede">Browse our comprehensive range of electrical and security services designed to meet all your power and protection needs.</p>
+      <p class="section-lede">Five disciplines, each priced and tested on the same terms. Filter the catalogue below or open a category directly.</p>
+    </div>
+    <div class="value-grid value-grid--3">
+      <a class="value-card" href="{% url 'core:services' %}?category=power">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2 4.5 13.5H11l-1 8.5 9-11.5h-6.5z"/></svg>
+        </div>
+        <h3>Power &amp; Backup</h3>
+        <p>UPS and clean power, battery banks, generators with automatic changeover, LV switchgear, planned maintenance and 24/7 call-out.</p>
+        <span class="value-card-more">Browse category</span>
+      </a>
+      <a class="value-card" href="{% url 'core:services' %}?category=solar">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </div>
+        <h3>Solar &amp; Clean Energy</h3>
+        <p>Grid-tie and off-grid arrays sized to your real load, with the wiring and protection to match rather than bolted on afterwards.</p>
+        <span class="value-card-more">Browse category</span>
+      </a>
+      <a class="value-card" href="{% url 'core:services' %}?category=access">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        </div>
+        <h3>Access &amp; Security</h3>
+        <p>IP and analogue CCTV with NVR, fingerprint and card access control, electric fencing and integrated detection.</p>
+        <span class="value-card-more">Browse category</span>
+      </a>
+      <a class="value-card" href="{% url 'core:services' %}?category=infra">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 21V8l7-5 7 5v13"/><path d="M17 8l4 3v10"/><path d="M7 21v-6h6v6"/></svg>
+        </div>
+        <h3>Wiring &amp; Infrastructure</h3>
+        <p>New builds and rewires, Cat6 and fibre, control panel design and fabrication, site surveys, load and continuity testing.</p>
+        <span class="value-card-more">Browse category</span>
+      </a>
+      <a class="value-card" href="{% url 'core:services' %}?category=gates">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 20h18"/><path d="M5 20V7h14v13"/><path d="M9 7v13M15 7v13"/></svg>
+        </div>
+        <h3>Gates &amp; Perimeter</h3>
+        <p>Sliding gate automation, motors, safety sensors and repairs — wired into the same access system as the rest of the site.</p>
+        <span class="value-card-more">Browse category</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Full catalogue</p>
+      <h2>Every service line we install</h2>
+      <p class="section-lede">Filter by discipline below, or <a class="link-inline" href="{% url 'core:process' %}">read how a quote gets built</a>.</p>
     </div>
     <div class="category-tabs">
       <a href="{% url 'core:services' %}" class="category-tab {% if not current_category %}active{% endif %}">All Services</a>
-      <a href="{% url 'core:services' %}?category=power" class="category-tab {% if current_category == 'power' %}active{% endif %}">Power & Backup</a>
-      <a href="{% url 'core:services' %}?category=solar" class="category-tab {% if current_category == 'solar' %}active{% endif %}">Solar & Clean Energy</a>
-      <a href="{% url 'core:services' %}?category=access" class="category-tab {% if current_category == 'access' %}active{% endif %}">Access & Security</a>
-      <a href="{% url 'core:services' %}?category=infra" class="category-tab {% if current_category == 'infra' %}active{% endif %}">Wiring & Infrastructure</a>
-      <a href="{% url 'core:services' %}?category=gates" class="category-tab {% if current_category == 'gates' %}active{% endif %}">Gates & Perimeter</a>
+      <a href="{% url 'core:services' %}?category=power" class="category-tab {% if current_category == 'power' %}active{% endif %}">Power &amp; Backup</a>
+      <a href="{% url 'core:services' %}?category=solar" class="category-tab {% if current_category == 'solar' %}active{% endif %}">Solar &amp; Clean Energy</a>
+      <a href="{% url 'core:services' %}?category=access" class="category-tab {% if current_category == 'access' %}active{% endif %}">Access &amp; Security</a>
+      <a href="{% url 'core:services' %}?category=infra" class="category-tab {% if current_category == 'infra' %}active{% endif %}">Wiring &amp; Infrastructure</a>
+      <a href="{% url 'core:services' %}?category=gates" class="category-tab {% if current_category == 'gates' %}active{% endif %}">Gates &amp; Perimeter</a>
     </div>
     <div class="service-grid">
       {% for service in services %}
@@ -35,64 +99,74 @@
   </div>
 </section>
 
-<section class="section section-blue">
+{% include "core/_assurance.html" %}
+
+<section class="section section-alt">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Why Choose Us</p>
       <h2>Expertise you can trust</h2>
       <p class="section-lede">Our commitment to quality, safety, and customer satisfaction sets us apart in the industry.</p>
     </div>
-    <div class="services-grid">
-      <div class="services-card">
-        <div class="services-card-img">
-          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="value-grid">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M12 3 4 6v6c0 5 3.4 7.6 8 9 4.6-1.4 8-4 8-9V6l-8-3Z"/>
             <path d="m9 12 2 2 4-4"/>
           </svg>
         </div>
-        <h3 class="services-card-label">Licensed & Insured</h3>
+        <h3>Licensed &amp; Insured</h3>
         <p>Fully licensed electrical contractor with comprehensive insurance coverage for your peace of mind.</p>
       </div>
-      <div class="services-card">
-        <div class="services-card-img">
-          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="8" r="4"/>
             <path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
           </svg>
         </div>
-        <h3 class="services-card-label">Certified Technicians</h3>
+        <h3>Certified Technicians</h3>
         <p>Our in-house team of certified technicians brings decades of combined experience to every project.</p>
       </div>
-      <div class="services-card">
-        <div class="services-card-img">
-          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="12" r="9"/>
             <path d="M12 7v5l3.5 2"/>
           </svg>
         </div>
-        <h3 class="services-card-label">24/7 Emergency Support</h3>
+        <h3>24/7 Emergency Support</h3>
         <p>Round-the-clock emergency call-out services when your systems cannot wait.</p>
       </div>
-      <div class="services-card">
-        <div class="services-card-img">
-          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
         </div>
-        <h3 class="services-card-label">Quality Guarantee</h3>
+        <h3>Quality Guarantee</h3>
         <p>Tested, certified, and warrantied installations backed by our commitment to excellence.</p>
       </div>
     </div>
   </div>
 </section>
 
+{% include "core/_coverage.html" %}
+
+{% include "core/_faq.html" with faq_heading="Questions about scope and pricing" faq_lede="How a service line turns into a fixed written scope before anyone starts work." %}
+
 <section class="section service-cta">
   <div class="wrap">
     <div class="service-cta-content">
-      <h2>Need a custom solution?</h2>
-      <p>Contact us today for a free consultation and quote for your power and security needs. Our team will assess your requirements and provide tailored recommendations.</p>
-      <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+      <p class="eyebrow">Custom work</p>
+      <h2>Need a solution that is not on the list?</h2>
+      <p>Tell us the outcome you need. If it involves power, wiring or security, we can scope it — and say so plainly if we cannot.</p>
+      <div class="service-cta-actions">
+        <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+        <a href="tel:+254715117855" class="btn btn-ghost">Call 0715 117855</a>
+      </div>
     </div>
   </div>
 </section>

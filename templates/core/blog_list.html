@@ -7,9 +7,19 @@
 
 <section class="page-header">
   <div class="wrap">
-    <p class="eyebrow">Blog & News</p>
-    <h1>Insights & Updates</h1>
-    <p class="section-lede">Stay updated with the latest insights, tips, and news from VoltPro Electrodata Solutions. Our blog covers electrical best practices, solar energy trends, security system innovations, and industry updates to help you make informed decisions about your power and security needs.</p>
+    <ol class="breadcrumb">
+      <li><a href="{% url 'core:home' %}">Home</a></li>
+      <li><span aria-current="page">Blog</span></li>
+    </ol>
+    <p class="eyebrow">Blog &amp; News</p>
+    <h1>Insights &amp; Updates</h1>
+    <p class="section-lede">Notes from the field on electrical best practice, solar and backup power, access control and CCTV &mdash; written so a facilities manager, a landlord or a homeowner can make a decision with the trade-offs in front of them.</p>
+    <ul class="chip-row">
+      <li class="chip chip--dark">Wiring &amp; compliance</li>
+      <li class="chip chip--dark">Solar &amp; backup</li>
+      <li class="chip chip--dark">Access &amp; CCTV</li>
+      <li class="chip chip--dark">Maintenance</li>
+    </ul>
   </div>
 </section>
 
@@ -18,15 +28,16 @@
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Featured Posts</p>
-      <h2>Highlighted articles</h2>
-      <p class="section-lede">Must-read content selected by our team for its relevance and value to our clients.</p>
+      <h2>Start with these</h2>
+      <p class="section-lede">Articles our technicians keep coming back to when a client asks the same question on site twice.</p>
     </div>
     <div class="blog-featured-grid">
       {% for post in featured_posts %}
       <article class="blog-featured-card">
         {% if post.featured_image %}
-        <div class="blog-featured-image">
-          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy">
+        <div class="blog-featured-image blog-card-media">
+          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy" decoding="async">
+          <span class="blog-card-badge">Featured</span>
         </div>
         {% endif %}
         <div class="blog-featured-content">
@@ -36,7 +47,7 @@
           </div>
           <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
           <p class="blog-excerpt">{{ post.excerpt }}</p>
-          <a href="{{ post.get_absolute_url }}" class="btn btn-ghost">Read more &rarr;</a>
+          <a href="{{ post.get_absolute_url }}" class="btn btn-ghost btn-sm">Read article &rarr;</a>
         </div>
       </article>
       {% endfor %}
@@ -49,26 +60,25 @@
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">All Posts</p>
-      <h2>Latest Articles</h2>
-      <p class="section-lede">Browse our collection of articles covering electrical systems, solar installations, security solutions, and industry best practices.</p>
-      
+      <h2>Latest articles</h2>
+      <p class="section-lede">Filter by topic, or read straight through. Every post is written by the team that installs, tests and services the systems it describes.</p>
       {% if categories %}
       <div class="blog-categories">
-        <a href="{% url 'core:blog_list' %}" class="blog-category-btn {% if not current_category %}active{% endif %}">All</a>
+        <a href="{% url 'core:blog_list' %}" class="blog-category-btn {% if not current_category %}active{% endif %}">All topics</a>
         {% for category in categories %}
         <a href="{% url 'core:blog_list' %}?category={{ category }}" class="blog-category-btn {% if current_category == category %}active{% endif %}">{{ category }}</a>
         {% endfor %}
       </div>
       {% endif %}
     </div>
-    
+
     {% if posts %}
     <div class="blog-grid">
       {% for post in posts %}
       <article class="blog-card">
         {% if post.featured_image %}
         <div class="blog-image">
-          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy">
+          <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" loading="lazy" decoding="async">
         </div>
         {% endif %}
         <div class="blog-content">
@@ -78,16 +88,38 @@
           </div>
           <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
           <p class="blog-excerpt">{{ post.excerpt }}</p>
-          <a href="{{ post.get_absolute_url }}" class="btn btn-ghost btn-sm">Read more &rarr;</a>
+          <a href="{{ post.get_absolute_url }}" class="blog-link">Read more <span aria-hidden="true">&rarr;</span></a>
         </div>
       </article>
       {% endfor %}
     </div>
     {% else %}
     <div class="empty-state">
-      <p>No blog posts found{% if current_category %} in {{ current_category }}{% endif %}. Check back soon for new content!</p>
+      <p>No articles published under {% if current_category %}{{ current_category }}{% else %}this topic{% endif %} yet.</p>
+      <a href="{% url 'core:blog_list' %}" class="btn btn-ghost btn-sm">View all topics</a>
     </div>
     {% endif %}
+  </div>
+</section>
+
+<section class="section section-blue">
+  <div class="wrap">
+    <div class="split-feature">
+      <div>
+        <p class="eyebrow">What you won't find here</p>
+        <h2>Guides are written after the survey, not before it.</h2>
+        <p class="section-lede">A quote on a website is easy. What decides whether a system works is the load it carries, the cable run it feeds, the supply available on site and how the installation is tested before it is energised. That is the level of detail we try to keep our writing at.</p>
+        <p class="read-hint">Nothing here is a substitute for a site visit.</p>
+        <a href="{% url 'core:process' %}" class="link-inline">Read how a quote gets built</a>
+      </div>
+      <ul class="check-list check-list--1" data-seq>
+        <li>How to size a solar and backup system against real daily load</li>
+        <li>What a proper distribution board, earthing and surge protection should include</li>
+        <li>Where access control, CCTV and automation fail in practice, and why</li>
+        <li>How to plan a server or data room so power does not decide its uptime</li>
+        <li>What to ask a contractor for before signing a quote</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -96,14 +128,17 @@
     <div class="section-head">
       <p class="eyebrow">Newsletter</p>
       <h2>Stay informed</h2>
-      <p class="section-lede">Subscribe to our newsletter to receive the latest articles, tips, and updates directly in your inbox.</p>
+      <p class="section-lede">New articles, occasional field notes and service reminders &mdash; sent when there is something worth reading, not on a schedule we imposed on ourselves.</p>
     </div>
     <div class="newsletter-section">
       <form id="blog-newsletter-form" class="newsletter-form-inline">
-        <input type="email" id="blog-newsletter-email" placeholder="Enter your email address" required style="flex: 1; padding: 14px 18px; border: 2px solid var(--line); border-radius: var(--radius); font-size: 15px;">
+        {% csrf_token %}
+        <label class="sr-only" for="blog-newsletter-email">Email address</label>
+        <input type="email" id="blog-newsletter-email" class="newsletter-field" name="email" placeholder="you@company.co.ke" autocomplete="email" required>
         <button type="submit" class="btn btn-amber">Subscribe</button>
       </form>
-      <div id="blog-newsletter-message" style="margin-top: 12px; font-size: 14px;"></div>
+      <p class="form-note">We use this address to send the newsletter only. Unsubscribe in one click.</p>
+      <div id="blog-newsletter-message" class="newsletter-message newsletter-message--light" role="status" aria-live="polite"></div>
     </div>
   </div>
 </section>
@@ -111,78 +146,58 @@
 <section class="section service-cta">
   <div class="wrap">
     <div class="service-cta-content">
-      <h2>Need expert electrical or security services?</h2>
-      <p>Contact us today for professional installations, maintenance, and consultations. Our team is ready to help with all your power and security needs.</p>
-      <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+      <p class="eyebrow">Next step</p>
+      <h2>Reading about it is the easy part.</h2>
+      <p>Tell us what you need powered, wired or secured and a technician will call you back to scope it &mdash; then book the site visit.</p>
+      <div class="service-cta-actions">
+        <a href="{% url 'core:contact' %}" class="btn btn-amber">Request a quote</a>
+        <a href="tel:+254715117855" class="btn btn-ghost">Call 0715 117855</a>
+      </div>
     </div>
   </div>
 </section>
 
 <script>
-// Blog newsletter subscription form handling
-document.addEventListener('DOMContentLoaded', function() {
-  const blogNewsletterForm = document.getElementById('blog-newsletter-form');
-  if (blogNewsletterForm) {
-    blogNewsletterForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const email = document.getElementById('blog-newsletter-email').value;
-      const messageDiv = document.getElementById('blog-newsletter-message');
-      const submitBtn = blogNewsletterForm.querySelector('button[type="submit"]');
-      
-      // Get CSRF token from cookie
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-            }
-          }
-        }
-        return cookieValue;
-      }
-      
-      const csrfToken = getCookie('csrftoken');
-      
-      // Disable button and show loading state
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Subscribing...';
-      
-      fetch("{% url 'core:newsletter_subscribe' %}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken || ''
-        },
-        body: JSON.stringify({
-          email: email
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          messageDiv.textContent = data.message;
-          messageDiv.style.color = '#10B981';
-          blogNewsletterForm.reset();
-        } else {
-          messageDiv.textContent = data.error || 'Subscription failed. Please try again.';
-          messageDiv.style.color = '#EF4444';
-        }
-      })
-      .catch(error => {
-        messageDiv.textContent = 'An error occurred. Please try again.';
-        messageDiv.style.color = '#EF4444';
-      })
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Subscribe';
-      });
-    });
+(function(){
+  var form = document.getElementById('blog-newsletter-form');
+  if(!form) return;
+  var email = document.getElementById('blog-newsletter-email');
+  var message = document.getElementById('blog-newsletter-message');
+  var button = form.querySelector('button[type="submit"]');
+
+  function say(text, ok){
+    message.textContent = text;
+    message.classList.toggle('is-success', ok);
+    message.classList.toggle('is-error', !ok);
   }
-});
+
+  form.addEventListener('submit', function(event){
+    event.preventDefault();
+    button.disabled = true;
+    button.textContent = 'Subscribing...';
+
+    fetch("{% url 'core:newsletter_subscribe' %}", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value },
+      body: JSON.stringify({ email: email.value })
+    })
+    .then(function(response){ return response.json(); })
+    .then(function(data){
+      if(data.success){
+        say(data.message, true);
+        form.reset();
+      } else {
+        say(data.error || 'Subscription failed. Please try again.', false);
+      }
+    })
+    .catch(function(){
+      say('An error occurred. Please try again.', false);
+    })
+    .finally(function(){
+      button.disabled = false;
+      button.textContent = 'Subscribe';
+    });
+  });
+})();
 </script>
 {% endblock %}

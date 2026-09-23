@@ -10,7 +10,12 @@
 
 <section class="page-header service-header">
   <div class="wrap">
-    <a class="back-link" href="{% url 'core:home' %}#services">&larr; All services</a>
+    <ol class="breadcrumb">
+      <li><a href="{% url 'core:home' %}">Home</a></li>
+      <li><a href="{% url 'core:services' %}">Services</a></li>
+      {% if service.category %}<li><a href="{% url 'core:services' %}?category={{ service.category }}">{{ service.get_category_display }}</a></li>{% endif %}
+      <li><span aria-current="page">{{ service.title }}</span></li>
+    </ol>
     <div class="service-header-content">
       <div class="service-header-icon">
         <svg class="card-icon"><use href="#icon-{{ service.icon }}"/></svg>
@@ -21,6 +26,12 @@
         <p class="section-lede">{{ service.short_description }}</p>
       </div>
     </div>
+    <ul class="chip-row">
+      <li class="chip chip--dark">Site survey first</li>
+      <li class="chip chip--dark">Written scope</li>
+      <li class="chip chip--dark">Tested before handover</li>
+      <li class="chip chip--dark">24/7 support line</li>
+    </ul>
   </div>
 </section>
 
@@ -28,13 +39,20 @@
   <div class="wrap">
     <div class="service-hero-grid">
       <div class="service-hero-media">
-        <img src="{{ service.cover_image_url }}" data-fallback-src="{{ service.fallback_cover_image_url }}" alt="{{ service.title }}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=this.dataset.fallbackSrc;">
+        <img src="{{ service.cover_image_url }}" data-fallback-src="{{ service.fallback_cover_image_url }}" alt="{{ service.title }}" loading="eager" decoding="async" onerror="this.onerror=null;this.src=this.dataset.fallbackSrc;">
       </div>
-      <div class="service-hero-content">
-        <div class="service-hero-cta">
-          <h2>Get a quote for this service</h2>
-          <p>Our team will assess your needs and provide a detailed proposal.</p>
+      <div class="service-hero-cta">
+        <p class="eyebrow">Start here</p>
+        <h2>Get a quote for this service</h2>
+        <p>Our team will assess your needs and provide a detailed proposal.</p>
+        <ul class="check-list check-list--1">
+          <li>A walk of the site and a check of the existing supply</li>
+          <li>A written scope priced against materials and labour</li>
+          <li>Installation, testing and handover documentation</li>
+        </ul>
+        <div class="service-cta-actions service-cta-actions--start">
           <a href="{% url 'core:home' %}#contact" class="btn btn-amber">Request quote</a>
+          <a href="tel:+254715117855" class="btn btn-ghost">Call 0715 117855</a>
         </div>
       </div>
     </div>
@@ -44,6 +62,7 @@
 <section class="section service-description">
   <div class="wrap">
     <div class="service-description-content">
+      <p class="eyebrow">Scope</p>
       <h2>About this service</h2>
       <div class="service-description-text">
         {{ service.description|linebreaks }}
@@ -52,16 +71,44 @@
   </div>
 </section>
 
-<section class="section section-alt service-features">
+<section class="section section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">How it is delivered</p>
+      <h2>What happens after you send the request</h2>
+      <p class="section-lede">The same four stages on every service line — nothing is quoted, ordered or energised out of order.</p>
+    </div>
+    <div class="step-row">
+      <div class="step">
+        <h3>Call-back</h3>
+        <p>A technician confirms the outline of the job and books a time to visit, usually within one business day.</p>
+      </div>
+      <div class="step">
+        <h3>Survey</h3>
+        <p>We measure the real loads and check the existing supply, then tell you what is and is not feasible.</p>
+      </div>
+      <div class="step">
+        <h3>Install</h3>
+        <p>Work carried out to code by our own team, with materials listed in the scope you approved.</p>
+      </div>
+      <div class="step">
+        <h3>Test &amp; handover</h3>
+        <p>Load and continuity tests, a walkthrough of the system, and documentation for your records.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Why choose us</p>
       <h2>What makes us different</h2>
     </div>
-    <div class="features-grid">
-      <div class="feature-item">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+    <div class="value-grid value-grid--3">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
@@ -69,9 +116,9 @@
         <h3>Certified experts</h3>
         <p>Our technicians are certified and experienced in this specific service.</p>
       </div>
-      <div class="feature-item">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12 6 12 12 16 14"/>
           </svg>
@@ -79,9 +126,9 @@
         <h3>24/7 support</h3>
         <p>Emergency call-out available for urgent issues and maintenance.</p>
       </div>
-      <div class="feature-item">
-        <div class="feature-icon">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="value-card">
+        <div class="value-card-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
         </div>
@@ -92,12 +139,15 @@
   </div>
 </section>
 
+{% include "core/_assurance.html" %}
+
 {% if related %}
-<section class="section related-services">
+<section class="section section-alt related-services">
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Related services</p>
       <h2>Often installed together</h2>
+      <p class="section-lede">Other work in the same discipline, quoted on the same site visit.</p>
     </div>
     <div class="service-grid">
       {% for r in related %}
@@ -108,13 +158,5 @@
 </section>
 {% endif %}
 
-<section class="section service-cta">
-  <div class="wrap">
-    <div class="service-cta-content">
-      <h2>Ready to get started?</h2>
-      <p>Contact us today for a free consultation and quote for your {{ service.title }} needs.</p>
-      <a href="{% url 'core:home' %}#contact" class="btn btn-amber">Get in touch</a>
-    </div>
-  </div>
-</section>
+{% include "core/_cta_band.html" with cta_title="Ready to get started?" cta_copy="Send the details of your site and a technician will call you back to scope this properly." %}
 {% endblock %}

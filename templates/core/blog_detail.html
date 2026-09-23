@@ -7,22 +7,27 @@
 
 <section class="page-header">
   <div class="wrap">
-    <a href="{% url 'core:blog_list' %}" class="btn btn-ghost btn-sm" style="margin-bottom: 16px;">&larr; Back to Blog</a>
+    <ol class="breadcrumb">
+      <li><a href="{% url 'core:home' %}">Home</a></li>
+      <li><a href="{% url 'core:blog_list' %}">Blog</a></li>
+      <li><span aria-current="page">{{ post.category|default:"Article" }}</span></li>
+    </ol>
+    <a class="back-link back-link--on-dark" href="{% url 'core:blog_list' %}">&larr; All articles</a>
     <h1>{{ post.title }}</h1>
-    <div class="blog-meta-header">
-      <span class="blog-category">{{ post.category }}</span>
-      <span class="blog-date">{{ post.published_at|date:"d M Y" }}</span>
-      <span class="blog-author">By {{ post.author }}</span>
+    <div class="article-meta">
+      {% if post.category %}<span class="blog-category">{{ post.category }}</span>{% endif %}
+      <span class="dot">{{ post.published_at|date:"d M Y" }}</span>
+      <span class="dot">{{ post.author }}</span>
     </div>
   </div>
 </section>
 
 {% if post.featured_image %}
-<section class="section">
+<section class="section article-hero">
   <div class="wrap">
-    <div class="blog-featured-image-container">
-      <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="blog-hero-image">
-    </div>
+    <figure class="blog-featured-image-container">
+      <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="blog-hero-image" decoding="async">
+    </figure>
   </div>
 </section>
 {% endif %}
@@ -30,16 +35,27 @@
 <section class="section section-alt">
   <div class="wrap">
     <article class="blog-article">
+      <p class="article-lede">{{ post.excerpt }}</p>
       <div class="blog-content-full">
         {{ post.content|safe }}
       </div>
-      
+
+      <div class="article-card">
+        <div class="article-card-avatar" aria-hidden="true">VP</div>
+        <div>
+          <p class="article-card-eyebrow">Written by</p>
+          <h3>{{ post.author }}</h3>
+          <p>VoltPro Electrodata Solutions &mdash; licensed and insured electrical, solar and security contractor working across Nairobi and the surrounding counties. Survey, design, installation, testing and handover under one team.</p>
+        </div>
+      </div>
+
       <div class="blog-share">
-        <p>Share this article:</p>
+        <p>Share this article</p>
         <div class="blog-share-buttons">
           <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Facebook</a>
-          <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Twitter</a>
+          <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&amp;text={{ post.title|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Twitter</a>
           <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">LinkedIn</a>
+          <a href="https://wa.me/?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri }}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">WhatsApp</a>
         </div>
       </div>
     </article>
@@ -50,15 +66,17 @@
 <section class="section">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow">Related Posts</p>
-      <h2>You might also like</h2>
+      <p class="eyebrow">Related reading</p>
+      <h2>More from {{ post.category|default:"this topic" }}</h2>
+      <p class="section-lede">Articles in the same category, written for the same decisions you are making on site.</p>
+      <a href="{% url 'core:blog_list' %}" class="btn btn-ghost section-head-cta">All articles &rarr;</a>
     </div>
     <div class="blog-grid">
       {% for related_post in related_posts %}
       <article class="blog-card">
         {% if related_post.featured_image %}
         <div class="blog-image">
-          <img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}" loading="lazy">
+          <img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}" loading="lazy" decoding="async">
         </div>
         {% endif %}
         <div class="blog-content">
@@ -68,7 +86,7 @@
           </div>
           <h3><a href="{{ related_post.get_absolute_url }}">{{ related_post.title }}</a></h3>
           <p class="blog-excerpt">{{ related_post.excerpt }}</p>
-          <a href="{{ related_post.get_absolute_url }}" class="btn btn-ghost btn-sm">Read more &rarr;</a>
+          <a href="{{ related_post.get_absolute_url }}" class="blog-link">Read more <span aria-hidden="true">&rarr;</span></a>
         </div>
       </article>
       {% endfor %}
@@ -77,13 +95,27 @@
 </section>
 {% endif %}
 
-<section class="section section-alt service-cta">
+<section class="section section-blue">
   <div class="wrap">
-    <div class="service-cta-content">
-      <h2>Need expert electrical or security services?</h2>
-      <p>Contact us today for professional installations, maintenance, and consultations.</p>
-      <a href="{% url 'core:contact' %}" class="btn btn-amber">Get in touch</a>
+    <div class="split-feature">
+      <div>
+        <p class="eyebrow">Put it on your site</p>
+        <h2>Reading it is the cheap part. Surveying yours is the next step.</h2>
+        <p class="section-lede">Send us the requirement and a technician will call back to confirm scope before we set a date to walk the site.</p>
+        <div class="hero-actions">
+          <a href="{% url 'core:contact' %}" class="btn btn-amber">Request a quote</a>
+          <a href="{% url 'core:services' %}" class="btn btn-ghost">Explore services</a>
+        </div>
+      </div>
+      <ul class="check-list check-list--1" data-seq>
+        <li>Site survey before any number is quoted</li>
+        <li>Written scope and single-line diagram where relevant</li>
+        <li>Load and continuity testing before energising</li>
+        <li>Handover documentation and a system walkthrough</li>
+      </ul>
     </div>
   </div>
 </section>
+
+{% include "core/_cta_band.html" with cta_title="Have a question this article didn't answer?" cta_copy="Ask the team that installs and services these systems. A technician will call you back to walk through the specifics of your site." %}
 {% endblock %}

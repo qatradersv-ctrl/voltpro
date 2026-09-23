@@ -146,7 +146,11 @@ def service_detail(request, slug):
 
 def work(request):
     projects = Project.objects.all()
-    context = {"projects": projects}
+    context = {
+        "projects": projects,
+        "services": Service.objects.filter(is_featured=True),
+        "testimonials": Testimonial.objects.all(),
+    }
     return render(request, "core/work.html", context)
 
 
@@ -164,12 +168,16 @@ def process(request):
 
 
 def contact(request):
-    return render(request, "core/contact.html")
+    context = {
+        "services": Service.objects.filter(is_featured=True),
+        "testimonials": Testimonial.objects.all()[:3],
+    }
+    return render(request, "core/contact.html", context)
 
 
 def about(request):
     """About page with company information."""
-    context = {}
+    context = {"testimonials": Testimonial.objects.all()}
     return render(request, "core/about.html", context)
 
 

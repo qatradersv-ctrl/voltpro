@@ -1,0 +1,51 @@
+{% comment %}
+Usage: {% include "core/_faq.html" with faq_heading="Questions worth asking before you book" faq_lede="Short answers, and the same process on every site." faq_tone="light" %}
+faq_tone accepts "light" (default) or "dark".
+{% endcomment %}
+<section class="section{% if faq_tone == 'dark' %} section-blue{% endif %}" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Before you book</p>
+      <h2>{{ faq_heading|default:"Frequently asked questions" }}</h2>
+      <p class="section-lede">{{ faq_lede|default:"If something is missing here, the technician who calls you back will answer it on the phone." }}</p>
+    </div>
+    <div class="faq">
+      <div class="faq-item">
+        <button type="button" class="faq-q" aria-expanded="false">How quickly will someone respond?
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a"><div><p>A technician calls you back within one business day to confirm the scope and arrange a site visit. If you leave an email address, you also get a written confirmation of what you asked for.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-q" aria-expanded="false">Why does the quote come after the site visit?
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a"><div><p>Because a price without measured loads and a look at the existing supply is a guess. We walk the site first, then issue a written scope priced against materials and labour, so the number you approve is the number you pay.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-q" aria-expanded="false">Can power and security sit on one contract?
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a"><div><p>Yes. Solar, backup power, wiring, switchgear, CCTV, access control and gate automation are all installed by the same team, surveyed and documented once instead of three times.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-q" aria-expanded="false">Do you work on existing installations?
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a"><div><p>Upgrades, fault-finding, extensions and rewires are routine for us. The survey checks the existing supply and boards first, and anything non-compliant gets written into the scope rather than quietly covered up.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-q" aria-expanded="false">What happens at handover?
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a"><div><p>Documentation, a walkthrough of the system, and a direct line for servicing or emergency call-out. You should know where things isolate before the team leaves site.</p></div></div>
+      </div>
+      <div class="faq-item">
+        <button type="button" class="faq-q" aria-expanded="false">Which properties do you take on?
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </button>
+        <div class="faq-a"><div><p>Residential homes, commercial offices, industrial sites and institutions such as schools and clinics. The process is the same at every size; only the paperwork depth changes.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>

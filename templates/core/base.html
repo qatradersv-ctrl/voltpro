@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>document.documentElement.className += ' js';</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}VoltPro Electrodata Solutions — Power, Access & Security Installations{% endblock %}</title>
 <meta name="description" content="{% block meta_description %}VoltPro Electrodata Solutions — solar, electrical wiring, UPS &amp; backup power, biometric access, CCTV, generators, switchgear and gate automation, installed to spec.{% endblock %}">
@@ -14,7 +15,7 @@
 
 <!-- Preload critical assets -->
 <link rel="preload" href="{% static 'core/images/logo.png' %}" as="image">
-<link rel="preload" href="{% static 'core/images/hero.png' %}" as="image">
+<link rel="preload" href="{% static 'core/images/hero.jpg' %}" as="image">
 <link rel="preload" href="{% static 'core/css/style.css' %}" as="style">
 
 <!-- Open Graph / Facebook -->
@@ -23,14 +24,14 @@
 <meta property="og:title" content="{% block og_title %}VoltPro Electrodata Solutions — Power, Access & Security Installations{% endblock %}">
 <meta property="og:description" content="{% block og_description %}Solar, electrical wiring, UPS &amp; backup power, biometric access, CCTV, generators, switchgear and gate automation — designed and installed as one system.{% endblock %}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:image" content="{% block og_image %}{% static 'core/images/hero.png' %}{% endblock %}">
+<meta property="og:image" content="{% block og_image %}{% static 'core/images/hero.jpg' %}{% endblock %}">
 <meta property="og:locale" content="en_US">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{% block twitter_title %}VoltPro Electrodata Solutions{% endblock %}">
 <meta name="twitter:description" content="{% block twitter_description %}Power, access and security installations across Nairobi and beyond.{% endblock %}">
-<meta name="twitter:image" content="{% block twitter_image %}{% static 'core/images/hero.png' %}{% endblock %}">
+<meta name="twitter:image" content="{% block twitter_image %}{% static 'core/images/hero.jpg' %}{% endblock %}">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,6 +67,7 @@
 <body>
 
 <a class="skip-link" href="#main">Skip to content</a>
+<div class="scroll-progress" aria-hidden="true"></div>
 
 <div class="top-nav">
   <div class="wrap top-nav-row">
@@ -90,21 +92,21 @@
 
     <div class="header-center">
       <nav class="main-nav" aria-label="Primary navigation">
-        <a href="{% url 'core:about' %}">About</a>
+        <a href="{% url 'core:about' %}"{% if request.resolver_match.url_name == 'about' %} aria-current="page"{% endif %}>About</a>
         <div class="nav-item dropdown">
-          <a href="{% url 'core:services' %}" class="nav-link dropdown-toggle">Services</a>
+          <a href="{% url 'core:services' %}" class="nav-link dropdown-toggle{% if request.resolver_match.url_name == 'services' or request.resolver_match.url_name == 'service_detail' %} is-active{% endif %}">Services</a>
           <div class="dropdown-menu">
-            <a href="{% url 'core:services' %}?category=power" class="dropdown-item">Power & Backup</a>
-            <a href="{% url 'core:services' %}?category=solar" class="dropdown-item">Solar & Clean Energy</a>
-            <a href="{% url 'core:services' %}?category=access" class="dropdown-item">Access & Security</a>
-            <a href="{% url 'core:services' %}?category=infra" class="dropdown-item">Wiring & Infrastructure</a>
-            <a href="{% url 'core:services' %}?category=gates" class="dropdown-item">Gates & Perimeter</a>
+            <a href="{% url 'core:services' %}?category=power" class="dropdown-item">Power &amp; Backup</a>
+            <a href="{% url 'core:services' %}?category=solar" class="dropdown-item">Solar &amp; Clean Energy</a>
+            <a href="{% url 'core:services' %}?category=access" class="dropdown-item">Access &amp; Security</a>
+            <a href="{% url 'core:services' %}?category=infra" class="dropdown-item">Wiring &amp; Infrastructure</a>
+            <a href="{% url 'core:services' %}?category=gates" class="dropdown-item">Gates &amp; Perimeter</a>
           </div>
         </div>
-        <a href="{% url 'core:process' %}">How we work</a>
-        <a href="{% url 'core:work' %}">Our work</a>
-        <a href="{% url 'core:blog_list' %}">Blog</a>
-        <a href="{% url 'core:contact' %}">Contact</a>
+        <a href="{% url 'core:process' %}"{% if request.resolver_match.url_name == 'process' %} aria-current="page"{% endif %}>How we work</a>
+        <a href="{% url 'core:work' %}"{% if request.resolver_match.url_name == 'work' %} aria-current="page"{% endif %}>Our work</a>
+        <a href="{% url 'core:blog_list' %}"{% if request.resolver_match.url_name == 'blog_list' or request.resolver_match.url_name == 'blog_detail' %} aria-current="page"{% endif %}>Blog</a>
+        <a href="{% url 'core:contact' %}"{% if request.resolver_match.url_name == 'contact' %} aria-current="page"{% endif %}>Contact</a>
       </nav>
     </div>
 
@@ -198,13 +200,13 @@
 
     <div class="footer-col">
       <h3>Newsletter</h3>
-      <p style="margin-bottom: 12px; font-size: 13px; color: #FFFFFF;">Subscribe for latest updates and tips.</p>
+      <p class="newsletter-copy">Subscribe for latest updates and tips.</p>
       <form id="newsletter-form" class="newsletter-form">
         {% csrf_token %}
-        <input type="email" id="newsletter-email" placeholder="Your email" required style="width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: #FFFFFF; border-radius: 4px; font-size: 13px;">
-        <button type="submit" class="btn btn-amber btn-sm" style="width: 100%; padding: 8px 12px; font-size: 12px;">Subscribe</button>
+        <input type="email" id="newsletter-email" class="newsletter-input" placeholder="Your email" aria-label="Email address" required>
+        <button type="submit" class="btn btn-amber btn-sm newsletter-submit">Subscribe</button>
       </form>
-      <div id="newsletter-message" style="margin-top: 8px; font-size: 12px;"></div>
+      <div id="newsletter-message" class="newsletter-message" role="status" aria-live="polite"></div>
     </div>
 
     <div class="footer-col">
@@ -273,10 +275,163 @@
     });
   });
 })();
+
+(function(){
+  /* sticky header state + reading progress rail */
+  var header = document.querySelector('.site-header');
+  var progress = document.querySelector('.scroll-progress');
+  var ticking = false;
+  function onScrollFrame(){
+    var y = window.scrollY || window.pageYOffset || 0;
+    if(header) header.classList.toggle('is-scrolled', y > 8);
+    if(progress){
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var ratio = max > 0 ? Math.min(y / max, 1) : 0;
+      progress.style.setProperty('--sp', ratio.toFixed(4));
+      progress.classList.toggle('is-active', y > 140);
+    }
+    ticking = false;
+  }
+  if(header || progress){
+    window.addEventListener('scroll', function(){
+      if(!ticking){ ticking = true; window.requestAnimationFrame(onScrollFrame); }
+    }, { passive: true });
+    onScrollFrame();
+  }
+})();
+
+(function(){
+  /* the process rail fills in step with the scroll position of the stage list */
+  var rails = document.querySelectorAll('[data-rail]');
+  if(!rails.length) return;
+  var queued = false;
+  var paint = function(){
+    rails.forEach(function(rail){
+      var r = rail.getBoundingClientRect();
+      var span = r.height + window.innerHeight * 0.5;
+      var seen = (window.innerHeight * 0.75) - r.top;
+      rail.style.setProperty('--rp', Math.max(0, Math.min(seen / span, 1)).toFixed(3));
+    });
+    queued = false;
+  };
+  window.addEventListener('scroll', function(){
+    if(!queued){ queued = true; window.requestAnimationFrame(paint); }
+  }, { passive: true });
+  paint();
+})();
+
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  /* scroll reveals: grids stagger their children, text blocks fade as one */
+  var SEQ = '.section-head, .service-card, .gallery-item, .blog-card, .blog-featured-card, '
+          + '.testimonial, .value-card, .counter, .stat-item, .area, .option, .step, '
+          + '.process-list > li, .proof-metrics > div, .check-list > li, .feature-item, .split-feature';
+  var wraps = document.querySelectorAll('main section:not(.hero, .trust-strip, .marquee) > .wrap');
+  wraps.forEach(function(wrap){
+    var items = wrap.querySelectorAll(SEQ);
+    if(items.length > 1){
+      wrap.setAttribute('data-reveal', 'group');
+      items.forEach(function(item, i){
+        item.setAttribute('data-seq', '');
+        item.style.setProperty('--d', Math.min(i, 9) * 70 + 'ms');
+      });
+    } else {
+      wrap.setAttribute('data-reveal', '');
+    }
+  });
+  if(!wraps.length) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-revealed');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+  wraps.forEach(function(el){ io.observe(el); });
+
+  /* statistics count up once, when they first come into view */
+  var counters = document.querySelectorAll('.stat-number[data-target], .counter b[data-target]');
+  if(counters.length){
+    var runCount = function(el){
+      var target = parseInt(el.getAttribute('data-target'), 10);
+      var suffix = el.getAttribute('data-suffix') || '';
+      if(isNaN(target) || target <= 0) return;
+      var step = target / (2000 / 16);
+      var value = 0;
+      var tick = function(){
+        value += step;
+        if(value < target){
+          el.textContent = Math.floor(value) + suffix;
+          window.requestAnimationFrame(tick);
+        } else {
+          el.textContent = target + suffix;
+        }
+      };
+      tick();
+    };
+    var co = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          runCount(entry.target);
+          co.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    counters.forEach(function(el){ co.observe(el); });
+  }
+
+  /* hero photograph parallax: desktop pointer widths only */
+  var heroImg = document.querySelector('.hero-frame img');
+  if(heroImg && window.matchMedia('(min-width: 1041px)').matches){
+    var heroFrame = false;
+    window.addEventListener('scroll', function(){
+      if(!heroFrame){
+        heroFrame = true;
+        window.requestAnimationFrame(function(){
+          heroImg.style.setProperty('--py', (Math.min(window.scrollY, 500) * -0.045).toFixed(2) + 'px');
+          heroFrame = false;
+        });
+      }
+    }, { passive: true });
+  }
+})();
+
+(function(){
+  /* seamless ticker: the group is cloned so the loop has no visible seam */
+  document.querySelectorAll('[data-marquee] .marquee-track').forEach(function(track){
+    var group = track.querySelector('.marquee-group');
+    if(!group) return;
+    var clone = group.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    track.appendChild(clone);
+  });
+
+  /* FAQ accordion: one panel open at a time */
+  document.querySelectorAll('.faq').forEach(function(faq){
+    var items = faq.querySelectorAll('.faq-item');
+    items.forEach(function(item){
+      var question = item.querySelector('.faq-q');
+      if(!question) return;
+      question.addEventListener('click', function(){
+        var wasOpen = item.classList.contains('is-open');
+        items.forEach(function(other){
+          other.classList.remove('is-open');
+          other.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        });
+        if(!wasOpen){
+          item.classList.add('is-open');
+          question.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  });
+})();
 </script>
 <div class="mobile-actionbar" aria-hidden="false">
   <a href="tel:+254715117855" class="btn btn-ghost">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
     </svg>
     Call
@@ -338,18 +493,19 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .then(response => response.json())
       .then(data => {
+        messageDiv.classList.remove('is-success', 'is-error');
         if (data.success) {
           messageDiv.textContent = data.message;
-          messageDiv.style.color = '#10B981';
+          messageDiv.classList.add('is-success');
           newsletterForm.reset();
         } else {
           messageDiv.textContent = data.error || 'Subscription failed. Please try again.';
-          messageDiv.style.color = '#EF4444';
+          messageDiv.classList.add('is-error');
         }
       })
       .catch(error => {
         messageDiv.textContent = 'An error occurred. Please try again.';
-        messageDiv.style.color = '#EF4444';
+        messageDiv.classList.add('is-error');
       })
       .finally(() => {
         submitBtn.disabled = false;

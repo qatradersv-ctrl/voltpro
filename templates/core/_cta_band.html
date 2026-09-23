@@ -1,0 +1,16 @@
+{% comment %}
+Usage: {% include "core/_cta_band.html" with cta_title="Ready when the site is" cta_copy="Send the details and we will take it from the survey." %}
+{% endcomment %}
+<section class="section service-cta">
+  <div class="wrap">
+    <div class="service-cta-content">
+      <p class="eyebrow">Next step</p>
+      <h2>{{ cta_title|default:"Tell us what you are powering, wiring or securing" }}</h2>
+      <p>{{ cta_copy|default:"A technician — not a call centre — calls you back to confirm scope and book the site visit." }}</p>
+      <div class="service-cta-actions">
+        <a href="{% url 'core:contact' %}" class="btn btn-amber">Request a quote</a>
+        <a href="tel:+254715117855" class="btn btn-ghost">Call 0715 117855</a>
+      </div>
+    </div>
+  </div>
+</section>
