@@ -44,6 +44,23 @@ def _wrapped_text(c, text, x, y, max_width, font="Helvetica", size=8, leading=10
     return y
 
 
+def _wrap_lines(text, max_width, font="Helvetica", size=8):
+    """The lines _wrapped_text would draw, without drawing them."""
+    from reportlab.pdfbase.pdfmetrics import stringWidth
+    lines = []
+    line = ""
+    for word in text.split(" "):
+        candidate = f"{line} {word}".strip() if line else word
+        if stringWidth(candidate, font, size) > max_width and line:
+            lines.append(line)
+            line = word
+        else:
+            line = candidate
+    if line:
+        lines.append(line)
+    return lines
+
+
 def build_quote_pdf(quote):
     """Returns a BytesIO containing the rendered quote PDF for a Quote instance."""
     buf = io.BytesIO()
@@ -87,7 +104,7 @@ def build_quote_pdf(quote):
     )
 
     logo_drawn = False
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'core', 'images', 'logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'core', 'images', 'logo-mark.png')
     if os.path.exists(logo_path):
         try:
             img = ImageReader(logo_path)
@@ -179,6 +196,25 @@ def build_quote_pdf(quote):
             y = _wrapped_text(c, line, x_left, y, x_right - x_left - 8, size=8.5, leading=11)
         y -= 8
 
+    # ---------------- Pre-flight the terms block ----------------
+    # Ten numbered conditions, the acceptance rule and the footer need real
+    # vertical room, so measure them before the table and let that decide how
+    # many empty rows to pad the table with.
+    items = list(quote.line_items.all())
+    header_h = 14
+    row_h = 20
+    terms_w = 4.6 * inch
+    terms_size, terms_leading = 8, 10
+    numbered_terms = [f"{i}. {line}" for i, line in enumerate(quote.terms_list, 1)]
+    terms_rows = sum(len(_wrap_lines(t, terms_w - 10, size=terms_size)) for t in numbered_terms)
+    # 26pt = header bar + gap to the first baseline; 98pt = acceptance label,
+    # signature rule, print name and the three footer lines below the terms.
+    terms_need = 26 + terms_rows * terms_leading + 98
+    totals_h = (3 if quote.tax_rate <= 0 else 6) * 16
+    bottom_limit = MARGIN * 0.6 + 10
+    room = y - header_h - 10 - totals_h - 10 - terms_need - bottom_limit
+    min_rows = max(len(items), min(8, int(room // row_h)))
+
     # ---------------- Line items table ----------------
     col_num_x = x_left
     col_desc_x = x_left + 0.3 * inch
@@ -200,9 +236,6 @@ def build_quote_pdf(quote):
     c.drawRightString(col_amt_x, y - 10.5, "AMOUNT")
     y -= header_h
 
-    items = list(quote.line_items.all())
-    row_h = 20
-    min_rows = max(len(items), 8)
     c.setFont("Helvetica", 8.5)
     for i in range(min_rows):
         shade = ROW_SHADE if i % 2 == 0 else colors.white
@@ -290,9 +323,14 @@ def build_quote_pdf(quote):
     y -= 10
 
     # ---------------- Terms & conditions + signature ----------------
+    if y - terms_need < bottom_limit:
+        c.showPage()
+        c.setStrokeColor(colors.HexColor("#999999"))
+        c.setLineWidth(1)
+        c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
+        y = PAGE_H - MARGIN - 10
+
     terms_top = y
-    terms_box_h = 1.35 * inch
-    terms_w = 4.6 * inch
 
     c.setFillColor(NAVY)
     c.rect(x_left, terms_top - 14, terms_w, 14, fill=1, stroke=0)
@@ -302,12 +340,9 @@ def build_quote_pdf(quote):
 
     ty = terms_top - 14 - 12
     c.setFillColor(colors.black)
-    c.setFont("Helvetica", 8)
-    terms_text = quote.terms if quote.terms else "50% deposit on acceptance, balance on completion. Quote valid for 30 days from issue date unless stated otherwise. Materials sourced to spec unless an alternative is agreed in writing."
-    for line in terms_text.splitlines():
-        if not line.strip():
-            continue
-        ty = _wrapped_text(c, line.strip(), x_left, ty, terms_w - 8, size=8, leading=10)
+    c.setFont("Helvetica", terms_size)
+    for line in numbered_terms:
+        ty = _wrapped_text(c, line, x_left, ty, terms_w - 10, size=terms_size, leading=terms_leading)
 
     ty -= 6
     c.setFont("Helvetica-Oblique", 8)

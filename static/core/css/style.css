@@ -2926,3 +2926,90 @@ p{ text-wrap: pretty; }
   .service-card-content{ padding: 18px 16px 16px; }
   .service-card h3{ font-size: 16.5px; }
 }
+
+/* ==========================================================================
+   PASS 6 - brand mark
+   The full lockup (mark + white wordmark + tagline) is illegible crushed into
+   a dark disc, and the mark's blue arc disappears on navy. Show the mark alone
+   on a light chip so both arcs read; use the reversed mark on dark surfaces.
+   ========================================================================== */
+.brand-logo-container{
+  width: 58px;
+  height: 58px;
+  padding: 0;
+  border-radius: 16px;
+  background: #FFFFFF;
+  border: 1px solid var(--line-bright);
+  box-shadow: var(--elev-1);
+  transition: width .25s ease, height .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.brand-logo{
+  height: 46px;
+  width: auto;
+  max-width: 46px;
+  object-fit: contain;
+  transition: transform .3s cubic-bezier(.22,.61,.36,1);
+}
+.brand:hover .brand-logo-container,
+.brand:focus-visible .brand-logo-container{
+  border-color: var(--accent-dim);
+  box-shadow: var(--elev-2);
+}
+.brand:hover .brand-logo,
+.brand:focus-visible .brand-logo{ transform: scale(1.05); }
+.site-header.is-scrolled .brand-logo-container{ width: 50px; height: 50px; }
+.site-header.is-scrolled .brand-logo{ height: 38px; max-width: 38px; }
+
+/* Footer: dark navy surface -> reversed mark, no chip */
+.footer-brand-lockup{ display:flex; align-items:center; gap:14px; }
+.footer-mark{ height:46px; width:auto; flex:none; }
+.footer-brand-text{ display:flex; flex-direction:column; line-height:1.15; }
+
+/* Quote sheet: light chip, same language as the header */
+.quote-logo-container{
+  width: 62px;
+  height: 62px;
+  padding: 0;
+  border-radius: 16px;
+  background: #FFFFFF;
+  border: 1px solid var(--line-bright);
+  box-shadow: 0 1px 3px rgba(11,18,32,.06);
+}
+.quote-logo{ height: 48px; width:auto; max-width: 48px; }
+
+@media (max-width: 700px){
+  .brand-logo-container{ width: 48px; height: 48px; border-radius: 13px; }
+  .brand-logo{ height: 38px; max-width: 38px; }
+}
+@media (max-width: 480px){
+  .brand-logo-container{ width: 46px; height: 46px; }
+  .brand-logo{ height: 36px; max-width: 36px; }
+  .footer-mark{ height: 40px; }
+}
+@media print{
+  .quote-logo-container{ border-color:#D5D8D2; box-shadow:none; }
+}
+
+/* ==========================================================================
+   PASS 7 - quotation terms
+   Ten conditions read as a wall of prose in one column; two numbered columns
+   keep the quote sheet to a single page.
+   ========================================================================== */
+.quote-terms{
+  margin: 0;
+  padding-left: 20px;
+  columns: 2;
+  column-gap: 32px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.quote-terms li{ margin: 0 0 7px; padding-left: 4px; break-inside: avoid; }
+.quote-terms li::marker{
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+@media (max-width: 700px){ .quote-terms{ columns: 1; } }
+@media print{ .quote-terms{ font-size: 10.5px; line-height: 1.45; } }

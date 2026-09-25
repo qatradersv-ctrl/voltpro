@@ -11,10 +11,13 @@
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
 
-<link rel="icon" type="image/svg+xml" href="{% static 'core/images/favicon.svg' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'core/images/favicon-32.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'core/images/favicon-16.png' %}">
+<link rel="apple-touch-icon" href="{% static 'core/images/apple-touch-icon.png' %}">
+<meta name="theme-color" content="#032B7A">
 
 <!-- Preload critical assets -->
-<link rel="preload" href="{% static 'core/images/logo.png' %}" as="image">
+<link rel="preload" href="{% static 'core/images/logo-mark.png' %}" as="image">
 <link rel="preload" href="{% static 'core/css/style.css' %}" as="style">
 
 <!-- Open Graph / Facebook -->
@@ -81,7 +84,7 @@
     <div class="header-left">
       <a href="{% url 'core:home' %}" class="brand" aria-label="VoltPro Electrodata Solutions - Home">
         <div class="brand-logo-container">
-          <img src="{% static 'core/images/logo.png' %}" alt="VoltPro Logo" class="brand-logo" loading="eager" decoding="sync" fetchpriority="high">
+          <img src="{% static 'core/images/logo-mark.png' %}" alt="VoltPro mark" class="brand-logo" width="186" height="238" loading="eager" decoding="sync" fetchpriority="high">
         </div>
         <div class="brand-text">
           <span class="brand-name">VoltPro</span>
@@ -152,8 +155,13 @@
 <footer class="site-footer" role="contentinfo">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <span class="brand-name">VoltPro</span>
-      <span class="brand-sub">ELECTRODATA SOLUTIONS</span>
+      <div class="footer-brand-lockup">
+        <img src="{% static 'core/images/logo-mark-reversed.png' %}" alt="" class="footer-mark" width="186" height="238" loading="lazy" decoding="async">
+        <span class="footer-brand-text">
+          <span class="brand-name">VoltPro</span>
+          <span class="brand-sub">ELECTRODATA SOLUTIONS</span>
+        </span>
+      </div>
       <p>Power, access and security installations across Nairobi and beyond — surveyed, wired and tested to spec.</p>
     </div>
 

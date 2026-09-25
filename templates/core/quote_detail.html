@@ -10,7 +10,7 @@
 
       <header class="quote-brand">
         <div class="quote-logo-container">
-          <img src="{% static 'core/images/logo.png' %}" alt="VoltPro Electrodata Solutions" class="quote-logo" width="68" height="68">
+          <img src="{% static 'core/images/logo-mark.png' %}" alt="VoltPro mark" class="quote-logo" width="186" height="238">
         </div>
         <div class="quote-brand-text">
           <p class="quote-eyebrow">VoltPro Electrodata Solutions</p>
@@ -101,12 +101,12 @@
       </div>
       {% endif %}
 
-      {% if quote.terms %}
       <div class="quote-block">
-        <h3 class="quote-block-title">Terms</h3>
-        <p>{{ quote.terms|linebreaksbr }}</p>
+        <h3 class="quote-block-title">Terms and conditions</h3>
+        <ol class="quote-terms">
+          {% for term in quote.terms_list %}<li>{{ term }}</li>{% endfor %}
+        </ol>
       </div>
-      {% endif %}
 
       <div class="quote-actions">
         {% if quote.status == "sent" %}
