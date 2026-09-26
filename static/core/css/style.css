@@ -278,7 +278,10 @@ p{ margin: 0 0 16px; color: var(--text-muted); font-size: 16px; letter-spacing: 
 .header-left{ flex: 0 0 auto; }
 .header-center{ flex: 1; display:flex; justify-content:center; }
 .header-right{ flex: 0 0 auto; display:flex; align-items:center; gap: 16px; }
-.brand{ display:flex; align-items:center; gap: 16px; }
+/* The chip flows with the viewport between a 44px tap-target floor and 58px, and
+   every value stays inside the bar it sits in. The mark keeps 74% of its diameter. */
+.brand{ --brand-chip: clamp(44px, calc(36px + 1.5vw), 58px); display:flex; align-items:center; gap: 16px; }
+.site-header.is-scrolled .brand{ --brand-chip: clamp(40px, calc(32px + 1.5vw), 50px); }
 .brand-logo-container{
   width: 80px;
   height: 80px;
@@ -475,33 +478,18 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
   .nav-toggle{ display:inline-flex; }
   body.nav-open .mobile-nav{ display:flex; }
   .header-row{ height: 70px; padding: 0 16px; }
+  /* the compact bar is already condensed, so scrolling must not stretch it */
+  .site-header.is-scrolled .header-row{ height: 70px; }
   .brand{ gap: 10px; }
   .brand-name{ font-size: 15px; }
   .brand-sub{ font-size: 7px; }
-  .brand-logo-container{
-    width: 56px;
-    height: 56px;
-    padding: 8px;
-  }
-  .brand-logo{
-    height: 40px;
-    max-width: 40px;
-  }
 }
 @media (max-width: 480px){
   .header-row{ height: 60px; }
+  .site-header.is-scrolled .header-row{ height: 60px; }
   .brand{ gap: 8px; }
   .brand-name{ font-size: 14px; }
   .brand-sub{ font-size: 6px; }
-  .brand-logo-container{
-    width: 48px;
-    height: 48px;
-    padding: 6px;
-  }
-  .brand-logo{
-    height: 36px;
-    max-width: 36px;
-  }
 }
 
 /* ---------- mobile sticky call/quote bar ---------- */
@@ -609,15 +597,6 @@ body.nav-open .nav-toggle-bars span:nth-child(3){ top:5px; transform: rotate(-13
 }
 @media (max-width: 480px){
   .brand-text{ display: none; }
-  .brand-logo-container{
-    width: 56px;
-    height: 56px;
-    padding: 8px;
-  }
-  .brand-logo{
-    height: 40px;
-    max-width: 40px;
-  }
 }
 
 /* ---------- trust strip ---------- */
@@ -2853,8 +2832,8 @@ p{ text-wrap: pretty; }
    on a light chip so both arcs read; use the reversed mark on dark surfaces.
    ========================================================================== */
 .brand-logo-container{
-  width: 58px;
-  height: 58px;
+  width: var(--brand-chip);
+  height: var(--brand-chip);
   padding: 0;
   border-radius: 50%;
   background: #FFFFFF;
@@ -2863,9 +2842,9 @@ p{ text-wrap: pretty; }
   transition: width .25s ease, height .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 .brand-logo{
-  height: 42px;
+  height: calc(var(--brand-chip) * .74);
   width: auto;
-  max-width: 42px;
+  max-width: calc(var(--brand-chip) * .74);
   object-fit: contain;
   transition: transform .3s cubic-bezier(.22,.61,.36,1);
 }
@@ -2876,8 +2855,6 @@ p{ text-wrap: pretty; }
 }
 .brand:hover .brand-logo,
 .brand:focus-visible .brand-logo{ transform: scale(1.05); }
-.site-header.is-scrolled .brand-logo-container{ width: 50px; height: 50px; }
-.site-header.is-scrolled .brand-logo{ height: 36px; max-width: 36px; }
 
 /* Footer: dark navy surface -> reversed mark, no chip */
 .footer-brand-lockup{ display:flex; align-items:center; gap:14px; }
@@ -2896,13 +2873,7 @@ p{ text-wrap: pretty; }
 }
 .quote-logo{ height: 44px; width:auto; max-width: 44px; }
 
-@media (max-width: 700px){
-  .brand-logo-container{ width: 48px; height: 48px; }
-  .brand-logo{ height: 36px; max-width: 36px; }
-}
 @media (max-width: 480px){
-  .brand-logo-container{ width: 46px; height: 46px; }
-  .brand-logo{ height: 34px; max-width: 34px; }
   .footer-mark{ height: 40px; }
 }
 @media print{
