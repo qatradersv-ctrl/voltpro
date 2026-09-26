@@ -389,21 +389,6 @@
     }, { threshold: 0.4 });
     counters.forEach(function(el){ co.observe(el); });
   }
-
-  /* hero photograph parallax: desktop pointer widths only */
-  var heroImg = document.querySelector('.hero-frame img');
-  if(heroImg && window.matchMedia('(min-width: 1041px)').matches){
-    var heroFrame = false;
-    window.addEventListener('scroll', function(){
-      if(!heroFrame){
-        heroFrame = true;
-        window.requestAnimationFrame(function(){
-          heroImg.style.setProperty('--py', (Math.min(window.scrollY, 500) * -0.045).toFixed(2) + 'px');
-          heroFrame = false;
-        });
-      }
-    }, { passive: true });
-  }
 })();
 
 (function(){

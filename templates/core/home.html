@@ -1,7 +1,7 @@
 {% extends "core/base.html" %}
 {% load static %}
 {% block extra_head %}
-<link rel="preload" as="image" href="{% static 'core/images/hero.webp' %}" imagesrcset="{% static 'core/images/hero.webp' %}" imagesizes="(max-width: 1040px) 92vw, 510px">
+<link rel="preload" as="image" href="{% static 'core/images/hero-figure.webp' %}" fetchpriority="high">
 {% endblock %}
 {% block content %}
 {% include "core/_icons.html" %}
@@ -40,12 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <section class="hero" aria-label="Hero section">
+  <img class="hero-figure" src="{% static 'core/images/hero-figure.webp' %}" alt="Two VoltPro installers working across a photovoltaic array" width="717" height="1145" loading="eager" decoding="async" fetchpriority="high">
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-content">
         <p class="hero-eyebrow"><span class="hero-led" aria-hidden="true"></span>Licensed &amp; insured contractor &middot; Nairobi</p>
-        <h1>Power, access and security <span class="hero-accent">installed to one accountable spec.</span></h1>
-        <p class="hero-lede">Solar, backup power, wiring, CCTV and access control &mdash; surveyed, designed, installed and tested by the same team, from first site visit to handover documentation.</p>
+        <h1>Power, access and security installed to <span class="hero-accent">one accountable spec.</span></h1>
+        <p class="hero-lede">Solar, backup power, wiring, CCTV and access control &mdash; surveyed, installed and tested end to end.</p>
         <ul class="hero-chip-row">
           <li class="hero-chip"><svg class="hero-chip-ico" aria-hidden="true"><use href="#icon-sun"/></svg>Solar &amp; clean energy</li>
           <li class="hero-chip"><svg class="hero-chip-ico" aria-hidden="true"><use href="#icon-battery"/></svg>UPS &amp; backup power</li>
@@ -63,22 +64,20 @@ document.addEventListener('DOMContentLoaded', function() {
           <div><dt>4</dt><dd>Stages from survey to handover</dd></div>
         </dl>
       </div>
-      <div class="hero-media">
-        <div class="hero-shot">
-          <div class="hero-frame">
-            <picture>
-              <source type="image/webp" srcset="{% static 'core/images/hero.webp' %}">
-              <img src="{% static 'core/images/hero.jpg' %}" alt="VoltPro electrician in a hard hat standing beside a meter and panel termination on site" width="1120" height="747" loading="eager" decoding="async" fetchpriority="high">
-            </picture>
-            <p class="hero-photo-tag">On site &middot; meter &amp; panel termination</p>
-            <div class="hero-card">
-              <p class="hero-card-rail"><span>Survey</span><i aria-hidden="true"></i><span>Design</span><i aria-hidden="true"></i><span>Install</span><i aria-hidden="true"></i><span>Handover</span></p>
-              <p class="hero-card-copy">One team from first survey to final sign-off.</p>
-            </div>
-          </div>
-        </div>
-        <p class="hero-strip"><span>Licensed &amp; insured</span><span>Certified technicians</span><span>As-built record at handover</span><span>24/7 emergency call-out</span></p>
-      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero-assure-band" aria-label="What every quote covers">
+  <div class="wrap">
+    <div class="hero-assure">
+      <p class="hero-assure-label">Every quote covers</p>
+      <ul class="hero-strip">
+        <li>Licensed &amp; insured</li>
+        <li>Certified technicians</li>
+        <li>As-built record at handover</li>
+        <li>24/7 emergency call-out</li>
+      </ul>
     </div>
   </div>
 </section>
