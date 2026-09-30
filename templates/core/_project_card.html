@@ -1,0 +1,37 @@
+{% comment %}
+Usage: {% include "core/_project_card.html" with project=project %}
+{% endcomment %}
+<article class="gallery-item">
+  {% if project.video %}
+  <div class="gallery-media">
+    <video controls muted preload="metadata" class="gallery-video">
+      <source src="{{ project.video.url }}" type="video/mp4">
+    </video>
+  </div>
+  {% else %}
+  <div class="gallery-media">
+    <span class="gallery-plate" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
+    {% if project.cover_image_url %}
+    <img
+      src="{{ project.cover_image_url }}"
+      alt="{{ project.title }}"
+      class="gallery-image"
+      loading="lazy"
+      decoding="async"
+      fetchpriority="low"
+      onerror="this.remove();"
+    >
+    {% endif %}
+  </div>
+  {% endif %}
+  <div class="gallery-info">
+    <h3>{{ project.title }}</h3>
+    {% if project.summary %}<p class="gallery-summary">{{ project.summary }}</p>{% endif %}
+    {% if project.location or project.completed_on %}
+    <p class="gallery-spec">
+      {% if project.location %}<span>{{ project.location }}</span>{% endif %}
+      {% if project.completed_on %}<span class="gallery-spec-date">{{ project.completed_on|date:"M Y" }}</span>{% endif %}
+    </p>
+    {% endif %}
+  </div>
+</article>

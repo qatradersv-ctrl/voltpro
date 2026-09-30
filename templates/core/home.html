@@ -147,23 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
     <div class="gallery-grid">
       {% for project in projects %}
-      <div class="gallery-item">
-        {% if project.video %}
-        <div class="gallery-media">
-          <video controls muted class="gallery-video">
-            <source src="{{ project.video.url }}" type="video/mp4">
-          </video>
-        </div>
-        {% elif project.image %}
-        <div class="gallery-media">
-          <img src="{{ project.image.url }}" alt="{{ project.title }}" class="gallery-image">
-        </div>
-        {% endif %}
-        <div class="gallery-info">
-          <p class="gallery-spec">{% if project.service %}{{ project.service.title }}{% endif %}{% if project.location %} &middot; {{ project.location }}{% endif %}</p>
-          <h3>{{ project.title }}</h3>
-        </div>
-      </div>
+        {% include "core/_project_card.html" with project=project %}
       {% endfor %}
     </div>
   </div>

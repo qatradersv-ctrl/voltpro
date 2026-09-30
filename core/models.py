@@ -105,6 +105,17 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+    @property
+    def cover_image_url(self):
+        """The job's own photograph, or an empty string so the card can show its
+        placeholder plate. A project never borrows another record's photo."""
+        if not self.image:
+            return ""
+        try:
+            return self.image.url
+        except Exception:
+            return ""
+
 
 class Testimonial(models.Model):
     client_name = models.CharField(max_length=120)
@@ -374,7 +385,7 @@ class SiteConfiguration(models.Model):
         help_text="Contact email address displayed on the site"
     )
     technician_email = models.EmailField(
-        default='warrenm@voltpro.co.ke',
+        default='info@voltpro.co.ke',
         help_text="Technician email address for receiving quote notifications"
     )
 

@@ -55,26 +55,7 @@
   <div class="wrap">
     <div class="gallery-grid">
       {% for project in projects %}
-      <div class="gallery-item">
-        {% if project.video %}
-        <div class="gallery-media">
-          <video controls muted preload="metadata" class="gallery-video">
-            <source src="{{ project.video.url }}" type="video/mp4">
-          </video>
-        </div>
-        {% elif project.image %}
-        <div class="gallery-media">
-          <img src="{{ project.image.url }}" alt="{{ project.title }}" class="gallery-image" loading="lazy" decoding="async">
-        </div>
-        {% endif %}
-        <div class="gallery-info">
-          <p class="gallery-spec">
-            {% if project.service %}{{ project.service.title }}{% endif %}{% if project.location %} &middot; {{ project.location }}{% endif %}{% if project.completed_on %} &middot; {{ project.completed_on|date:"M Y" }}{% endif %}
-          </p>
-          <h3>{{ project.title }}</h3>
-          {% if project.summary %}<p>{{ project.summary }}</p>{% endif %}
-        </div>
-      </div>
+        {% include "core/_project_card.html" with project=project %}
       {% empty %}
       <div class="empty-state">
         <p>No projects to display yet. Check back soon to see our latest work!</p>

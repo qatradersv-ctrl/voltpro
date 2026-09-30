@@ -3052,3 +3052,55 @@ p{ text-wrap: pretty; }
   .hero > .wrap{ order: 1; }
   .hero-figure{ order: 2; position: static; display: block; height: auto; width: min(78%, 430px); margin: 26px auto 0; }
 }
+
+
+/* =========================================================
+   PASS 15 - the work gallery.
+   The tiles were a spec line, a title and a paragraph on a bare card. They
+   now lead with the job's own 3:2 photograph, then title, then a two-line
+   summary, with the location and handover date pushed down to a hairline
+   footer. No project is photographed yet, so the media block also carries a
+   numbered plate behind the image: it is what shows while a job has no photo
+   of its own, and it borrows nothing from the linked service.
+   ========================================================= */
+.gallery-grid{ grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.gallery-item{ display: flex; flex-direction: column; }
+.gallery-media{
+  flex: none; position: relative; aspect-ratio: 3 / 2;
+  background-color: var(--ink); background-image: var(--grad-navy);
+}
+.gallery-image{ position: relative; object-position: center 38%; }
+.gallery-plate{
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: 58px; font-weight: 600; letter-spacing: .06em;
+  color: rgba(232, 238, 251, .16);
+}
+/* the shimmer is a loading state; a plate is not loading, so it keeps the same
+   blueprint texture the navy bands use. The .js prefix is what outranks the
+   shimmer rule's own .js selector. */
+.js .gallery-media:not(:has(img)){
+  animation: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px),
+    var(--grad-navy);
+  background-size: 56px 56px, 56px 56px, auto;
+}
+.gallery-info{ flex: 1 1 auto; display: flex; flex-direction: column; padding: 20px 22px 22px; }
+.gallery-info h3{ margin-top: 2px; }
+.gallery-summary{
+  font-size: 14px; line-height: 1.55; color: var(--text-muted); margin: 9px 0 0;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+}
+/* the meta row reads as a footer: it sits under a hairline, pinned to the base
+   of the tile so a short summary cannot leave the dates floating. The place and
+   the handover month face each other across it, and the date never breaks. */
+.gallery-spec{
+  margin: auto 0 0; padding-top: 13px; border-top: 1px solid var(--line-bright);
+  font-size: 11px; letter-spacing: .08em;
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 14px;
+}
+.gallery-spec-date{ margin-left: auto; white-space: nowrap; }
+@media (max-width: 980px){ .gallery-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px){ .gallery-grid{ gap: 16px; } .gallery-info{ padding: 16px; } }
+@media (max-width: 560px){ .gallery-grid{ grid-template-columns: 1fr; } }

@@ -222,10 +222,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.hmailplus.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'warrenm@voltpro.co.ke'
+EMAIL_HOST_USER = 'info@voltpro.co.ke'
 EMAIL_HOST_PASSWORD = 'Blessed@2026'
-DEFAULT_FROM_EMAIL = 'warrenm@voltpro.co.ke'
-CONTACT_EMAIL = 'warrenm@voltpro.co.ke'
+DEFAULT_FROM_EMAIL = 'info@voltpro.co.ke'
+CONTACT_EMAIL = 'info@voltpro.co.ke'
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
 MAILERS = {
