@@ -337,11 +337,11 @@ class QuoteAdmin(admin.ModelAdmin):
     )
     list_filter = ("status", "service", "issue_date")
     search_fields = ("quote_number", "client_name", "client_phone", "client_email")
-    readonly_fields = ("quote_number", "totals_display", "client_link_display", "preview_link")
+    readonly_fields = ("quote_number", "invoice_number", "converted_at", "totals_display", "client_link_display", "preview_link")
     autocomplete_fields = ("request", "service")
     date_hierarchy = "issue_date"
     inlines = [QuoteLineItemInline]
-    actions = ["export_csv", "send_quote", "generate_sales_report"]
+    actions = ["export_csv", "send_quote", "generate_sales_report", "convert_to_invoice"]
     
     fieldsets = (
         ("Client Information", {
@@ -352,7 +352,7 @@ class QuoteAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         ("Quote Details", {
-            "fields": ("tax_rate", "notes", "terms"),
+            "fields": ("tax_rate", "notes", "terms", "payment_details"),
             "classes": ("collapse",),
         }),
         ("Totals & Sharing", {
@@ -360,7 +360,7 @@ class QuoteAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         ("System Info", {
-            "fields": ("quote_number",),
+            "fields": ("quote_number", "invoice_number", "converted_at"),
             "classes": ("collapse",),
         }),
     )
@@ -532,6 +532,19 @@ You can view and manage this quote in the admin panel.
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         
         return response
+
+    @admin.action(description="Convert selected accepted quotes into invoices")
+    def convert_to_invoice(self, request, queryset):
+        eligible = queryset.filter(status="accepted")
+        count = 0
+        for q in eligible:
+            q.convert_to_invoice()
+            count += 1
+        skipped = queryset.count() - count
+        msg = f"{count} quote(s) converted to invoice."
+        if skipped:
+            msg += f" {skipped} skipped (not in accepted status)."
+        self.message_user(request, msg)
 
 
 @admin.register(BlogPost)

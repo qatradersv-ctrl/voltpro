@@ -88,7 +88,7 @@ def build_quote_pdf(quote):
 
     meta_rows = [
         ("DATE", quote.issue_date.strftime("%m/%d/%Y") if quote.issue_date else "-"),
-        ("QUOTE #", quote.quote_number or "-"),
+        ("INVOICE #" if quote.is_invoice else "QUOTE #", (quote.invoice_number or quote.quote_number) or "-"),
         ("CUSTOMER ID", quote.client_name[:10] if quote.client_name else "-"),
         ("VALID UNTIL", quote.valid_until.strftime("%m/%d/%Y") if quote.valid_until else "-"),
     ]
@@ -131,7 +131,8 @@ def build_quote_pdf(quote):
 
     c.setFillColor(LIGHT_BLUE)
     c.setFont("Helvetica-Bold", 26)
-    c.drawRightString(x_right, y - 14, "QUOTE")
+    doc_label = "INVOICE" if quote.is_invoice else "QUOTE"
+    c.drawRightString(x_right, y - 14, doc_label)
 
     y -= logo_box_size + 8
 
@@ -209,7 +210,8 @@ def build_quote_pdf(quote):
     terms_rows = sum(len(_wrap_lines(t, terms_w - 10, size=terms_size)) for t in numbered_terms)
     # 26pt = header bar + gap to the first baseline; 98pt = acceptance label,
     # signature rule, print name and the three footer lines below the terms.
-    terms_need = 26 + terms_rows * terms_leading + 98
+    # 66pt = payment details block (header + 4 lines + gap).
+    terms_need = 26 + terms_rows * terms_leading + 98 + 66
     totals_h = (3 if quote.tax_rate <= 0 else 6) * 16
     bottom_limit = MARGIN * 0.6 + 10
     room = y - header_h - 10 - totals_h - 10 - terms_need - bottom_limit
@@ -321,6 +323,29 @@ def build_quote_pdf(quote):
         y -= 16
 
     y -= 10
+
+    # ---------------- Payment details ----------------
+    pay_lines = quote.payment_details_list
+    pay_h = 14 + len(pay_lines) * 11 + 8
+    if y - pay_h - terms_need < bottom_limit:
+        c.showPage()
+        c.setStrokeColor(colors.HexColor("#999999"))
+        c.setLineWidth(1)
+        c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
+        y = PAGE_H - MARGIN - 10
+
+    c.setFillColor(NAVY)
+    c.rect(x_left, y - 14, terms_w, 14, fill=1, stroke=0)
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(x_left + 4, y - 10.5, "PAYMENT DETAILS")
+    y -= 14 + 12
+    c.setFillColor(colors.black)
+    c.setFont("Helvetica", 8.5)
+    for line in pay_lines:
+        c.drawString(x_left, y, line)
+        y -= 11
+    y -= 8
 
     # ---------------- Terms & conditions + signature ----------------
     if y - terms_need < bottom_limit:

@@ -1,8 +1,8 @@
 {% extends "core/base.html" %}
 {% load humanize %}
 {% load static %}
-{% block title %}Quote {{ quote.quote_number }} — VoltPro Electrodata Solutions{% endblock %}
-{% block meta_description %}Quotation {{ quote.quote_number }} from VoltPro Electrodata Solutions.{% endblock %}
+{% block title %}{% if quote.is_invoice %}Invoice {{ quote.invoice_number }}{% else %}Quote {{ quote.quote_number }}{% endif %} — VoltPro Electrodata Solutions{% endblock %}
+{% block meta_description %}{% if quote.is_invoice %}Invoice{% else %}Quotation{% endif %} {{ quote.quote_number }} from VoltPro Electrodata Solutions.{% endblock %}
 {% block content %}
 <section class="quote-page">
   <div class="quote-wrap">
@@ -14,7 +14,7 @@
         </div>
         <div class="quote-brand-text">
           <p class="quote-eyebrow">VoltPro Electrodata Solutions</p>
-          <h2>Quotation</h2>
+          <h2>{% if quote.is_invoice %}Invoice{% else %}Quotation{% endif %}</h2>
           <p class="quote-brand-meta">Nairobi, Kenya &middot; 0715 117855 &middot; info@voltpro.co.ke</p>
         </div>
         <span class="quote-status quote-status-{{ quote.status }}">{{ quote.get_status_display }}</span>
@@ -30,7 +30,7 @@
 
       <div class="quote-head">
         <div>
-          <p class="quote-eyebrow">Quote {{ quote.quote_number }}</p>
+          <p class="quote-eyebrow">{% if quote.is_invoice %}Invoice {{ quote.invoice_number }}{% else %}Quote {{ quote.quote_number }}{% endif %}</p>
           <h1>{{ quote.client_name }}</h1>
           <p class="quote-meta">Issued {{ quote.issue_date|date:"d M Y" }}{% if quote.valid_until %} &middot; valid until {{ quote.valid_until|date:"d M Y" }}{% endif %}</p>
         </div>
@@ -100,6 +100,13 @@
         <p>{{ quote.notes|linebreaksbr }}</p>
       </div>
       {% endif %}
+
+      <div class="quote-block quote-payment">
+        <h3 class="quote-block-title">Payment details</h3>
+        <ul class="quote-payment-list">
+          {% for line in quote.payment_details_list %}<li>{{ line }}</li>{% endfor %}
+        </ul>
+      </div>
 
       <div class="quote-block">
         <h3 class="quote-block-title">Terms and conditions</h3>

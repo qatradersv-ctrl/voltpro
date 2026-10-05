@@ -154,6 +154,7 @@ class QuoteStatus(models.TextChoices):
     DRAFT = "draft", "Draft"
     SENT = "sent", "Sent"
     ACCEPTED = "accepted", "Accepted"
+    INVOICED = "invoiced", "Invoiced"
     REJECTED = "rejected", "Rejected"
     EXPIRED = "expired", "Expired"
 
@@ -178,7 +179,18 @@ class Quote(models.Model):
     )
     STANDARD_TERMS_TEXT = "\n".join(STANDARD_TERMS)
 
+    #: Printed on every quotation/invoice unless overridden per-document.
+    PAYMENT_DETAILS = (
+        "M-Pesa (Lipa Na Family — Family Bank)",
+        "Paybill: 222111",
+        "Account: 3220829",
+        "Business Name: VOLTPRO ELECTRODATA",
+    )
+    STANDARD_PAYMENT_TEXT = "\n".join(PAYMENT_DETAILS)
+
     quote_number = models.CharField(max_length=20, unique=True, blank=True, editable=False)
+    invoice_number = models.CharField(max_length=20, unique=True, blank=True, null=True, editable=False)
+    converted_at = models.DateTimeField(blank=True, null=True, editable=False)
     public_id = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     request = models.ForeignKey(
@@ -227,6 +239,14 @@ class Quote(models.Model):
             "Leave blank to print the VoltPro standard terms."
         ),
     )
+    payment_details = models.TextField(
+        blank=True,
+        default=STANDARD_PAYMENT_TEXT,
+        help_text=(
+            "Payment instructions shown on the quote/invoice and its PDF. "
+            "Leave blank to print the standard M-Pesa details."
+        ),
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -248,10 +268,30 @@ class Quote(models.Model):
             super().save(update_fields=["quote_number"])
 
     @property
+    def is_invoice(self):
+        return self.status == QuoteStatus.INVOICED
+
+    def convert_to_invoice(self):
+        """Transition an accepted quote to an invoice with a generated number."""
+        if self.status != QuoteStatus.ACCEPTED:
+            raise ValueError("Only accepted quotes can be converted to an invoice.")
+        year = timezone.localdate().year
+        self.invoice_number = f"VP-INV-{year}-{self.pk:04d}"
+        self.converted_at = timezone.now()
+        self.status = QuoteStatus.INVOICED
+        self.save(update_fields=["invoice_number", "converted_at", "status"])
+
+    @property
     def terms_list(self):
         """The terms as numbered lines, falling back to the standard set when blank."""
         text = (self.terms or "").strip() or self.STANDARD_TERMS_TEXT
         return [line.strip().lstrip("*-•").strip() for line in text.splitlines() if line.strip()]
+
+    @property
+    def payment_details_list(self):
+        """Payment lines, falling back to the standard M-Pesa details when blank."""
+        text = (self.payment_details or "").strip() or self.STANDARD_PAYMENT_TEXT
+        return [line.strip() for line in text.splitlines() if line.strip()]
 
     @property
     def subtotal(self):

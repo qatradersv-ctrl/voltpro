@@ -3104,3 +3104,7 @@ p{ text-wrap: pretty; }
 @media (max-width: 980px){ .gallery-grid{ grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px){ .gallery-grid{ gap: 16px; } .gallery-info{ padding: 16px; } }
 @media (max-width: 560px){ .gallery-grid{ grid-template-columns: 1fr; } }
+
+/* ---------- quote payment details ---------- */
+.quote-payment-list{ margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.7; color: var(--text); }
+.quote-payment-list li{ margin: 0; }
