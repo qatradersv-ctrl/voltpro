@@ -35,7 +35,6 @@ def csv_response(filename, header, rows):
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ("thumb", "title", "category", "order", "is_featured")
     list_editable = ("order", "is_featured")
-    list_filter = ("category", "is_featured")
     prepopulated_fields = {"slug": ("title",)}
     search_fields = ("title", "short_description")
     ordering = ("order", "title")
@@ -81,7 +80,6 @@ class ServiceAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ("thumb", "title", "service", "location", "completed_on", "order")
     list_editable = ("order",)
-    list_filter = ("service", "completed_on")
     search_fields = ("title", "location", "summary")
     autocomplete_fields = ("service",)
     date_hierarchy = "completed_on"
@@ -161,7 +159,6 @@ class TestimonialAdmin(admin.ModelAdmin):
 class InventoryItemAdmin(admin.ModelAdmin):
     list_display = ("name", "category", "unit", "unit_price", "is_active", "order")
     list_editable = ("is_active", "order")
-    list_filter = ("category", "is_active")
     search_fields = ("name", "description", "category")
     ordering = ("order", "name")
     fields = ("name", "description", "unit", "unit_price", "category", "is_active", "order")
@@ -236,7 +233,6 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
 @admin.register(QuoteRequest)
 class QuoteRequestAdmin(admin.ModelAdmin):
     list_display = ("name", "phone", "service", "created_at", "handled_badge", "quote_link")
-    list_filter = ("handled", "service", "created_at")
     search_fields = ("name", "phone", "email")
     readonly_fields = ("created_at",)
     autocomplete_fields = ("service",)
@@ -335,7 +331,6 @@ class QuoteAdmin(admin.ModelAdmin):
         "quote_number", "client_name", "service", "status_badge",
         "issue_date", "total_display", "preview_link_list", "pdf_link",
     )
-    list_filter = ("status", "service", "issue_date")
     search_fields = ("quote_number", "client_name", "client_phone", "client_email")
     readonly_fields = ("quote_number", "invoice_number", "converted_at", "totals_display", "client_link_display", "preview_link")
     autocomplete_fields = ("request", "service")
@@ -567,7 +562,6 @@ class InvoiceAdmin(admin.ModelAdmin):
         "document_ref", "client_name", "issued_on", "converted_on",
         "total_display", "status_badge", "document_actions",
     )
-    list_filter = ("issue_date", "service")
     search_fields = ("invoice_number", "quote_number", "client_name", "client_phone", "client_email")
     readonly_fields = (
         "invoice_number", "quote_number", "converted_at",
@@ -722,7 +716,6 @@ class InvoiceAdmin(admin.ModelAdmin):
 class BlogPostAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "author", "is_published", "is_featured", "published_at", "created_at")
     list_editable = ("is_published", "is_featured")
-    list_filter = ("category", "is_published", "is_featured", "published_at")
     search_fields = ("title", "excerpt", "content", "author")
     prepopulated_fields = {"slug": ("title",)}
     date_hierarchy = "published_at"
@@ -758,7 +751,6 @@ class BlogPostAdmin(admin.ModelAdmin):
 class NewsletterSubscriberAdmin(admin.ModelAdmin):
     list_display = ("email", "name", "is_active", "subscribed_at", "unsubscribed_at")
     list_editable = ("is_active",)
-    list_filter = ("is_active", "subscribed_at")
     search_fields = ("email", "name")
     readonly_fields = ("subscribed_at",)
     actions = ["export_csv", "mark_active", "mark_inactive"]
