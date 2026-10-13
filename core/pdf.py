@@ -86,12 +86,20 @@ def build_quote_pdf(quote):
     contact_lines.append("Phone: 0715 117855 / 0724 076 047")
     contact_lines.append("Prepared by: Sales Team")
 
+    is_inv = quote.is_invoice
     meta_rows = [
         ("DATE", quote.issue_date.strftime("%m/%d/%Y") if quote.issue_date else "-"),
-        ("INVOICE #" if quote.is_invoice else "QUOTE #", (quote.invoice_number or quote.quote_number) or "-"),
+        ("INVOICE #" if is_inv else "QUOTE #", (quote.invoice_number or quote.quote_number) or "-"),
         ("CUSTOMER ID", quote.client_name[:10] if quote.client_name else "-"),
-        ("VALID UNTIL", quote.valid_until.strftime("%m/%d/%Y") if quote.valid_until else "-"),
     ]
+    if is_inv:
+        meta_rows.append(
+            ("INVOICED ON", quote.converted_at.strftime("%m/%d/%Y") if quote.converted_at else "-")
+        )
+    else:
+        meta_rows.append(
+            ("VALID UNTIL", quote.valid_until.strftime("%m/%d/%Y") if quote.valid_until else "-")
+        )
 
     header_body_h = max(len(contact_lines) * 11, len(meta_rows) * 15)
     header_top = PAGE_H - MARGIN * 0.6 - 2
@@ -211,7 +219,8 @@ def build_quote_pdf(quote):
     # 26pt = header bar + gap to the first baseline; 98pt = acceptance label,
     # signature rule, print name and the three footer lines below the terms.
     # 66pt = payment details block (header + 4 lines + gap).
-    terms_need = 26 + terms_rows * terms_leading + 98 + 66
+    # An invoice carries neither block, so it only needs the footer space.
+    terms_need = 0 if is_inv else 26 + terms_rows * terms_leading + 98 + 66
     totals_h = (3 if quote.tax_rate <= 0 else 6) * 16
     bottom_limit = MARGIN * 0.6 + 10
     room = y - header_h - 10 - totals_h - 10 - terms_need - bottom_limit
@@ -304,7 +313,7 @@ def build_quote_pdf(quote):
     
     totals.extend([
         ("Other", "KES 0.00", False),
-        ("TOTAL", f"KES {quote.total:,.2f}", True),
+        ("AMOUNT DUE" if is_inv else "TOTAL", f"KES {quote.total:,.2f}", True),
     ])
     c.setFont("Helvetica", 9)
     for label, value, is_total in totals:
@@ -313,8 +322,8 @@ def build_quote_pdf(quote):
             c.rect(totals_box_x, y - 13, x_right - totals_box_x, 15, fill=1, stroke=0)
             c.setFillColor(colors.black)
             c.setFont("Helvetica-Bold", 10)
-            c.drawString(totals_box_x + 4, y - 9, "TOTAL")
-            c.drawRightString(x_right - 2, y - 9, f"KES {value}")
+            c.drawString(totals_box_x + 4, y - 9, label)
+            c.drawRightString(x_right - 2, y - 9, value)
         else:
             c.setFillColor(colors.black)
             c.setFont("Helvetica", 9)
@@ -324,67 +333,70 @@ def build_quote_pdf(quote):
 
     y -= 10
 
-    # ---------------- Payment details ----------------
-    pay_lines = quote.payment_details_list
-    pay_h = 14 + len(pay_lines) * 11 + 8
-    if y - pay_h - terms_need < bottom_limit:
-        c.showPage()
-        c.setStrokeColor(colors.HexColor("#999999"))
-        c.setLineWidth(1)
-        c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
-        y = PAGE_H - MARGIN - 10
+    # ---------------- Payment details + terms ----------------
+    # Only quotations carry these; an invoice is a demand for payment, so it
+    # stops after the totals and leaves the page to the footer.
+    if not is_inv:
+        pay_lines = quote.payment_details_list
+        pay_h = 14 + len(pay_lines) * 11 + 8
+        if y - pay_h - terms_need < bottom_limit:
+            c.showPage()
+            c.setStrokeColor(colors.HexColor("#999999"))
+            c.setLineWidth(1)
+            c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
+            y = PAGE_H - MARGIN - 10
 
-    c.setFillColor(NAVY)
-    c.rect(x_left, y - 14, terms_w, 14, fill=1, stroke=0)
-    c.setFillColor(colors.white)
-    c.setFont("Helvetica-Bold", 9)
-    c.drawString(x_left + 4, y - 10.5, "PAYMENT DETAILS")
-    y -= 14 + 12
-    c.setFillColor(colors.black)
-    c.setFont("Helvetica", 8.5)
-    for line in pay_lines:
-        c.drawString(x_left, y, line)
-        y -= 11
-    y -= 8
+        c.setFillColor(NAVY)
+        c.rect(x_left, y - 14, terms_w, 14, fill=1, stroke=0)
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(x_left + 4, y - 10.5, "PAYMENT DETAILS")
+        y -= 14 + 12
+        c.setFillColor(colors.black)
+        c.setFont("Helvetica", 8.5)
+        for line in pay_lines:
+            c.drawString(x_left, y, line)
+            y -= 11
+        y -= 8
 
-    # ---------------- Terms & conditions + signature ----------------
-    if y - terms_need < bottom_limit:
-        c.showPage()
-        c.setStrokeColor(colors.HexColor("#999999"))
-        c.setLineWidth(1)
-        c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
-        y = PAGE_H - MARGIN - 10
+        if y - terms_need < bottom_limit:
+            c.showPage()
+            c.setStrokeColor(colors.HexColor("#999999"))
+            c.setLineWidth(1)
+            c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
+            y = PAGE_H - MARGIN - 10
 
-    terms_top = y
+        terms_top = y
 
-    c.setFillColor(NAVY)
-    c.rect(x_left, terms_top - 14, terms_w, 14, fill=1, stroke=0)
-    c.setFillColor(colors.white)
-    c.setFont("Helvetica-Bold", 9)
-    c.drawString(x_left + 4, terms_top - 10.5, "TERMS AND CONDITIONS")
+        c.setFillColor(NAVY)
+        c.rect(x_left, terms_top - 14, terms_w, 14, fill=1, stroke=0)
+        c.setFillColor(colors.white)
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(x_left + 4, terms_top - 10.5, "TERMS AND CONDITIONS")
 
-    ty = terms_top - 14 - 12
-    c.setFillColor(colors.black)
-    c.setFont("Helvetica", terms_size)
-    for line in numbered_terms:
-        ty = _wrapped_text(c, line, x_left, ty, terms_w - 10, size=terms_size, leading=terms_leading)
+        ty = terms_top - 14 - 12
+        c.setFillColor(colors.black)
+        c.setFont("Helvetica", terms_size)
+        for line in numbered_terms:
+            ty = _wrapped_text(c, line, x_left, ty, terms_w - 10, size=terms_size, leading=terms_leading)
 
-    ty -= 6
-    c.setFont("Helvetica-Oblique", 8)
-    c.drawString(x_left, ty, "Customer Acceptance (sign below):")
-    ty -= 26
-    c.setStrokeColor(colors.black)
-    c.line(x_left + 8, ty, x_left + terms_w - 20, ty)
-    ty -= 11
-    c.setFont("Helvetica", 8)
-    c.drawString(x_left, ty, "Print Name: ____________________________")
+        ty -= 6
+        c.setFont("Helvetica-Oblique", 8)
+        c.drawString(x_left, ty, "Customer Acceptance (sign below):")
+        ty -= 26
+        c.setStrokeColor(colors.black)
+        c.line(x_left + 8, ty, x_left + terms_w - 20, ty)
+        ty -= 11
+        c.setFont("Helvetica", 8)
+        c.drawString(x_left, ty, "Print Name: ____________________________")
 
-    y = ty - 28
+        y = ty - 28
 
     # ---------------- Footer ----------------
+    doc_kind = "invoice" if is_inv else "price quote"
     c.setFont("Helvetica", 8.5)
     c.setFillColor(colors.black)
-    c.drawCentredString(PAGE_W / 2, y, "If you have any questions about this price quote, please contact")
+    c.drawCentredString(PAGE_W / 2, y, f"If you have any questions about this {doc_kind}, please contact")
     y -= 11
     c.drawCentredString(PAGE_W / 2, y, "VoltPro Electrodata Solutions, 0715 117855 / 0724 076 047, info@voltproelectrodata.co.ke")
     y -= 16

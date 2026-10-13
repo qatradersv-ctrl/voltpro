@@ -73,8 +73,7 @@
     <dl class="meta">
       <div><dt>Invoice no.</dt><dd>{{ invoice.document_number }}</dd></div>
       <div><dt>Issued</dt><dd>{{ invoice.issue_date|date:"d M Y" }}</dd></div>
-      {% if invoice.valid_until %}<div><dt>Valid until</dt><dd>{{ invoice.valid_until|date:"d M Y" }}</dd></div>{% endif %}
-      {% if invoice.converted_at %}<div><dt>Converted</dt><dd>{{ invoice.converted_at|date:"d M Y" }}</dd></div>{% endif %}
+      {% if invoice.converted_at %}<div><dt>Invoiced on</dt><dd>{{ invoice.converted_at|date:"d M Y" }}</dd></div>{% endif %}
     </dl>
   </div>
 
@@ -116,24 +115,13 @@
     <tfoot>
       <tr><td class="lbl" colspan="5">Subtotal</td><td class="num">KES {{ invoice.subtotal|floatformat:2|intcomma }}</td></tr>
       <tr><td class="lbl" colspan="5">VAT ({{ invoice.tax_rate }}%)</td><td class="num">KES {{ invoice.tax_amount|floatformat:2|intcomma }}</td></tr>
-      <tr class="grand"><td class="lbl" colspan="5">Total due</td><td class="num">KES {{ invoice.total|floatformat:2|intcomma }}</td></tr>
+      <tr class="grand"><td class="lbl" colspan="5">Amount due</td><td class="num">KES {{ invoice.total|floatformat:2|intcomma }}</td></tr>
     </tfoot>
   </table>
 
   {% if invoice.notes %}
-  <div class="blocks"><div><h2>Notes</h2><p>{{ invoice.notes|linebreaksbr }}</p></div></div>
+  <div class="blocks"><div><h2>Scope of work</h2><p>{{ invoice.notes|linebreaksbr }}</p></div></div>
   {% endif %}
-
-  <div class="blocks">
-    <div>
-      <h2>Payment details</h2>
-      <ul>{% for line in invoice.payment_details_list %}<li>{{ line }}</li>{% endfor %}</ul>
-    </div>
-    <div>
-      <h2>Terms</h2>
-      <ol>{% for term in invoice.terms_list %}<li>{{ term }}</li>{% endfor %}</ol>
-    </div>
-  </div>
 
   <footer>
     VoltPro Electrodata Solutions &middot; 0715 117855 / 0724 076 047 &middot;

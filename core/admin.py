@@ -585,7 +585,7 @@ class InvoiceAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
         ("Invoice Details", {
-            "fields": ("tax_rate", "notes", "terms", "payment_details"),
+            "fields": ("tax_rate", "notes"),
             "classes": ("collapse",),
         }),
         ("Totals & Sharing", {
