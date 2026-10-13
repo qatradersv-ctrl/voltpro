@@ -342,6 +342,7 @@ class QuoteAdmin(admin.ModelAdmin):
     date_hierarchy = "issue_date"
     inlines = [QuoteLineItemInline]
     actions = ["export_csv", "send_quote", "generate_sales_report", "convert_to_invoice"]
+    actions_row = ("convert_to_invoice",)
     
     fieldsets = (
         ("Client Information", {
@@ -533,7 +534,7 @@ You can view and manage this quote in the admin panel.
         
         return response
 
-    @admin.action(description="Convert selected accepted quotes into invoices")
+    @admin.action(description="Convert to invoice")
     def convert_to_invoice(self, request, queryset):
         eligible = queryset.filter(status="accepted")
         count = 0
