@@ -1,0 +1,146 @@
+{% load humanize %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Invoice {{ invoice.document_number }} — VoltPro Electrodata Solutions</title>
+<style>
+  @page { size: A4; margin: 14mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; color: #0B1220; background: #fff;
+    font: 13px/1.55 "Segoe UI", Arial, sans-serif;
+  }
+  .sheet { max-width: 780px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
+  .doc-label { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #032B7A; font-weight: 700; }
+  .top { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start;
+         border-bottom: 2px solid #032B7A; padding-bottom: 14px; }
+  .top p { margin: 2px 0; color: #40506B; }
+  .meta { margin: 0; font-size: 12px; color: #40506B; text-align: right; }
+  .meta div { display: flex; justify-content: flex-end; gap: 10px; }
+  .meta dt { text-transform: uppercase; letter-spacing: .08em; font-size: 10px; }
+  .meta dd { margin: 0; font-weight: 600; color: #0B1220; }
+  .parties { display: flex; gap: 32px; margin: 20px 0; }
+  .parties > div { flex: 1; }
+  .parties h2 { margin: 0 0 4px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #40506B; }
+  .parties p { margin: 1px 0; }
+  .parties strong { font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  th { text-align: left; font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+       background: #032B7A; color: #fff; padding: 8px 10px; }
+  td { padding: 8px 10px; border-bottom: 1px solid #DCE3F0; vertical-align: top; }
+  .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  tfoot th, tfoot td { border: 0; background: none; color: #0B1220; }
+  tfoot .lbl { text-align: right; text-transform: none; letter-spacing: 0; font-size: 13px; color: #40506B; }
+  tfoot .grand td { border-top: 2px solid #032B7A; font-size: 16px; font-weight: 700; padding-top: 10px; }
+  .blocks { display: flex; gap: 28px; margin-top: 8px; }
+  .blocks > div { flex: 1; }
+  .blocks h2 { margin: 0 0 6px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #032B7A; }
+  .blocks ol, .blocks ul { margin: 0; padding-left: 18px; color: #40506B; }
+  .blocks li { margin-bottom: 3px; }
+  footer { margin-top: 22px; padding-top: 10px; border-top: 1px solid #DCE3F0;
+           font-size: 11px; color: #64748B; text-align: center; }
+  .toolbar { max-width: 780px; margin: 0 auto 18px; display: flex; gap: 10px; align-items: center; }
+  .toolbar a { display: inline-block; padding: 7px 14px; border-radius: 5px; font-size: 12px;
+               font-weight: 600; text-decoration: none; }
+  .toolbar .primary { background: #032B7A; color: #fff; }
+  .toolbar .ghost { border: 1px solid #032B7A; color: #032B7A; }
+  .toolbar span { margin-left: auto; color: #64748B; font-size: 11px; }
+  @media print {
+    body { padding: 0; }
+    .toolbar { display: none; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar no-print">
+  <a class="primary" href="#" onclick="window.print(); return false;">Print invoice</a>
+  <a class="ghost" href="{% url 'core:invoice_pdf' invoice.pk %}">Download PDF</a>
+  <a class="ghost" href="{% url 'admin:core_invoice_change' invoice.pk %}">Back to admin</a>
+  <span>Use your browser’s print dialog to save as PDF.</span>
+</div>
+
+<div class="sheet">
+  <div class="top">
+    <div>
+      <p class="doc-label">Invoice</p>
+      <h1>VoltPro Electrodata Solutions</h1>
+      <p>Nairobi, Kenya</p>
+      <p>Phone: 0715 117855 / 0724 076 047</p>
+      <p>Email: {{ site_config.contact_email|default:"info@voltpro.co.ke" }}</p>
+    </div>
+    <dl class="meta">
+      <div><dt>Invoice no.</dt><dd>{{ invoice.document_number }}</dd></div>
+      <div><dt>Issued</dt><dd>{{ invoice.issue_date|date:"d M Y" }}</dd></div>
+      {% if invoice.valid_until %}<div><dt>Valid until</dt><dd>{{ invoice.valid_until|date:"d M Y" }}</dd></div>{% endif %}
+      {% if invoice.converted_at %}<div><dt>Converted</dt><dd>{{ invoice.converted_at|date:"d M Y" }}</dd></div>{% endif %}
+    </dl>
+  </div>
+
+  <div class="parties">
+    <div>
+      <h2>Billed to</h2>
+      <p><strong>{{ invoice.client_name }}</strong></p>
+      {% if invoice.client_location %}<p>{{ invoice.client_location }}</p>{% endif %}
+      {% if invoice.client_phone %}<p>{{ invoice.client_phone }}</p>{% endif %}
+      {% if invoice.client_email %}<p>{{ invoice.client_email }}</p>{% endif %}
+    </div>
+    {% if invoice.service %}
+    <div>
+      <h2>Service</h2>
+      <p><strong>{{ invoice.service.title }}</strong></p>
+    </div>
+    {% endif %}
+  </div>
+
+  <table>
+    <thead>
+      <tr><th style="width:28px">#</th><th>Description</th><th class="num">Qty</th>
+          <th class="num">Unit price</th><th class="num">VAT</th><th class="num">Amount</th></tr>
+    </thead>
+    <tbody>
+      {% for item in line_items %}
+      <tr>
+        <td>{{ item.line_number }}</td>
+        <td>{{ item.description }}</td>
+        <td class="num">{{ item.quantity }} {{ item.unit }}</td>
+        <td class="num">KES {{ item.unit_price|floatformat:2|intcomma }}</td>
+        <td class="num">{% if item.taxable %}Yes{% else %}No{% endif %}</td>
+        <td class="num">KES {{ item.line_total|floatformat:2|intcomma }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No line items recorded.</td></tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr><td class="lbl" colspan="5">Subtotal</td><td class="num">KES {{ invoice.subtotal|floatformat:2|intcomma }}</td></tr>
+      <tr><td class="lbl" colspan="5">VAT ({{ invoice.tax_rate }}%)</td><td class="num">KES {{ invoice.tax_amount|floatformat:2|intcomma }}</td></tr>
+      <tr class="grand"><td class="lbl" colspan="5">Total due</td><td class="num">KES {{ invoice.total|floatformat:2|intcomma }}</td></tr>
+    </tfoot>
+  </table>
+
+  {% if invoice.notes %}
+  <div class="blocks"><div><h2>Notes</h2><p>{{ invoice.notes|linebreaksbr }}</p></div></div>
+  {% endif %}
+
+  <div class="blocks">
+    <div>
+      <h2>Payment details</h2>
+      <ul>{% for line in invoice.payment_details_list %}<li>{{ line }}</li>{% endfor %}</ul>
+    </div>
+    <div>
+      <h2>Terms</h2>
+      <ol>{% for term in invoice.terms_list %}<li>{{ term }}</li>{% endfor %}</ol>
+    </div>
+  </div>
+
+  <footer>
+    VoltPro Electrodata Solutions &middot; 0715 117855 / 0724 076 047 &middot;
+    {{ site_config.contact_email|default:"info@voltpro.co.ke" }}
+  </footer>
+</div>
+
+<script>window.addEventListener('load', function () { window.print(); });</script>
+</body>
+</html>

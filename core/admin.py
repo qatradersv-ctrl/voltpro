@@ -10,7 +10,7 @@ from django.conf import settings
 
 from .models import (
     Service, Project, Testimonial, QuoteRequest, Quote, QuoteLineItem, QuoteStatus,
-    SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber,
+    SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber, Invoice,
 )
 
 admin.site.site_header = "VoltPro Electrodata Solutions"
@@ -542,10 +542,180 @@ You can view and manage this quote in the admin panel.
             q.convert_to_invoice()
             count += 1
         skipped = queryset.count() - count
-        msg = f"{count} quote(s) converted to invoice."
-        if skipped:
-            msg += f" {skipped} skipped (not in accepted status)."
-        self.message_user(request, msg)
+        if count:
+            invoice_url = reverse("admin:core_invoice_changelist")
+            msg = format_html(
+                '<a href="{}">{} invoice(s) created</a> — view them under Invoices.',
+                invoice_url, count,
+            )
+            if skipped:
+                msg = format_html("{} {} skipped (not in accepted status).", msg, skipped)
+            self.message_user(request, msg)
+        else:
+            self.message_user(
+                request,
+                "Nothing converted — only accepted quotes can become invoices.",
+                level="WARNING",
+            )
+
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    """Invoices are converted quotes; listed as their own admin section."""
+
+    list_display = (
+        "document_ref", "client_name", "issued_on", "converted_on",
+        "total_display", "status_badge", "document_actions",
+    )
+    list_filter = ("issue_date", "service")
+    search_fields = ("invoice_number", "quote_number", "client_name", "client_phone", "client_email")
+    readonly_fields = (
+        "invoice_number", "quote_number", "converted_at",
+        "totals_display", "client_link_display", "document_buttons",
+    )
+    autocomplete_fields = ("request", "service")
+    date_hierarchy = "issue_date"
+    ordering = ("-converted_at",)
+    inlines = [QuoteLineItemInline]
+    actions = ["export_invoices_csv", "generate_sales_report"]
+
+    fieldsets = (
+        ("Invoice", {
+            "fields": ("document_buttons", "invoice_number", "quote_number", "converted_at", "status"),
+        }),
+        ("Client Information", {
+            "fields": ("client_name", "client_phone", "client_email", "client_location"),
+        }),
+        ("Service & Dates", {
+            "fields": ("service", "request", "issue_date", "valid_until"),
+            "classes": ("collapse",),
+        }),
+        ("Invoice Details", {
+            "fields": ("tax_rate", "notes", "terms", "payment_details"),
+            "classes": ("collapse",),
+        }),
+        ("Totals & Sharing", {
+            "fields": ("totals_display", "client_link_display"),
+            "classes": ("collapse",),
+        }),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(status=QuoteStatus.INVOICED)
+
+    def has_add_permission(self, request):
+        # Invoices are created by converting an accepted quote.
+        return False
+
+    def has_module_permission(self, request):
+        return request.user.is_active and request.user.has_perm("core.view_quote")
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_active and request.user.has_perm("core.change_quote")
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_active and request.user.has_perm("core.view_quote")
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_active and request.user.has_perm("core.delete_quote")
+
+    @admin.display(description="Invoice no.", ordering="invoice_number")
+    def document_ref(self, obj):
+        return obj.invoice_number or obj.quote_number or "—"
+
+    @admin.display(description="Issued", ordering="issue_date")
+    def issued_on(self, obj):
+        return obj.issue_date.strftime("%d %b %Y") if obj.issue_date else "—"
+
+    @admin.display(description="Converted", ordering="converted_at")
+    def converted_on(self, obj):
+        return timezone.localdate(obj.converted_at).strftime("%d %b %Y") if obj.converted_at else "—"
+
+    @admin.display(description="Status", ordering="status")
+    def status_badge(self, obj):
+        return render_badge(obj.get_status_display(), obj.status)
+
+    @admin.display(description="Total (incl. VAT)")
+    def total_display(self, obj):
+        return f"KES {obj.total:,.2f}"
+
+    @admin.display(description="Totals")
+    def totals_display(self, obj):
+        if not obj.pk:
+            return "Add line items to see totals."
+        return format_html(
+            "Subtotal: <b>KES {:,.2f}</b> &nbsp;|&nbsp; VAT ({}%): <b>KES {:,.2f}</b> "
+            "&nbsp;|&nbsp; Total: <b>KES {:,.2f}</b>",
+            obj.subtotal, obj.tax_rate, obj.tax_amount, obj.total,
+        )
+
+    @admin.display(description="Client link")
+    def client_link_display(self, obj):
+        if not obj.pk:
+            return "Save the invoice first."
+        detail_url = reverse("core:quote_detail", args=[obj.public_id])
+        pdf_url = reverse("core:quote_pdf", args=[obj.public_id])
+        return format_html(
+            'Page: <a href="{0}" target="_blank">{0}</a><br>PDF: <a href="{1}" target="_blank">{1}</a>',
+            detail_url, pdf_url,
+        )
+
+    @admin.display(description="Document")
+    def document_actions(self, obj):
+        edit_url = reverse("admin:core_invoice_change", args=[obj.pk])
+        preview_url = reverse("core:quote_pdf_admin", args=[obj.pk])
+        download_url = reverse("core:invoice_pdf", args=[obj.pk])
+        print_url = reverse("core:invoice_print", args=[obj.pk])
+        client_url = reverse("core:quote_detail", args=[obj.public_id])
+        return format_html(
+            '<span class="vp-actions">'
+            '<a class="vp-btn" href="{}">Edit</a>'
+            '<a class="vp-btn" href="{}" target="_blank" rel="noopener">Preview</a>'
+            '<a class="vp-btn" href="{}" target="_blank" rel="noopener">Download</a>'
+            '<a class="vp-btn" href="{}" target="_blank" rel="noopener">Print</a>'
+            '<details class="vp-more"><summary>More</summary>'
+            '<ul><li><a href="{}" target="_blank" rel="noopener">Client page</a></li>'
+            '<li><a href="{}" target="_blank" rel="noopener">Invoice PDF (public link)</a></li>'
+            '<li><a href="{}">Invoice list</a></li></ul>'
+            '</details></span>',
+            edit_url, preview_url, download_url, print_url,
+            client_url, reverse("core:quote_pdf", args=[obj.public_id]),
+            reverse("admin:core_invoice_changelist"),
+        )
+
+    @admin.display(description="Document")
+    def document_buttons(self, obj):
+        """Same actions minus Edit, shown on the change form itself."""
+        if not obj.pk:
+            return "Save the invoice to get document links."
+        preview_url = reverse("core:quote_pdf_admin", args=[obj.pk])
+        download_url = reverse("core:invoice_pdf", args=[obj.pk])
+        print_url = reverse("core:invoice_print", args=[obj.pk])
+        return format_html(
+            '<span class="vp-actions">'
+            '<a class="vp-btn" href="{}" target="_blank" rel="noopener">Preview PDF</a>'
+            '<a class="vp-btn" href="{}" target="_blank" rel="noopener">Download PDF</a>'
+            '<a class="vp-btn" href="{}" target="_blank" rel="noopener">Print</a>'
+            '<a class="vp-btn vp-btn-ghost" href="{}">Back to list</a>'
+            '</span>',
+            preview_url, download_url, print_url,
+            reverse("admin:core_invoice_changelist"),
+        )
+
+    @admin.action(description="Export selected invoices as CSV")
+    def export_invoices_csv(self, request, queryset):
+        rows = [
+            [i.invoice_number or i.quote_number, i.client_name, i.client_phone, i.client_email,
+             i.service.title if i.service else "", i.get_status_display(),
+             i.issue_date, i.converted_at, i.subtotal, i.tax_amount, i.total]
+            for i in queryset
+        ]
+        return csv_response(
+            "voltpro_invoices.csv",
+            ["Invoice #", "Client", "Phone", "Email", "Service", "Status",
+             "Issued", "Converted", "Subtotal", "VAT", "Total"],
+            rows,
+        )
 
 
 @admin.register(BlogPost)

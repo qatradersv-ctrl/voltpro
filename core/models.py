@@ -314,6 +314,23 @@ class Quote(models.Model):
         return reverse("core:quote_detail", kwargs={"public_id": self.public_id})
 
 
+class Invoice(Quote):
+    """Read-only admin view over quotes that were converted into invoices.
+
+    Proxy model: same table as Quote, but Django admin lists it as its own
+    section. Rows are filtered to status=invoiced by InvoiceAdmin.
+    """
+
+    class Meta:
+        proxy = True
+        verbose_name = "Invoice"
+        verbose_name_plural = "Invoices"
+
+    @property
+    def document_number(self):
+        return self.invoice_number or self.quote_number
+
+
 class InventoryItem(models.Model):
     """Inventory items that can be selected in quote line items."""
     name = models.CharField(max_length=200, help_text="Item name for dropdown")

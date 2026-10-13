@@ -8,7 +8,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber, QuoteLineItem
+from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber, QuoteLineItem, Invoice
 from .pdf import build_quote_pdf
 
 
@@ -248,6 +248,31 @@ def quote_pdf_admin(request, pk):
     response = HttpResponse(buf.read(), content_type="application/pdf")
     response["Content-Disposition"] = f'inline; filename="{quote.quote_number}.pdf"'
     return response
+
+
+@staff_member_required
+def invoice_pdf(request, pk):
+    """Staff-only invoice PDF served as an attachment (Download button)."""
+    invoice = get_object_or_404(Invoice, pk=pk)
+    buf = build_quote_pdf(invoice)
+    response = HttpResponse(buf.read(), content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{invoice.document_number}.pdf"'
+    return response
+
+
+@staff_member_required
+def invoice_print(request, pk):
+    """Staff-only printable HTML view of an invoice; the page triggers the browser print dialog."""
+    invoice = get_object_or_404(Invoice, pk=pk)
+    return render(
+        request,
+        "core/invoice_print.html",
+        {
+            "invoice": invoice,
+            "line_items": invoice.line_items.all(),
+            "site_config": SiteConfiguration.objects.first(),
+        },
+    )
 
 
 @staff_member_required

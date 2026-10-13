@@ -1,0 +1,94 @@
+/* Admin chrome overrides — loaded by templates/admin/base_site.html. */
+
+:root {
+  --vp-ink: #0B1220;
+  --vp-primary: #032B7A;
+  --vp-muted: #40506B;
+  --vp-line: #DCE3F0;
+}
+
+body #container { font-family: inherit; }
+
+/* Status / boolean badges rendered by core.admin.render_badge. */
+.vp-badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1.6;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.vp-badge-draft    { background: #EEF1F7; color: var(--vp-muted); border-color: var(--vp-line); }
+.vp-badge-sent     { background: #E7EFFD; color: var(--vp-primary); border-color: #C4D6F5; }
+.vp-badge-accepted { background: #E4F5EA; color: #14663A; border-color: #B7E3C6; }
+.vp-badge-invoiced { background: #FFF2DF; color: #8A5200; border-color: #F4D9AC; }
+.vp-badge-rejected { background: #FBE9E9; color: #962626; border-color: #F2C7C7; }
+.vp-badge-expired  { background: #F1EDF7; color: #4C3A73; border-color: #DCD3EC; }
+.vp-badge-yes      { background: #E4F5EA; color: #14663A; border-color: #B7E3C6; }
+.vp-badge-no       { background: #EEF1F7; color: var(--vp-muted); border-color: var(--vp-line); }
+
+/* Per-row document buttons in the Invoices list. */
+.vp-actions { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.vp-btn {
+  display: inline-block;
+  padding: 5px 11px;
+  border-radius: 5px;
+  background: var(--vp-primary);
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.vp-btn:hover { background: #063E9E; }
+.vp-btn-ghost {
+  background: #fff;
+  color: var(--vp-primary) !important;
+  border: 1px solid var(--vp-primary);
+}
+.vp-btn-ghost:hover { background: #EEF1F7; }
+
+.vp-more { position: relative; }
+.vp-more > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 5px 11px;
+  border-radius: 5px;
+  border: 1px solid var(--vp-primary);
+  color: var(--vp-primary);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.vp-more > summary::-webkit-details-marker { display: none; }
+.vp-more[open] > summary { background: var(--vp-primary); color: #fff !important; }
+.vp-more ul {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 210px;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid var(--vp-line);
+  border-radius: 6px;
+  box-shadow: 0 10px 24px rgba(11, 18, 32, .16);
+}
+.vp-more li a {
+  display: block;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--vp-ink);
+  text-decoration: none;
+}
+.vp-more li a:hover { background: #EEF1F7; color: var(--vp-primary); }
+
+/* Keep the change-form header buttons readable on the navy bar. */
+.change-form-header .submitrow a,
+.change-form-header .submitrow input[type="submit"] { vertical-align: middle; }
