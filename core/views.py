@@ -197,7 +197,10 @@ def quote_detail(request, public_id):
             messages.error(request, "Quote marked as declined.")
         return redirect("core:quote_detail", public_id=quote.public_id)
 
-    return render(request, "core/quote_detail.html", {"quote": quote})
+    return render(request, "core/quote_detail.html", {
+        "quote": quote,
+        "site_config": SiteConfiguration.objects.first(),
+    })
 
 
 @csrf_exempt

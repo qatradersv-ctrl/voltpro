@@ -1,5 +1,6 @@
 import csv
 
+from django import forms
 from django.contrib import admin
 from django.core.mail import send_mail
 from django.http import HttpResponse
@@ -11,6 +12,7 @@ from django.conf import settings
 from .models import (
     Service, Project, Testimonial, QuoteRequest, Quote, QuoteLineItem, QuoteStatus,
     SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber, Invoice,
+    ClientProfile,
 )
 
 admin.site.site_header = "VoltPro Electrodata Solutions"
@@ -176,6 +178,10 @@ class SiteConfigurationAdmin(admin.ModelAdmin):
 
     readonly_fields = ("hero_image_preview", "services_video_preview")
     fieldsets = (
+        ("Business Details", {
+            "fields": ("kra_pin",),
+            "description": "Saved once and printed on every quote and invoice.",
+        }),
         ("Hero Section", {
             "fields": ("hero_image", "hero_image_preview"),
         }),
@@ -325,8 +331,34 @@ class QuoteLineItemInline(admin.TabularInline):
         return "—"
 
 
+class QuoteAdminForm(forms.ModelForm):
+    """Carries the two file-of-client controls, which are not quote columns."""
+
+    load_saved_client = forms.ModelChoiceField(
+        label="Load details from a saved client",
+        queryset=ClientProfile.objects.none(),
+        required=False,
+        help_text="Fills the client block below from Saved Clients. Leave blank to type new details.",
+    )
+    save_client_details = forms.BooleanField(
+        label="Save these client details to file",
+        required=False,
+        help_text="Keeps the company, KRA PIN and contacts so the next quote for them prefills.",
+    )
+
+    class Meta:
+        model = Quote
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Resolved per request so the queryset isn't evaluated at import time.
+        self.fields["load_saved_client"].queryset = ClientProfile.objects.all()
+
+
 @admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
+    form = QuoteAdminForm
     list_display = (
         "quote_number", "client_name", "service", "status_badge",
         "issue_date", "total_display", "preview_link_list", "pdf_link",
@@ -341,7 +373,10 @@ class QuoteAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ("Client Information", {
-            "fields": ("client_name", "client_phone", "client_email", "client_location"),
+            "fields": (
+                "load_saved_client", "client_company", "client_name", "client_kra_pin",
+                "client_phone", "client_email", "client_location", "save_client_details",
+            ),
         }),
         ("Service & Status", {
             "fields": ("service", "request", "status", "issue_date", "valid_until"),
@@ -360,6 +395,22 @@ class QuoteAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        saved = form.cleaned_data.get("load_saved_client")
+        if saved:
+            obj.client_company = saved.company
+            obj.client_name = saved.name
+            obj.client_kra_pin = saved.kra_pin
+            obj.client_phone = saved.phone
+            obj.client_email = saved.email
+            obj.client_location = saved.location
+        super().save_model(request, obj, form, change)
+        if form.cleaned_data.get("save_client_details"):
+            profile = ClientProfile.upsert_from_quote(obj)
+            self.message_user(request, f"Client \u201c{profile}\u201d saved to file for future quotes.")
+        elif saved:
+            self.message_user(request, f"Loaded client details from \u201c{saved}\u201d.")
 
     @admin.display(description="Status", ordering="status")
     def status_badge(self, obj):
@@ -578,7 +629,8 @@ class InvoiceAdmin(admin.ModelAdmin):
             "fields": ("document_buttons", "invoice_number", "quote_number", "converted_at", "status"),
         }),
         ("Client Information", {
-            "fields": ("client_name", "client_phone", "client_email", "client_location"),
+            "fields": ("client_company", "client_name", "client_kra_pin",
+                       "client_phone", "client_email", "client_location"),
         }),
         ("Service & Dates", {
             "fields": ("service", "request", "issue_date", "valid_until"),
@@ -710,6 +762,13 @@ class InvoiceAdmin(admin.ModelAdmin):
              "Issued", "Converted", "Subtotal", "VAT", "Total"],
             rows,
         )
+
+
+@admin.register(ClientProfile)
+class ClientProfileAdmin(admin.ModelAdmin):
+    list_display = ("company", "name", "kra_pin", "phone", "email", "location", "updated_at")
+    search_fields = ("company", "name", "kra_pin", "email", "phone")
+    readonly_fields = ("created_at", "updated_at")
 
 
 @admin.register(BlogPost)

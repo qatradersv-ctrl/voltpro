@@ -31,8 +31,16 @@
       <div class="quote-head">
         <div>
           <p class="quote-eyebrow">{% if quote.is_invoice %}Invoice {{ quote.invoice_number }}{% else %}Quote {{ quote.quote_number }}{% endif %}</p>
-          <h1>{{ quote.client_name }}</h1>
-          <p class="quote-meta">Issued {{ quote.issue_date|date:"d M Y" }}{% if quote.valid_until %} &middot; valid until {{ quote.valid_until|date:"d M Y" }}{% endif %}</p>
+          <h1>{{ quote.billing_name }}</h1>
+          {% if quote.client_company and quote.client_name %}<p class="quote-meta">Attn: {{ quote.client_name }}</p>{% endif %}
+          <p class="quote-meta">Issued {{ quote.issue_date|date:"d M Y" }}{% if quote.valid_until and not quote.is_invoice %} &middot; valid until {{ quote.valid_until|date:"d M Y" }}{% endif %}</p>
+          {% if quote.client_kra_pin or site_config.kra_pin %}
+          <p class="quote-meta">
+            {% if quote.client_kra_pin %}Client KRA PIN: {{ quote.client_kra_pin }}{% endif %}
+            {% if quote.client_kra_pin and site_config.kra_pin %} &middot; {% endif %}
+            {% if site_config.kra_pin %}VoltPro KRA PIN: {{ site_config.kra_pin }}{% endif %}
+          </p>
+          {% endif %}
         </div>
         {% if quote.service %}<p class="quote-meta quote-meta--right">{{ quote.service.title }}</p>{% endif %}
       </div>

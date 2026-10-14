@@ -150,6 +150,51 @@ class QuoteRequest(models.Model):
         return f"{self.name} ({self.created_at:%d %b %Y})"
 
 
+class ClientProfile(models.Model):
+    """A client's details kept on file so the next quote can be prefilled."""
+
+    company = models.CharField(max_length=200, blank=True)
+    name = models.CharField(max_length=120)
+    kra_pin = models.CharField(max_length=40, blank=True, verbose_name="KRA PIN")
+    phone = models.CharField(max_length=30, blank=True)
+    email = models.EmailField(blank=True)
+    location = models.CharField(max_length=150, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["company", "name"]
+        verbose_name = "Saved Client"
+        verbose_name_plural = "Saved Clients"
+
+    def __str__(self):
+        return self.company or self.name
+
+    @classmethod
+    def upsert_from_quote(cls, quote):
+        """Store or refresh the file entry for a quote's client.
+
+        Matched on PIN first, then email, then name — a PIN is the one
+        identifier that is guaranteed unique per taxpayer.
+        """
+        defaults = {
+            "company": quote.client_company,
+            "name": quote.client_name,
+            "kra_pin": quote.client_kra_pin,
+            "phone": quote.client_phone,
+            "email": quote.client_email,
+            "location": quote.client_location,
+        }
+        if quote.client_kra_pin:
+            lookup = {"kra_pin": quote.client_kra_pin}
+        elif quote.client_email:
+            lookup = {"email": quote.client_email}
+        else:
+            lookup = {"name": quote.client_name}
+        obj, _ = cls.objects.update_or_create(**lookup, defaults=defaults)
+        return obj
+
+
 class QuoteStatus(models.TextChoices):
     DRAFT = "draft", "Draft"
     SENT = "sent", "Sent"
@@ -200,9 +245,20 @@ class Quote(models.Model):
     )
     service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
 
+    client_company = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Company or organisation the document is addressed to. Leave blank to use the contact name.",
+    )
     client_name = models.CharField(
         max_length=120, 
         help_text="Full name of the client or organization contact person"
+    )
+    client_kra_pin = models.CharField(
+        max_length=40,
+        blank=True,
+        verbose_name="Client KRA PIN",
+        help_text="Client's KRA PIN (TPIN). Printed on the quote and invoice when supplied.",
     )
     client_phone = models.CharField(
         max_length=30, 
@@ -270,6 +326,11 @@ class Quote(models.Model):
     @property
     def is_invoice(self):
         return self.status == QuoteStatus.INVOICED
+
+    @property
+    def billing_name(self):
+        """Who the document is addressed to — the company when one is given."""
+        return self.client_company or self.client_name
 
     def convert_to_invoice(self):
         """Transition an accepted quote to an invoice with a generated number."""
@@ -444,6 +505,12 @@ class SiteConfiguration(models.Model):
     technician_email = models.EmailField(
         default='info@voltpro.co.ke',
         help_text="Technician email address for receiving quote notifications"
+    )
+    kra_pin = models.CharField(
+        max_length=40,
+        blank=True,
+        verbose_name="VoltPro KRA PIN",
+        help_text="Our own KRA PIN (TPIN). Saved once and printed on every quote and invoice.",
     )
 
     class Meta:

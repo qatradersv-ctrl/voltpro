@@ -85,12 +85,17 @@ def build_quote_pdf(quote):
     contact_lines.append("Website: voltproelectrodata.co.ke")
     contact_lines.append("Phone: 0715 117855 / 0724 076 047")
     contact_lines.append("Prepared by: Sales Team")
+    from .models import SiteConfiguration
+    site_config = SiteConfiguration.objects.first()
+    business_pin = (getattr(site_config, "kra_pin", "") or "").strip()
+    if business_pin:
+        contact_lines.append(f"KRA PIN: {business_pin}")
 
     is_inv = quote.is_invoice
     meta_rows = [
         ("DATE", quote.issue_date.strftime("%m/%d/%Y") if quote.issue_date else "-"),
         ("INVOICE #" if is_inv else "QUOTE #", (quote.invoice_number or quote.quote_number) or "-"),
-        ("CUSTOMER ID", quote.client_name[:10] if quote.client_name else "-"),
+        ("CUSTOMER ID", quote.billing_name[:10] if quote.billing_name else "-"),
     ]
     if is_inv:
         meta_rows.append(
@@ -183,10 +188,16 @@ def build_quote_pdf(quote):
 
     c.setFillColor(colors.black)
     c.setFont("Helvetica-Bold", 9)
-    c.drawString(x_left, y - 2, quote.client_name or "")
+    c.drawString(x_left, y - 2, quote.billing_name or "")
     y -= 13
     c.setFont("Helvetica", 8.5)
-    for val in [quote.client_location, quote.client_phone, quote.client_email]:
+    customer_lines = []
+    if quote.client_company and quote.client_name:
+        customer_lines.append(f"Attn: {quote.client_name}")
+    customer_lines += [quote.client_location, quote.client_phone, quote.client_email]
+    if quote.client_kra_pin:
+        customer_lines.append(f"KRA PIN: {quote.client_kra_pin}")
+    for val in customer_lines:
         if val:
             c.drawString(x_left, y, val)
             y -= 11

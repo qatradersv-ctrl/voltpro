@@ -69,6 +69,7 @@
       <p>Nairobi, Kenya</p>
       <p>Phone: 0715 117855 / 0724 076 047</p>
       <p>Email: {{ site_config.contact_email|default:"info@voltpro.co.ke" }}</p>
+      {% if site_config.kra_pin %}<p>KRA PIN: {{ site_config.kra_pin }}</p>{% endif %}
     </div>
     <dl class="meta">
       <div><dt>Invoice no.</dt><dd>{{ invoice.document_number }}</dd></div>
@@ -80,10 +81,12 @@
   <div class="parties">
     <div>
       <h2>Billed to</h2>
-      <p><strong>{{ invoice.client_name }}</strong></p>
+      <p><strong>{{ invoice.billing_name }}</strong></p>
+      {% if invoice.client_company and invoice.client_name %}<p>Attn: {{ invoice.client_name }}</p>{% endif %}
       {% if invoice.client_location %}<p>{{ invoice.client_location }}</p>{% endif %}
       {% if invoice.client_phone %}<p>{{ invoice.client_phone }}</p>{% endif %}
       {% if invoice.client_email %}<p>{{ invoice.client_email }}</p>{% endif %}
+      {% if invoice.client_kra_pin %}<p>KRA PIN: {{ invoice.client_kra_pin }}</p>{% endif %}
     </div>
     {% if invoice.service %}
     <div>
