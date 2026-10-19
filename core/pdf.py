@@ -94,8 +94,8 @@ def _quotation_frame(c):
 def _contact_lines(site_config):
     lines = [
         "Jamii Plaza, 2nd Floor, off Police Road",
-        "Molongo, Machakos County, Kenya",
-        "P.O. Box 37, 00519 - Molongo",
+        "Mlolongo, Machakos County, Kenya",
+        "P.O. Box 37, 00519 - Mlolongo",
         "Tel: 0715 117855 / 0724 076 047",
         f"Email: {getattr(site_config, 'contact_email', '') or 'info@voltpro.co.ke'}",
     ]
@@ -517,287 +517,143 @@ def _wrap_lines(text, max_width, font="Helvetica", size=8):
 
 
 def _build_invoice_pdf(quote):
-    """The invoice layout, unchanged since invoices split off from quotes."""
-    buf = io.BytesIO()
-    c = canvas.Canvas(buf, pagesize=letter)
-
-    # Outer border
-    c.setStrokeColor(colors.HexColor("#999999"))
-    c.setLineWidth(1)
-    c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
-
-    x_left = MARGIN
-    x_right = PAGE_W - MARGIN
-    y = PAGE_H - MARGIN - 10
-
-    # ---------------- Header: logo + company name / QUOTE -----------------
-    logo_box_size = 0.55 * inch
-
-    # Figure out contact lines and meta rows up front so we can size the
-    # grey header band correctly before drawing anything on top of it.
-    contact_lines = []
-    contact_lines.append("Nairobi, Kenya")
-    contact_lines.append("Website: voltproelectrodata.co.ke")
-    contact_lines.append("Phone: 0715 117855 / 0724 076 047")
-    contact_lines.append("Prepared by: Sales Team")
+    """Build an invoice with wrapped text and a table that can span pages."""
+    from html import escape
+    from reportlab.lib.enums import TA_RIGHT
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.platypus import LongTable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
     from .models import SiteConfiguration
+
+    buf = io.BytesIO()
     site_config = SiteConfiguration.objects.first()
     business_pin = (getattr(site_config, "kra_pin", "") or "").strip()
-    if business_pin:
-        contact_lines.append(f"KRA PIN: {business_pin}")
-
-    meta_rows = [
-        ("DATE", quote.issue_date.strftime("%m/%d/%Y") if quote.issue_date else "-"),
-        ("INVOICE #", (quote.invoice_number or quote.quote_number) or "-"),
-        ("CUSTOMER ID", quote.billing_name[:10] if quote.billing_name else "-"),
-        ("INVOICED ON", quote.converted_at.strftime("%m/%d/%Y") if quote.converted_at else "-"),
-    ]
-
-    header_body_h = max(len(contact_lines) * 11, len(meta_rows) * 15)
-    header_top = PAGE_H - MARGIN * 0.6 - 2
-    header_bottom = y - logo_box_size - header_body_h - 12
-    c.setFillColor(HEADER_GREY)
-    c.rect(
-        MARGIN * 0.6 + 1, header_bottom,
-        PAGE_W - MARGIN * 1.2 - 2, header_top - header_bottom,
-        fill=1, stroke=0,
+    document_number = quote.invoice_number or quote.quote_number or "Draft"
+    usable_width = PAGE_W - 2 * MARGIN
+    body = ParagraphStyle("InvoiceBody", fontName="Helvetica", fontSize=8.5, leading=11, textColor=colors.black)
+    small = ParagraphStyle("InvoiceSmall", parent=body, fontSize=7.5, leading=9)
+    heading = ParagraphStyle("InvoiceHeading", fontName="Helvetica-Bold", fontSize=9, leading=12, textColor=NAVY, spaceBefore=7, spaceAfter=4)
+    customer_name = ParagraphStyle("InvoiceCustomerName", parent=body, fontName="Helvetica-Bold", fontSize=9.5, leading=12, spaceAfter=2)
+    table_body = ParagraphStyle("InvoiceTableBody", parent=small, fontSize=8, leading=10)
+    table_right = ParagraphStyle("InvoiceTableRight", parent=table_body, alignment=TA_RIGHT)
+    table_header = ParagraphStyle(
+        "InvoiceTableHeader", parent=table_body, fontName="Helvetica-Bold",
+        textColor=colors.white,
     )
 
-    logo_drawn = False
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'core', 'images', 'logo-mark.png')
-    if os.path.exists(logo_path):
-        try:
-            img = ImageReader(logo_path)
-            iw, ih = img.getSize()
-            draw_h = logo_box_size
-            draw_w = draw_h * (iw / ih)
-            c.drawImage(
-                img, x_left, y - logo_box_size, width=draw_w,
-                height=draw_h, preserveAspectRatio=True, mask="auto",
-            )
-            logo_drawn = True
-        except Exception:
-            logo_drawn = False
-    if not logo_drawn:
-        c.setFillColor(colors.HexColor("#D9E1F2"))
-        c.rect(x_left, y - logo_box_size, logo_box_size, logo_box_size, fill=1, stroke=0)
+    def draw_page(c, doc):
+        c.saveState()
+        c.setStrokeColor(colors.HexColor("#999999"))
+        c.setLineWidth(0.8)
+        c.rect(MARGIN * 0.6, MARGIN * 0.6, PAGE_W - MARGIN * 1.2, PAGE_H - MARGIN * 1.2)
+        c.setFillColor(colors.HexColor("#F2F4F7"))
+        c.rect(MARGIN * 0.6 + 1, PAGE_H - 104, PAGE_W - MARGIN * 1.2 - 2, 72, fill=1, stroke=0)
+        logo_size = 0.48 * inch
+        _logo(c, MARGIN, PAGE_H - 42, logo_size)
+        text_x = MARGIN + logo_size + 10
         c.setFillColor(NAVY)
-        c.setFont("Helvetica-Bold", 7)
-        c.drawCentredString(x_left + logo_box_size / 2, y - logo_box_size / 2 - 3, "LOGO")
-
-    c.setFillColor(NAVY)
-    c.setFont("Helvetica-Bold", 20)
-    c.drawString(x_left + logo_box_size + 10, y - 20, "VoltPro Electrodata Solutions")
-
-    c.setFillColor(LIGHT_BLUE)
-    c.setFont("Helvetica-Bold", 26)
-    c.drawRightString(x_right, y - 14, "INVOICE")
-
-    y -= logo_box_size + 8
-
-    # Company contact block (left)
-    c.setFillColor(colors.black)
-    c.setFont("Helvetica", 8)
-    cy = y
-    for line in contact_lines:
-        c.drawString(x_left, cy, line)
-        cy -= 11
-
-    # Date / Quote# / Customer ID / Valid until box (right)
-    box_w = 2.3 * inch
-    box_x = x_right - box_w
-    row_h = 15
-    ry = y
-    c.setFont("Helvetica-Bold", 8)
-    label_w = box_w * 0.5
-    for label, value in meta_rows:
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(text_x, PAGE_H - 46, "VoltPro Electrodata Solutions")
         c.setFillColor(colors.black)
-        c.drawRightString(box_x + label_w - 4, ry - 10, label)
-        c.setStrokeColor(LINE_GREY)
-        c.setFillColor(colors.white)
-        c.rect(box_x + label_w, ry - row_h + 2, box_w - label_w, row_h, fill=1, stroke=1)
+        c.setFont("Helvetica", 7.5)
+        contact_lines = [
+            "Jamii Plaza, 2nd Floor, off Police Road, Mlolongo, Machakos County",
+            "Website: voltproelectrodata.co.ke",
+            "Phone: 0715 117855 / 0724 076 047",
+            f"Email: {getattr(site_config, 'contact_email', '') or 'info@voltpro.co.ke'}",
+        ]
+        if business_pin:
+            contact_lines.append(f"KRA PIN: {business_pin}")
+        cy = PAGE_H - 59
+        for line in contact_lines:
+            c.drawString(text_x, cy, line)
+            cy -= 9
+        c.setFillColor(LIGHT_BLUE)
+        c.setFont("Helvetica-Bold", 22)
+        c.drawRightString(PAGE_W - MARGIN, PAGE_H - 45, "INVOICE")
         c.setFillColor(colors.black)
         c.setFont("Helvetica", 8)
-        c.drawString(box_x + label_w + 4, ry - 10, str(value))
-        c.setFont("Helvetica-Bold", 8)
-        ry -= row_h
+        c.drawRightString(PAGE_W - MARGIN, PAGE_H - 61, document_number)
+        if doc.page > 1:
+            c.setFillColor(BRAND_MUTED)
+            c.setFont("Helvetica-Oblique", 7.5)
+            c.drawRightString(PAGE_W - MARGIN, PAGE_H - 74, "Continued")
+        footer_y = MARGIN * 0.6 + 17
+        c.setStrokeColor(LINE_GREY)
+        c.setLineWidth(0.5)
+        c.line(MARGIN, footer_y + 9, PAGE_W - MARGIN, footer_y + 9)
+        c.setFillColor(BRAND_MUTED)
+        c.setFont("Helvetica", 7.2)
+        c.drawCentredString(PAGE_W / 2, footer_y, f"VoltPro Electrodata Solutions  |  0715 117855 / 0724 076 047  |  Page {doc.page}")
+        c.restoreState()
 
-    y = min(cy, ry) - 14
+    def para(value, style=body):
+        text = escape(str(value or "")).replace("\r\n", "\n").replace("\r", "\n")
+        return Paragraph(text.replace("\n", "<br/>"), style)
 
-    # ---------------- Customer block ----------------
-    c.setFillColor(NAVY)
-    c.rect(x_left, y - 14, x_right - x_left, 14, fill=1, stroke=0)
-    c.setFillColor(colors.white)
-    c.setFont("Helvetica-Bold", 9)
-    c.drawString(x_left + 4, y - 10.5, "CUSTOMER")
-    y -= 14 + 4
-
-    c.setFillColor(colors.black)
-    c.setFont("Helvetica-Bold", 9)
-    c.drawString(x_left, y - 2, quote.billing_name or "")
-    y -= 13
-    c.setFont("Helvetica", 8.5)
-    customer_lines = []
+    story = []
+    band_style = ParagraphStyle("InvoiceCustomerBand", fontName="Helvetica-Bold", fontSize=8.5, leading=12, textColor=colors.white)
+    band = Table([[Paragraph("CUSTOMER", band_style)]], colWidths=[usable_width])
+    band.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), NAVY),
+        ("LEFTPADDING", (0, 0), (-1, -1), 7), ("RIGHTPADDING", (0, 0), (-1, -1), 7),
+        ("TOPPADDING", (0, 0), (-1, -1), 4), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    customer_details = []
     if quote.client_company and quote.client_name:
-        customer_lines.append(f"Attn: {quote.client_name}")
-    customer_lines += [quote.client_location, quote.client_phone, quote.client_email]
-    if quote.client_kra_pin:
-        customer_lines.append(f"KRA PIN: {quote.client_kra_pin}")
-    for val in customer_lines:
-        if val:
-            c.drawString(x_left, y, val)
-            y -= 11
-
-    y -= 8
-
-    # ---------------- Scope notes ----------------
+        customer_details.append(f"Attn: {quote.client_name}")
+    for label, value in (("Location", quote.client_location), ("Phone", quote.client_phone), ("Email", quote.client_email), ("KRA PIN", quote.client_kra_pin)):
+        if value:
+            customer_details.append(f"{label}: {value}")
+    story.extend([band, Spacer(1, 5), para(quote.billing_name or "-", customer_name)])
+    story.extend(para(value, body) for value in customer_details)
+    story.append(Spacer(1, 5))
     if quote.notes:
-        c.setFont("Helvetica-Bold", 9)
-        c.setFillColor(NAVY)
-        c.drawString(x_left, y - 2, "SCOPE")
-        y -= 12
-        c.setFont("Helvetica", 8.5)
-        c.setFillColor(colors.black)
-        for line in quote.notes.split('\n'):
-            y = _wrapped_text(c, line, x_left, y, x_right - x_left - 8, size=8.5, leading=11)
-        y -= 8
+        story.extend([Paragraph("SCOPE", heading), para(quote.notes), Spacer(1, 5)])
 
-    # ---------------- How much room the table has ----------------
-    # The totals and the footer need real vertical room, so measure them
-    # before the table and let that decide how many empty rows to pad it with.
-    items = list(quote.line_items.all())
-    header_h = 14
-    row_h = 20
-    totals_h = (3 if quote.tax_rate <= 0 else 6) * 16
-    bottom_limit = MARGIN * 0.6 + 10
-    room = y - header_h - 10 - totals_h - 10 - bottom_limit
-    min_rows = max(len(items), min(8, int(room // row_h)))
-
-    # ---------------- Line items table ----------------
-    col_num_x = x_left
-    col_desc_x = x_left + 0.3 * inch
-    col_unit_x = x_left + 4.0 * inch
-    col_qty_x = x_left + 5.0 * inch
-    col_tax_x = x_left + 5.5 * inch
-    col_amt_x = x_right
-
-    header_h = 14
-    c.setFillColor(NAVY)
-    c.rect(x_left, y - header_h, x_right - x_left, header_h, fill=1, stroke=0)
-    c.setFillColor(colors.white)
-    c.setFont("Helvetica-Bold", 8)
-    c.drawCentredString(col_num_x + 0.15 * inch, y - 10.5, "#")
-    c.drawString(col_desc_x + 4, y - 10.5, "DESCRIPTION")
-    c.drawRightString(col_unit_x, y - 10.5, "UNIT PRICE")
-    c.drawCentredString(col_qty_x, y - 10.5, "QTY")
-    c.drawCentredString(col_tax_x, y - 10.5, "TAXED")
-    c.drawRightString(col_amt_x, y - 10.5, "AMOUNT")
-    y -= header_h
-
-    c.setFont("Helvetica", 8.5)
-    for i in range(min_rows):
-        shade = ROW_SHADE if i % 2 == 0 else colors.white
-        c.setFillColor(shade)
-        c.rect(x_left, y - row_h, x_right - x_left, row_h, fill=1, stroke=0)
-        if i < len(items):
-            item = items[i]
-            c.setFillColor(colors.black)
-            c.drawCentredString(col_num_x + 0.15 * inch, y - 12, str(i + 1))
-            
-            # Wrap description text if too long
-            from reportlab.pdfbase.pdfmetrics import stringWidth
-            desc_max_width = col_unit_x - col_desc_x - 30
-            words = item.description.split()
-            lines = []
-            current_line = ""
-            for word in words:
-                test_line = f"{current_line} {word}".strip() if current_line else word
-                if stringWidth(test_line, "Helvetica", 8.5) <= desc_max_width:
-                    current_line = test_line
-                else:
-                    if current_line:
-                        lines.append(current_line)
-                    current_line = word
-            if current_line:
-                lines.append(current_line)
-            
-            # Draw description lines (max 2 lines to fit in row)
-            desc_y = y - 12
-            for line_idx, line in enumerate(lines[:2]):
-                c.drawString(col_desc_x + 4, desc_y, line)
-                if line_idx == 0 and len(lines) > 1:
-                    desc_y -= 10
-                else:
-                    desc_y -= 9
-            
-            c.drawRightString(col_unit_x, y - 12, f"KES {item.unit_price:,.2f}")
-            c.drawCentredString(col_qty_x, y - 12, f"{item.quantity:g}")
-            c.drawCentredString(col_tax_x, y - 12, "No")
-            c.drawRightString(col_amt_x, y - 12, f"KES {item.line_total:,.2f}")
-        else:
-            c.setFillColor(colors.black)
-            c.drawRightString(col_amt_x, y - 12, "-")
-        y -= row_h
-
-    c.setStrokeColor(LINE_GREY)
-    c.line(x_left, y, x_right, y)
-
-    y -= 10
-
-    # ---------------- Totals block ----------------
-    totals_box_x = x_left + 4.2 * inch
-    totals = [
-        ("Subtotal", f"KES {quote.subtotal:,.2f}", False),
-    ]
-    
-    # Only show tax-related lines if tax_rate > 0
-    if quote.tax_rate > 0:
-        totals.extend([
-            ("Taxable", f"KES {quote.subtotal:,.2f}", False),
-            (f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%", False),
-            ("Tax due", f"KES {quote.tax_amount:,.2f}", False),
+    col_widths = [24, 254, 76, 36, 48, usable_width - 438]
+    table_data = [[
+        para("#", table_header), para("DESCRIPTION", table_header),
+        para("UNIT PRICE", table_header), para("QTY", table_header),
+        para("TAXED", table_header), para("AMOUNT", table_header),
+    ]]
+    for index, item in enumerate(quote.line_items.all(), 1):
+        table_data.append([
+            para(index, table_right), para(item.description, table_body),
+            para(f"KES {item.unit_price:,.2f}", table_right), para(f"{item.quantity:g}", table_right),
+            para("Yes" if item.taxable else "No", table_right), para(f"KES {item.line_total:,.2f}", table_right),
         ])
-    
-    totals.extend([
-        ("Other", "KES 0.00", False),
-        ("AMOUNT DUE", f"KES {quote.total:,.2f}", True),
+    item_table = LongTable(table_data, colWidths=col_widths, repeatRows=1, splitByRow=1, hAlign="LEFT")
+    item_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), NAVY), ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"), ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, ROW_SHADE]),
+        ("GRID", (0, 0), (-1, -1), 0.4, LINE_GREY),
+        ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 4), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    story.extend([Paragraph("LINE ITEMS", heading), item_table, Spacer(1, 8)])
+
+    totals = [("Subtotal", f"KES {quote.subtotal:,.2f}")]
+    if quote.tax_rate > 0:
+        totals.extend([("Taxable", f"KES {quote.taxable_subtotal:,.2f}"), (f"Tax rate ({quote.tax_rate:g}%)", f"{quote.tax_rate:g}%"), ("Tax due", f"KES {quote.tax_amount:,.2f}")])
+    totals.extend([("Other", "KES 0.00"), ("AMOUNT DUE", f"KES {quote.total:,.2f}")])
+    totals_table = Table([[para(label, body), para(value, table_right)] for label, value in totals], colWidths=[usable_width - 170, 170], hAlign="RIGHT")
+    totals_table.setStyle(TableStyle([
+        ("ALIGN", (1, 0), (1, -1), "RIGHT"), ("LINEABOVE", (0, 0), (-1, 0), 0.6, LINE_GREY),
+        ("LINEBELOW", (0, -1), (-1, -1), 0.8, NAVY), ("BACKGROUND", (0, -1), (-1, -1), TOTAL_SHADE),
+        ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 6), ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+        ("TOPPADDING", (0, 0), (-1, -1), 4), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    story.extend([
+        totals_table, Spacer(1, 10),
+        Paragraph("If you have any questions about this invoice, please contact VoltPro Electrodata Solutions at 0715 117855 / 0724 076 047 or info@voltproelectrodata.co.ke.", small),
+        Spacer(1, 5), Paragraph("Thank You For Your Business!", ParagraphStyle("InvoiceThanks", parent=body, fontName="Helvetica-BoldOblique", fontSize=10, leading=13)),
     ])
-    c.setFont("Helvetica", 9)
-    for label, value, is_total in totals:
-        if is_total:
-            c.setFillColor(TOTAL_SHADE)
-            c.rect(totals_box_x, y - 13, x_right - totals_box_x, 15, fill=1, stroke=0)
-            c.setFillColor(colors.black)
-            c.setFont("Helvetica-Bold", 10)
-            c.drawString(totals_box_x + 4, y - 9, label)
-            c.drawRightString(x_right - 2, y - 9, value)
-        else:
-            c.setFillColor(colors.black)
-            c.setFont("Helvetica", 9)
-            c.drawString(totals_box_x + 4, y - 9, label)
-            c.drawRightString(x_right - 2, y - 9, value)
-        y -= 16
-
-    y -= 10
-
-    # An invoice is a demand for payment, so it stops after the totals and
-    # leaves the rest of the page to the footer.
-
-    # ---------------- Footer ----------------
-    c.setFont("Helvetica", 8.5)
-    c.setFillColor(colors.black)
-    c.drawCentredString(PAGE_W / 2, y, "If you have any questions about this invoice, please contact")
-    y -= 11
-    c.drawCentredString(PAGE_W / 2, y, "VoltPro Electrodata Solutions, 0715 117855 / 0724 076 047, info@voltproelectrodata.co.ke")
-    y -= 16
-    c.setFont("Helvetica-BoldOblique", 10)
-    c.drawCentredString(PAGE_W / 2, y, "Thank You For Your Business!")
-
-    c.showPage()
-    c.save()
+    doc = SimpleDocTemplate(buf, pagesize=letter, leftMargin=MARGIN, rightMargin=MARGIN, topMargin=118, bottomMargin=48, title=f"Invoice {document_number}", author="VoltPro Electrodata Solutions", allowSplitting=1)
+    doc.build(story, onFirstPage=draw_page, onLaterPages=draw_page)
     buf.seek(0)
     return buf
-
 
 def build_sales_report(queryset):
     """Generate a sales report PDF for selected quotes."""

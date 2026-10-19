@@ -3164,3 +3164,75 @@ ol.qdoc-band-list li::marker{ color: var(--primary); font-weight: 700; }
   .qdoc-parties, .qdoc-table-wrap, .qdoc-close, .qdoc-band{ break-inside: avoid; page-break-inside: avoid; }
   .qdoc-table tr{ break-inside: avoid; page-break-inside: avoid; }
 }
+
+
+/* =========================================================
+   PASS 18 - the locator map becomes an instrument, not a picture.
+   All 47 counties are drawn so the served ones sit inside a country instead of
+   floating as blobs, and the 19 counties we work in carry a clickable dot.
+   A dot opens the simulated site feed beside the map - grid, solar, load,
+   inverter, battery - which is demo output built in the browser, so the panel
+   says so in its own header and footnote.
+   ========================================================= */
+.coverage-grid{ grid-template-columns: 1fr 1.62fr; gap: 34px; align-items: start; }
+.coverage-stage{ display: grid; grid-template-columns: minmax(0, 1fr) 232px; gap: 14px; align-items: start; }
+@media (max-width: 1180px){
+  .coverage-stage{ grid-template-columns: minmax(0, 1fr); }
+  .site-feed{ max-width: 640px; }
+}
+@media (max-width: 900px){ .coverage-grid{ grid-template-columns: 1fr; } }
+
+.ken-map-svg--locator .ken-map-served{ stroke-width: .55; }
+.ken-map-served--on{ fill: var(--accent); stroke: var(--accent-ink); }
+.ken-map-dot{ cursor: pointer; }
+.ken-map-dot-hit{ fill: transparent; pointer-events: all; }
+.ken-map-dot circle:not(.ken-map-dot-halo):not(.ken-map-dot-hit){
+  fill: var(--primary); stroke: #FFFFFF; stroke-width: .7; transition: fill .18s ease;
+}
+.ken-map-dot-halo{ fill: none; stroke: var(--accent-ink); stroke-width: .7; opacity: 0; transition: opacity .18s ease; }
+.ken-map-dot:hover .ken-map-dot-halo, .ken-map-dot--on .ken-map-dot-halo{ opacity: .8; }
+.ken-map-dot:hover circle:not(.ken-map-dot-halo):not(.ken-map-dot-hit){ fill: var(--accent-ink); }
+.ken-map-dot--on circle:not(.ken-map-dot-halo):not(.ken-map-dot-hit){ fill: var(--accent-ink); stroke-width: 1; }
+.ken-map-dot:focus{ outline: none; }
+.ken-map-dot:focus-visible circle:not(.ken-map-dot-halo):not(.ken-map-dot-hit){ stroke: var(--accent); stroke-width: 1.3; }
+
+.site-feed{
+  border: 1px solid var(--line); border-radius: var(--radius-lg); background: #FFFFFF;
+  box-shadow: var(--elev-1); padding: 15px 16px 14px;
+}
+.site-feed-tag{
+  margin: 0 0 6px; font-family: var(--font-mono); font-size: 9.5px; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--accent-ink);
+}
+.site-feed-site{ margin: 0; font-family: var(--font-display); font-size: 19px; line-height: 1.15; color: var(--primary); }
+.site-feed-clock{ margin: 3px 0 13px; font-family: var(--font-mono); font-size: 10.5px; color: var(--text-muted); }
+.site-feed-rows{ margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.site-feed-rows li{ display: grid; grid-template-columns: 62px 1fr auto; gap: 5px 8px; align-items: baseline; }
+.feed-name{ font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+.feed-value{ font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; color: var(--text); text-align: right; }
+.feed-value--ok{ color: var(--primary); }
+.feed-value--dim{ color: var(--text-muted); }
+.feed-track{ grid-column: 1 / -1; display: block; height: 3px; border-radius: 2px; background: var(--bg-alt); overflow: hidden; }
+.feed-bar{ display: block; height: 100%; width: 0; border-radius: 2px; background: var(--primary); transition: width .6s ease; }
+.feed-bar--solar{ background: var(--accent); }
+.feed-bar--load{ background: var(--text-muted); }
+.feed-bar--battery{ background: var(--accent-ink); }
+.feed-led{ width: 7px; height: 7px; border-radius: 50%; align-self: center; background: var(--bg-alt); box-shadow: inset 0 0 0 1px var(--line); }
+.feed-led.is-on{ background: var(--accent); box-shadow: 0 0 0 3px rgba(255, 204, 0, .28); }
+.site-feed-note{
+  margin: 15px 0 0; padding-top: 11px; border-top: 1px solid var(--line);
+  font-size: 11px; line-height: 1.55; color: var(--text-muted);
+}
+.site-feed:not(.is-live) .site-feed-rows{ opacity: .38; }
+
+.area-grid{ grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px){ .area-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px){ .area-grid{ grid-template-columns: 1fr; } }
+.area-more{ margin: 14px 0 0; font-family: var(--font-mono); font-size: 11.5px; line-height: 1.75; color: var(--text-muted); }
+.area-more strong{
+  color: var(--primary); font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; font-size: 10.5px; margin-right: 6px;
+}
+@media (prefers-reduced-motion: reduce){
+  .feed-bar, .ken-map-dot circle:not(.ken-map-dot-halo):not(.ken-map-dot-hit), .ken-map-dot-halo{ transition: none; }
+}

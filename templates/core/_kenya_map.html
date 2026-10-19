@@ -1,29 +1,194 @@
 {% comment %}
 Usage: {% include "core/_kenya_map.html" %}  (from core/_coverage.html)
 
-County outlines from the geoBoundaries gbOpen KEN ADM1 set, projected to SVG on
-an equirectangular grid with a cos(lat) correction. The locator lights the
-counties we work in; the second panel is a window onto the metro cluster with
-its neighbours drawn for context, because Kajiado dwarfs the other three and a
-fit-to-bounds frame reduces Nairobi to a speck. This file is the source of
-truth — the generator was a one-off, so edit the paths by hand if the coverage
-claim ever changes.
+County shapes come from the geoBoundaries gbOpen KEN ADM1 set, projected to SVG on
+an equirectangular grid with a cos(lat) correction and simplified to 0.75px. All 47
+counties are drawn so the served ones read as part of a country rather than loose
+shapes; the 19 we work in carry ken-map-served plus a clickable ken-map-dot that
+drives the demo site feed in _coverage.html. The second panel is a window onto the
+metro cluster with its neighbours drawn for context, because Kajiado dwarfs the other
+three and a fit-to-bounds frame reduces Nairobi to a speck. This file is the source of
+truth; tools/build_kenya_map.py regenerates this panel from a fresh ADM1
+download, so run that rather than editing path data by hand if the county list changes.
 {% endcomment %}
 <div class="ken-map">
   <div class="ken-map-panel ken-map-panel--locator">
-    <svg class="ken-map-svg ken-map-svg--locator" viewBox="0 0 168 200" role="img"
-         aria-label="Map of Kenya with Nairobi, Kiambu, Machakos and Kajiado counties highlighted">
-      <title>Kenya — the counties we work in</title>
-      <path class="ken-map-country" d="M49.5,24.1L45.1,18.0L46.0,8.1L35.4,6.0L11.3,28.4L14.0,33.3L13.1,35.1L15.5,34.7L14.7,36.9L20.1,38.7L18.7,42.0L19.9,47.7L28.9,61.2L30.2,62.2L30.3,59.1L31.3,61.1L33.3,57.8L36.8,71.0L39.5,74.0L44.7,75.9L50.4,85.1L55.9,89.7L57.1,88.6L55.8,82.4L57.2,80.8L54.1,78.3L57.2,76.8L59.0,67.7L62.0,64.1L58.6,62.1L55.6,54.1L50.9,51.5L49.5,24.1ZM59.7,62.1L62.6,60.1L65.6,69.3L72.1,71.9L77.9,81.4L82.9,79.7L84.7,83.3L92.0,77.5L92.8,74.1L103.5,67.8L102.2,59.6L105.0,57.1L105.4,53.3L110.7,49.8L110.1,42.3L95.6,39.1L88.1,40.0L64.2,24.2L49.5,24.1L49.5,46.6L51.4,47.1L50.9,51.5L55.6,54.1L59.7,62.1ZM141.2,66.3L141.2,54.3L158.2,33.0L144.5,33.6L136.9,27.3L120.3,35.0L118.6,38.7L118.8,44.9L131.9,53.5L135.4,62.7L141.2,66.3ZM103.5,67.8L108.2,75.3L112.5,78.4L109.3,79.5L117.8,97.0L130.3,103.3L134.8,102.5L141.2,98.1L141.2,66.3L135.4,62.7L131.9,53.5L118.8,44.9L118.6,38.7L114.5,42.4L109.9,42.6L110.7,49.8L105.4,53.3L105.0,57.1L102.2,59.6L103.5,67.8ZM29.0,61.2L27.8,62.3L30.5,71.1L29.8,75.9L26.2,81.5L26.7,83.3L36.0,86.0L42.9,82.3L44.7,75.9L39.5,74.0L36.8,71.0L33.3,57.8L31.3,61.1L30.3,59.1L30.2,62.2L29.0,61.2ZM55.9,89.7L57.5,91.7L63.3,90.6L64.9,93.2L71.9,92.6L74.4,96.1L87.2,92.3L84.8,81.0L82.9,79.7L77.9,81.4L72.1,71.9L65.6,69.3L62.5,60.1L59.7,62.1L62.0,64.5L59.0,67.7L57.2,76.8L54.1,78.3L57.2,80.8L55.8,82.4L57.1,88.6L55.9,89.7ZM84.7,83.3L87.2,92.3L77.0,96.3L69.0,92.1L65.9,92.8L64.6,96.3L74.0,97.3L74.3,101.7L77.1,101.9L78.0,97.8L86.8,94.4L89.3,102.5L93.3,107.9L99.9,108.0L98.0,97.3L106.9,93.9L112.8,88.3L109.3,79.5L112.5,78.4L108.2,75.3L103.5,67.8L92.8,74.1L92.0,77.5L84.7,83.3ZM44.7,75.9L41.1,95.4L43.4,102.8L40.9,103.6L39.7,106.5L44.0,111.0L47.8,107.4L47.4,105.0L50.6,106.6L53.7,95.0L57.6,91.0L50.4,85.1L44.7,75.9ZM32.9,84.5L39.1,90.5L39.4,93.7L37.6,93.7L39.5,103.3L42.9,103.6L43.4,100.2L41.1,95.4L42.9,82.3L36.0,86.0L32.9,84.5ZM26.7,83.3L22.3,85.4L26.5,91.8L36.5,89.7L36.7,87.9L32.9,84.5L26.7,83.3ZM22.3,85.4L18.2,92.3L19.5,93.0L18.7,98.0L22.4,99.0L31.3,92.3L30.4,90.3L26.5,91.8L22.3,85.4ZM112.8,88.3L106.9,93.9L98.0,97.3L99.4,106.6L101.2,108.5L105.5,107.6L110.1,109.2L115.1,113.1L119.1,119.2L123.4,134.4L125.7,136.6L126.7,144.5L139.5,138.6L151.8,137.5L141.2,122.1L141.2,98.1L134.8,102.5L128.9,103.1L117.8,97.0L112.8,88.3ZM40.9,103.6L39.0,102.1L37.6,93.7L39.4,93.7L39.1,90.5L32.4,89.7L32.9,94.5L27.3,96.6L33.1,96.6L38.5,106.6L40.9,103.6ZM30.4,90.3L31.2,92.6L28.7,93.0L23.8,98.2L18.2,98.3L18.6,103.4L19.7,102.7L20.3,104.9L29.6,102.3L27.3,96.6L32.9,94.5L32.7,91.4L30.4,90.3ZM57.6,91.0L53.7,95.0L52.0,100.9L53.3,107.2L57.2,104.2L60.6,107.1L58.8,108.5L64.0,108.7L64.4,111.5L66.9,112.3L66.7,108.1L68.6,106.6L69.4,107.8L68.8,106.3L74.4,101.4L74.0,97.3L64.6,96.3L65.9,93.0L63.3,90.6L57.6,91.0ZM18.2,92.3L14.0,95.9L13.3,100.3L9.9,104.7L10.6,107.2L12.3,106.8L14.4,101.2L19.3,99.8L17.8,98.9L19.5,93.0L18.2,92.3ZM74.3,101.7L68.8,106.3L72.8,109.6L80.5,110.5L85.0,105.5L93.5,108.0L89.3,102.5L86.8,94.4L78.0,97.8L77.1,101.9L74.3,101.7ZM27.3,96.6L29.6,102.3L25.4,107.4L26.9,106.3L33.9,107.3L34.2,108.7L37.9,108.2L33.1,96.6L27.3,96.6ZM18.4,101.1L13.6,102.3L12.3,106.8L10.6,107.2L10.5,113.0L15.9,113.0L17.2,114.6L20.4,112.3L19.1,108.2L21.9,104.8L18.6,103.4L18.4,101.1ZM41.9,107.9L41.7,112.1L37.7,112.4L41.2,119.2L45.5,115.4L48.2,118.5L46.3,118.6L47.3,119.8L50.4,118.6L52.0,123.7L58.5,128.2L59.6,125.2L58.2,118.3L56.0,117.4L55.2,113.8L52.7,113.4L53.0,102.9L51.3,103.3L50.3,107.0L47.4,105.0L48.0,107.1L44.7,108.8L44.2,110.9L41.9,107.9ZM21.9,105.0L22.0,107.5L25.3,107.2L28.6,103.1L21.9,105.0ZM53.3,107.2L52.7,113.4L55.2,113.8L56.0,117.4L58.0,118.1L58.8,123.8L60.6,120.9L62.2,121.2L59.7,113.7L61.3,110.0L58.7,108.0L60.6,107.1L57.2,104.2L53.3,107.2ZM72.8,109.6L81.4,115.1L83.6,113.1L84.8,114.6L85.7,111.7L87.8,111.9L91.4,107.7L85.0,105.5L80.5,110.5L72.8,109.6ZM39.7,106.5L34.2,108.7L36.3,111.2L33.5,109.7L31.2,110.8L30.6,116.0L37.6,114.3L38.7,111.9L41.7,112.1L41.9,107.7L39.7,106.5ZM25.3,107.2L19.1,108.2L20.4,112.3L24.6,111.5L29.3,114.5L32.4,109.7L36.4,111.1L33.9,107.3L25.3,107.2ZM60.8,109.6L59.7,113.7L61.5,118.3L70.4,118.5L72.8,109.6L68.6,106.6L66.7,108.1L66.9,112.3L64.4,111.5L64.0,108.7L60.8,109.6ZM93.7,108.1L103.4,125.9L104.5,142.3L100.4,150.2L97.3,151.5L105.7,163.4L108.3,163.8L120.7,149.6L126.4,157.5L131.4,153.1L134.0,154.2L136.3,152.3L127.4,151.3L125.7,136.6L123.4,134.4L118.6,118.1L114.3,112.1L105.5,107.6L93.7,108.1ZM93.5,108.0L91.4,107.7L87.8,111.9L85.7,111.7L83.5,116.7L82.8,126.2L78.2,128.0L82.0,132.6L80.0,134.6L82.7,138.1L85.0,146.9L90.8,151.7L94.5,161.2L100.6,163.7L105.6,163.2L97.3,151.5L100.4,150.2L104.5,142.3L103.4,125.9L93.5,108.0ZM70.3,118.6L72.1,121.3L76.3,120.3L72.8,109.6L70.3,118.6ZM72.8,109.6L76.3,120.3L72.1,121.3L76.8,123.7L80.3,121.2L83.5,121.6L83.7,113.2L80.5,115.1L72.8,109.6ZM10.5,113.0L10.1,121.6L15.2,120.7L17.4,122.8L20.1,122.7L21.9,119.1L30.4,114.3L26.8,114.0L24.6,111.5L17.2,114.6L15.9,113.0L10.5,113.0ZM38.4,113.5L31.0,116.0L31.7,121.6L30.3,123.3L34.5,125.9L39.9,121.7L37.4,118.7L40.9,117.7L38.4,113.5ZM30.4,114.4L26.1,119.3L30.3,123.3L31.7,121.6L30.4,114.4ZM40.9,117.7L37.4,118.7L39.9,121.7L34.6,125.9L30.3,123.3L22.5,126.2L25.0,132.5L48.6,145.8L49.5,134.4L55.0,128.6L54.8,126.2L52.0,123.7L50.4,118.6L47.6,120.0L46.3,118.8L48.2,118.5L45.5,115.4L42.0,119.8L40.9,117.7ZM23.3,119.1L23.2,124.7L30.3,123.3L26.1,119.3L27.9,118.2L27.5,116.1L23.3,119.1ZM61.9,121.7L67.8,125.9L73.9,127.1L74.9,126.0L71.3,122.6L71.5,119.1L68.0,117.8L62.0,117.4L61.9,121.7ZM10.1,121.6L10.3,125.3L25.0,132.5L22.4,125.6L23.3,119.1L20.1,122.7L15.2,120.7L10.1,121.6ZM58.5,128.2L57.6,130.4L60.9,131.2L65.2,128.3L69.1,130.1L71.0,126.8L73.9,127.1L67.8,125.9L61.0,120.8L58.5,128.2ZM82.8,121.8L80.3,121.2L76.8,123.7L72.0,121.5L71.3,122.6L74.9,126.0L73.5,127.5L71.0,126.8L64.8,134.2L66.7,134.2L70.0,139.8L74.8,138.1L74.2,135.0L78.2,135.5L79.4,137.3L80.8,136.4L80.0,134.6L82.3,133.6L78.2,126.9L81.9,127.7L82.8,121.8ZM54.8,126.2L55.0,128.6L49.5,134.4L48.6,145.8L76.8,161.6L79.9,165.7L82.9,165.8L84.6,158.3L78.2,149.6L80.6,147.3L70.6,142.6L66.7,134.2L57.6,130.4L58.5,128.2L54.8,126.2ZM60.9,131.2L66.4,133.5L65.4,132.1L69.1,130.3L65.2,128.3L60.9,131.2ZM81.1,135.8L79.4,137.3L78.2,135.5L74.2,135.0L74.8,138.1L70.1,139.8L70.0,141.8L80.6,147.3L78.2,149.6L84.7,158.4L88.7,156.5L95.2,162.1L90.8,151.7L85.0,146.9L81.1,135.8ZM126.7,144.5L127.4,151.3L137.0,152.2L138.1,150.7L136.9,151.2L135.7,147.7L140.0,148.0L139.5,144.1L137.1,142.6L140.4,145.3L142.1,141.4L141.6,144.7L145.5,141.8L146.5,143.5L151.8,137.5L139.5,138.6L126.7,144.5ZM142.9,144.8L142.2,146.3L144.4,145.4L142.9,144.8ZM139.3,148.5L137.9,150.0L139.3,148.5ZM140.8,148.0L139.5,148.0L139.8,149.7L140.8,148.0ZM142.3,145.5L140.8,146.0L142.3,145.5ZM149.5,140.8L148.5,141.7L149.5,140.8ZM108.3,163.8L106.0,172.9L110.2,172.9L111.2,177.4L114.3,180.8L117.5,179.0L118.4,180.0L120.4,175.3L118.6,173.3L120.4,174.1L121.6,168.9L125.0,167.7L127.3,162.1L125.5,163.2L126.1,157.1L120.7,149.6L108.3,163.8ZM105.6,163.2L94.2,162.3L88.7,156.5L84.6,158.3L83.0,165.7L79.9,165.7L80.3,168.1L78.0,170.9L94.0,183.5L103.2,180.2L104.9,176.5L102.9,175.3L103.6,174.1L105.4,175.2L108.3,163.8L105.6,163.2ZM106.0,172.9L105.4,175.2L103.6,174.1L102.9,175.3L104.9,176.5L103.2,180.2L94.0,183.5L108.1,193.5L110.0,191.2L111.7,192.9L111.2,191.0L114.2,189.1L116.1,183.2L111.2,177.4L110.2,172.9L106.0,172.9ZM116.3,180.1L117.2,182.1L118.4,180.2L116.3,180.1ZM114.8,180.8L116.3,181.6L114.8,180.8ZM115.8,183.7L116.1,181.9L115.8,183.7Z" />
+    <svg class="ken-map-svg ken-map-svg--locator" viewBox="0 0 168 200" role="group"
+         aria-label="Map of the 19 Kenyan counties we work in. Each shaded county is a button that loads a simulated site feed."
+      <title>Kenya - the counties we work in</title>
+      <g class="ken-map-country">
+        <path d="M93.7,108.1L103.4,125.9L104.2,137.9L103.5,138.3L104.5,142.3L100.4,150.2L97.3,151.5L105.7,163.4L108.3,163.8L120.7,149.6L126.4,157.5L128.2,155.2L132.4,153.7L131.4,153.1L134.0,154.2L136.3,152.3L127.4,151.2L125.7,136.6L124.4,134.1L123.4,134.4L122.9,129.8L118.6,118.1L116.5,116.9L114.3,112.2L110.1,109.2L106.7,109.2L105.5,107.6L101.2,108.5L96.0,107.0L93.7,108.1Z" />
+        <path d="M55.9,89.7L57.5,91.7L63.3,90.6L64.9,93.2L71.9,92.6L74.4,96.1L77.9,96.1L85.9,91.8L87.2,92.3L86.3,86.6L84.7,84.6L84.8,81.0L82.9,79.7L77.9,81.4L72.1,71.9L70.5,70.4L65.6,69.3L62.6,60.1L59.7,62.1L62.0,64.5L59.0,67.7L57.2,76.8L55.9,78.5L55.4,77.2L54.1,78.3L53.9,79.6L57.2,80.8L55.8,82.4L57.0,83.3L55.9,83.1L55.8,84.7L56.8,85.0L57.1,88.6L55.9,89.7Z" />
+        <path d="M93.5,108.0L91.4,107.7L87.8,111.9L85.6,111.7L83.5,116.7L84.1,120.3L82.4,123.1L82.8,126.2L81.9,127.7L78.2,126.9L78.2,128.0L82.0,132.6L82.3,133.6L80.0,134.6L82.7,138.1L85.0,146.9L86.6,147.0L87.8,149.7L90.8,151.7L94.5,161.2L100.6,163.7L105.6,163.2L97.3,151.5L100.4,150.2L104.5,142.3L103.5,138.3L104.2,137.9L103.4,125.9L93.5,108.0Z" />
+        <path d="M84.7,83.3L87.2,92.3L85.9,91.8L77.0,96.3L73.9,95.9L71.9,92.6L69.0,92.1L65.9,92.8L64.6,96.3L74.0,97.3L74.3,101.7L77.1,101.9L78.3,100.1L78.0,97.8L86.8,94.4L89.3,102.5L91.2,103.8L93.3,107.9L96.0,107.0L99.9,108.0L98.0,97.3L106.9,93.9L110.0,89.6L112.8,88.3L109.3,79.5L112.5,78.4L108.2,75.3L103.5,67.8L92.8,74.1L92.0,77.5L84.7,83.3Z" />
+        <path d="M57.6,91.0L53.7,95.0L52.0,100.9L53.8,104.4L53.3,107.2L55.1,105.4L56.4,105.9L57.2,104.2L60.6,107.1L58.8,108.5L60.7,109.6L64.0,108.7L64.4,111.5L66.9,112.3L66.7,108.1L68.6,106.6L69.4,107.8L68.8,106.3L71.8,104.9L74.4,101.4L74.0,97.3L64.6,96.3L65.9,93.0L64.6,93.1L63.3,90.6L61.7,91.6L57.6,91.0Z" />
+        <path d="M103.5,67.8L108.2,75.3L112.5,78.4L109.3,79.5L114.7,92.7L117.8,97.0L130.3,103.3L134.8,102.5L141.2,98.1L141.2,66.3L135.4,62.7L132.1,56.4L131.9,53.5L127.8,51.6L123.6,46.9L118.8,44.9L118.6,38.7L114.5,42.4L109.9,42.6L110.7,49.8L105.4,53.3L105.0,57.1L102.2,59.6L103.5,67.8Z" />
+        <path d="M40.9,117.7L37.4,118.7L39.9,121.7L37.8,124.3L34.6,125.9L30.3,123.3L23.5,124.7L22.5,126.2L25.0,132.5L48.6,145.8L49.5,134.4L55.0,128.6L54.8,126.2L53.5,123.7L52.0,123.7L52.1,121.0L50.4,118.6L47.6,120.0L46.3,118.8L48.2,118.5L45.5,115.4L43.2,117.0L42.0,119.8L40.9,117.7Z" />
+        <path d="M106.0,172.9L105.4,175.2L103.6,174.1L102.9,175.3L104.9,176.5L103.2,180.2L94.0,183.5L108.1,193.5L108.8,191.5L110.0,191.2L110.0,192.7L111.7,192.9L111.2,191.0L112.8,190.8L113.7,188.4L114.2,189.1L116.1,183.2L114.9,183.2L113.9,179.4L111.2,177.4L110.2,172.9L106.0,172.9Z" />
+        <path d="M108.3,163.8L106.0,172.9L110.2,172.9L111.2,177.4L114.3,180.8L117.5,179.0L118.4,180.0L120.4,175.3L118.6,173.3L120.4,174.1L122.2,169.9L121.6,168.9L122.7,168.2L122.3,169.6L125.0,167.7L125.1,165.1L127.2,162.2L125.4,163.0L126.1,157.1L120.7,149.6L108.3,163.8Z" />
+        <path d="M44.7,75.9L42.8,81.6L43.2,85.4L41.8,88.3L41.1,95.4L42.3,99.6L43.4,100.2L43.4,102.8L40.9,103.6L39.7,106.5L42.8,108.2L44.0,111.0L44.7,108.8L47.8,107.4L47.4,105.0L50.6,106.6L53.7,95.0L57.6,91.0L51.8,85.0L50.4,85.1L44.7,75.9Z" />
+        <path d="M81.1,135.8L79.4,137.3L78.2,135.5L74.2,135.0L73.3,135.7L74.8,138.1L70.1,139.8L70.0,141.8L80.6,147.3L78.2,149.6L84.7,158.4L88.7,156.5L94.2,162.2L95.2,162.1L90.8,151.7L87.8,149.7L86.6,147.0L85.0,146.9L84.1,142.1L81.1,135.8Z" />
+        <path d="M29.0,61.2L27.8,62.3L30.5,71.1L29.8,75.9L26.2,81.5L26.7,83.3L28.4,82.9L31.6,85.1L32.9,84.5L36.0,86.0L40.1,82.9L42.9,82.3L44.7,75.9L39.5,74.0L36.8,71.0L33.3,57.8L32.5,57.6L31.3,61.1L30.3,59.1L30.2,62.2L29.0,61.2Z" />
+        <path d="M18.4,101.1L15.3,101.9L14.4,101.2L13.6,102.3L12.3,106.8L10.6,107.2L10.5,113.0L15.9,113.0L17.2,114.6L20.4,112.3L19.1,108.2L21.5,106.9L21.9,104.8L20.3,104.9L19.7,102.7L18.6,103.4L18.4,101.1Z" />
+        <path d="M39.7,106.5L38.1,106.3L36.9,108.8L34.2,108.7L36.3,111.2L33.5,109.7L31.2,110.8L30.2,113.0L30.6,116.0L37.6,114.3L38.4,113.5L37.7,112.4L38.7,111.9L41.7,112.1L41.9,107.7L39.7,106.5Z" />
+        <path d="M141.2,66.3L141.2,54.3L147.4,48.2L158.2,33.0L144.5,33.6L136.9,27.3L120.3,35.0L118.6,38.7L118.8,44.9L123.6,46.9L127.8,51.6L131.9,53.5L132.1,56.4L135.4,62.7L141.2,66.3Z" />
+        <path d="M30.4,90.3L31.2,92.6L28.7,93.0L23.8,98.2L18.2,98.3L19.3,99.8L18.6,103.4L19.7,102.7L20.3,104.9L29.6,102.3L29.2,99.1L27.3,96.6L28.0,95.5L32.9,94.5L32.7,91.4L30.4,90.3Z" />
+        <path d="M32.9,84.5L36.7,87.9L36.4,89.2L39.1,90.5L39.4,93.7L37.6,93.7L38.9,95.8L39.5,103.3L42.9,103.6L43.4,100.2L42.3,99.6L41.1,95.4L42.9,82.3L40.1,82.9L36.0,86.0L32.9,84.5Z" />
+        <path d="M74.3,101.7L71.8,104.9L68.8,106.3L72.8,109.6L80.5,110.5L83.0,109.0L82.9,107.1L85.0,105.5L93.5,108.0L89.3,102.5L86.8,94.4L78.0,97.8L78.3,100.1L77.1,101.9L74.3,101.7Z" />
+        <path d="M18.2,92.3L16.6,94.8L14.0,95.9L13.3,100.3L9.9,104.7L10.6,107.2L12.3,106.8L14.4,101.2L18.2,101.2L19.3,99.8L17.8,98.9L19.1,97.4L18.3,95.6L19.5,93.1L18.2,92.3Z" />
+        <path d="M10.5,113.0L10.1,121.6L15.2,120.7L17.4,122.8L18.7,121.9L20.1,122.7L21.9,119.1L30.4,114.3L26.8,113.9L24.6,111.5L21.4,111.8L17.2,114.6L15.9,113.0L10.5,113.0Z" />
+        <path d="M72.8,109.6L77.4,113.4L81.4,115.1L83.6,113.1L84.8,114.6L85.6,111.7L87.8,111.9L91.4,107.7L85.0,105.5L82.9,107.1L83.0,109.0L80.5,110.5L72.8,109.6Z" />
+        <path d="M22.3,85.4L18.2,92.3L19.5,93.0L18.3,95.5L18.7,98.0L22.4,99.0L28.7,93.0L31.3,92.3L30.4,90.3L26.5,91.8L26.3,89.9L22.3,85.4Z" />
+        <path d="M26.7,83.3L22.3,85.4L26.3,89.9L26.5,91.8L30.7,90.0L36.5,89.7L36.7,87.9L32.9,84.5L31.6,85.1L30.3,83.5L26.7,83.3Z" />
+        <path d="M38.4,113.5L31.0,116.0L31.7,121.6L30.3,123.3L34.5,125.9L37.8,124.3L39.9,121.7L37.4,118.7L40.9,117.7L38.4,113.5Z" />
+        <path d="M30.4,114.4L27.5,116.1L27.9,118.2L26.1,119.3L30.3,123.3L31.7,121.6L30.4,114.4Z" />
+        <path d="M23.3,119.1L23.2,124.7L30.3,123.3L26.1,119.3L27.9,118.2L27.5,116.1L23.3,119.1Z" />
+        <path d="M21.9,105.0L21.9,107.5L22.7,106.5L25.3,107.2L28.6,103.1L21.9,105.0Z" />
+        <path d="M70.3,118.5L72.1,121.3L76.3,120.3L72.8,109.6L69.9,116.7L70.3,118.5Z" />
+        <path class="ken-map-served" data-county="Turkana" d="M49.5,24.1L45.1,18.0L46.0,8.1L40.4,6.1L35.4,6.0L33.6,8.9L11.3,28.4L13.2,31.3L12.6,32.4L14.0,33.3L13.1,35.1L15.5,34.7L14.7,36.9L20.1,38.7L19.8,41.5L18.7,42.0L19.9,47.7L22.2,49.3L22.6,52.5L25.7,54.4L25.9,56.7L28.9,61.2L30.2,62.2L30.3,59.1L31.3,61.1L32.5,57.6L33.3,57.8L36.8,71.0L39.5,74.0L44.7,75.9L50.4,85.1L51.8,85.0L55.9,89.7L57.1,88.6L56.8,85.0L55.8,84.7L55.9,83.1L57.0,83.3L55.8,82.4L57.2,80.8L53.9,79.6L54.1,78.3L55.4,77.2L55.9,78.5L57.2,76.8L59.0,67.7L61.6,65.9L62.0,64.1L58.6,62.1L55.3,53.7L53.3,51.7L50.9,51.5L51.4,47.1L49.5,46.6L49.5,24.1Z" />
+        <path class="ken-map-served" data-county="Lamu" d="M126.7,144.5L127.4,151.2L137.0,152.2L138.1,150.7L136.9,151.2L135.7,147.7L137.3,148.7L139.2,147.3L140.0,148.0L139.7,145.5L138.6,145.2L139.5,144.1L138.2,144.2L139.0,143.9L137.1,142.6L139.0,142.9L140.3,145.3L142.1,141.4L141.0,142.9L141.6,144.7L145.5,141.8L146.5,143.5L151.8,137.5L139.5,138.6L126.7,144.5ZM142.9,144.8L142.2,146.3L144.4,145.4L142.9,144.8Z" />
+        <path class="ken-map-served" data-county="Nakuru" d="M41.9,107.9L41.7,112.1L37.7,112.4L41.2,119.2L42.0,119.8L43.2,117.0L45.5,115.4L48.2,118.5L46.3,118.6L47.3,119.8L50.4,118.6L52.1,121.0L52.0,123.7L53.5,123.7L54.8,126.2L58.5,128.2L59.6,125.2L58.2,118.3L56.0,117.4L55.2,113.8L52.7,113.4L52.3,109.4L53.9,104.7L53.0,102.9L51.3,103.3L50.3,107.0L47.4,105.0L48.0,107.1L44.7,108.8L44.2,110.9L41.9,107.9Z" />
+        <path class="ken-map-served" data-county="Machakos" d="M82.8,121.8L80.3,121.2L76.8,123.7L72.0,121.4L71.3,122.6L74.9,126.0L73.5,127.5L72.3,126.5L70.7,127.1L70.0,129.5L68.6,130.9L66.6,130.7L65.4,132.1L66.4,133.5L65.1,133.0L64.8,134.2L66.7,134.2L66.4,135.4L70.0,139.8L74.8,138.1L73.3,135.7L74.2,135.0L78.2,135.5L79.4,137.3L80.8,136.4L80.0,134.6L82.3,133.6L78.2,126.9L81.9,127.7L83.2,124.8L82.8,121.8Z" />
+        <path class="ken-map-served" data-county="Marsabit" d="M59.7,62.1L62.6,60.1L65.6,69.3L70.5,70.4L72.1,71.9L77.9,81.4L82.9,79.7L84.8,81.0L84.7,83.3L92.0,77.5L92.8,74.1L103.5,67.8L102.2,59.6L105.0,57.1L105.4,53.3L110.7,49.8L110.1,42.3L105.9,41.1L102.5,41.7L95.6,39.1L94.0,40.0L88.1,40.0L68.0,25.6L64.2,24.2L49.5,24.1L49.5,46.6L51.4,47.1L50.9,51.5L53.3,51.7L55.6,54.1L58.6,62.1L59.7,62.1Z" />
+        <path class="ken-map-served" data-county="Garissa" d="M112.8,88.3L110.0,89.6L106.9,93.9L98.0,97.3L99.7,103.3L99.4,106.6L101.1,108.5L105.5,107.6L106.8,109.2L110.1,109.2L115.1,113.1L116.5,116.9L119.1,119.2L122.9,129.8L123.4,134.4L124.4,134.1L125.7,136.6L126.7,144.5L139.5,138.6L151.8,137.5L141.2,122.1L141.2,98.1L134.8,102.5L128.9,103.1L117.8,97.0L112.8,88.3Z" />
+        <path class="ken-map-served" data-county="Taita Taveta" d="M105.6,163.2L100.7,163.7L94.2,162.3L88.7,156.5L84.6,158.3L83.0,165.7L79.9,165.7L80.3,168.1L78.0,170.9L78.4,172.0L80.9,172.5L81.7,174.9L94.0,183.5L103.2,180.2L104.9,176.5L102.9,175.3L103.6,174.1L105.4,175.2L108.3,163.8L105.6,163.2Z" />
+        <path class="ken-map-served" data-county="Kajiado" d="M54.8,126.2L55.0,128.6L49.5,134.4L48.6,145.8L76.8,161.6L79.6,163.5L79.9,165.7L82.9,165.8L84.6,158.3L78.2,149.6L80.6,147.3L70.6,142.6L69.9,139.0L66.4,135.5L66.7,134.2L65.0,134.4L65.1,132.9L57.6,130.4L58.5,128.2L54.8,126.2Z" />
+        <path class="ken-map-served" data-county="Nyandarua" d="M53.3,107.2L52.3,109.4L52.7,113.4L55.2,113.8L56.0,117.4L58.0,118.1L58.8,123.8L60.6,120.9L62.2,121.2L59.7,113.7L61.3,110.0L58.7,108.0L60.6,107.1L57.2,104.2L56.4,105.9L55.1,105.4L53.3,107.2Z" />
+        <path class="ken-map-served" data-county="Uasin Gishu" d="M40.9,103.6L39.0,102.1L38.9,95.8L37.6,93.7L39.4,93.7L39.1,90.5L37.2,89.3L35.7,90.2L34.7,89.3L32.4,89.7L32.9,94.5L28.0,95.5L27.3,96.6L33.1,96.6L32.6,98.0L38.5,106.6L40.7,105.5L40.9,103.6Z" />
+        <path class="ken-map-served" data-county="Kisumu" d="M25.3,107.2L22.7,106.5L19.1,108.2L20.4,112.3L24.6,111.5L26.8,113.9L29.3,114.5L32.4,109.7L36.4,111.1L33.9,107.3L31.9,106.8L31.2,108.0L26.5,107.2L26.9,106.3L25.3,107.2Z" />
+        <path class="ken-map-served" data-county="Kiambu" d="M58.5,128.2L57.6,130.4L60.9,131.2L65.2,128.3L65.8,129.4L68.3,129.1L69.2,130.1L71.0,126.8L73.9,127.1L72.0,125.6L67.8,125.9L61.0,120.8L58.8,123.8L59.6,125.2L58.5,128.2Z" />
+        <path class="ken-map-served" data-county="Nandi" d="M27.3,96.6L29.2,99.1L29.6,102.3L25.4,107.4L26.9,106.3L26.5,107.2L31.2,108.0L31.9,106.8L33.9,107.3L34.2,108.7L37.9,108.2L37.5,104.8L32.6,98.0L33.1,96.6L27.3,96.6Z" />
+        <path class="ken-map-served" data-county="Nyeri" d="M60.8,109.6L59.7,113.7L61.5,118.3L63.0,117.3L70.4,118.5L69.9,116.7L72.8,109.6L68.6,106.6L66.7,108.1L66.9,112.3L64.4,111.5L64.0,108.7L60.8,109.6Z" />
+        <path class="ken-map-served" data-county="Migori" d="M10.1,121.6L10.3,125.3L13.0,125.8L25.0,132.5L22.4,125.6L23.4,124.7L23.3,119.1L21.8,119.2L20.1,122.7L18.7,121.9L17.4,122.8L15.2,120.7L10.1,121.6Z" />
+        <path class="ken-map-served" data-county="Embu" d="M72.8,109.6L76.3,120.3L72.1,121.3L76.8,123.7L80.3,121.2L83.5,121.7L84.5,114.7L83.7,113.2L80.5,115.1L72.8,109.6Z" />
+        <path class="ken-map-served" data-county="Murang'a" d="M61.9,121.7L67.9,125.9L72.0,125.6L73.9,127.1L74.9,126.0L71.3,122.6L71.5,119.1L68.0,117.8L62.0,117.4L61.9,121.7Z" />
+        <path class="ken-map-served" data-county="Mombasa" d="M116.3,180.1L117.2,182.1L118.4,180.2L116.3,180.1ZM115.8,183.7L116.7,182.6L116.1,181.9L115.1,182.6L115.8,183.7Z" />
+        <path class="ken-map-served" data-county="Nairobi" d="M60.9,131.2L66.4,133.5L65.4,132.1L69.1,130.2L65.2,128.3L60.9,131.2Z" />
+      </g>
       <rect class="ken-map-zoombox" x="47.7" y="124.4" width="37.1" height="30.6" rx="2" />
-      <path class="ken-map-served" d="M60.9,131.2L66.4,133.5L65.4,132.1L69.1,130.3L65.2,128.3L60.9,131.2ZM58.5,128.2L57.6,130.4L60.9,131.2L65.2,128.3L69.1,130.1L71.0,126.8L73.9,127.1L67.8,125.9L61.0,120.8L58.5,128.2ZM82.8,121.8L80.3,121.2L76.8,123.7L72.0,121.5L71.3,122.6L74.9,126.0L73.5,127.5L71.0,126.8L64.8,134.2L66.7,134.2L70.0,139.8L74.8,138.1L74.2,135.0L78.2,135.5L79.4,137.3L80.8,136.4L80.0,134.6L82.3,133.6L78.2,126.9L81.9,127.7L82.8,121.8ZM54.8,126.2L55.0,128.6L49.5,134.4L48.6,145.8L76.8,161.6L79.9,165.7L82.9,165.8L84.6,158.3L78.2,149.6L80.6,147.3L70.6,142.6L66.7,134.2L57.6,130.4L58.5,128.2L54.8,126.2Z" />
+      <g class="ken-map-dots">
+        <g class="ken-map-dot" data-county="Turkana" data-label="Turkana" role="button" tabindex="0" aria-label="Turkana - show the simulated site feed">
+          <title>Turkana</title>
+          <circle class="ken-map-dot-hit" cx="38.1" cy="43.5" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="38.1" cy="43.5" r="5" />
+          <circle cx="38.1" cy="43.5" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Lamu" data-label="Lamu" role="button" tabindex="0" aria-label="Lamu - show the simulated site feed">
+          <title>Lamu</title>
+          <circle class="ken-map-dot-hit" cx="136.8" cy="144.5" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="136.8" cy="144.5" r="5" />
+          <circle cx="136.8" cy="144.5" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Nakuru" data-label="Nakuru" role="button" tabindex="0" aria-label="Nakuru - show the simulated site feed">
+          <title>Nakuru</title>
+          <circle class="ken-map-dot-hit" cx="50.0" cy="115.4" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="50.0" cy="115.4" r="5" />
+          <circle cx="50.0" cy="115.4" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Machakos" data-label="Machakos" role="button" tabindex="0" aria-label="Machakos - show the simulated site feed">
+          <title>Machakos</title>
+          <circle class="ken-map-dot-hit" cx="74.8" cy="130.6" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="74.8" cy="130.6" r="5" />
+          <circle cx="74.8" cy="130.6" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Marsabit" data-label="Marsabit (Moyale)" data-town="Moyale" role="button" tabindex="0" aria-label="Marsabit (Moyale) - show the simulated site feed">
+          <title>Marsabit (Moyale)</title>
+          <circle class="ken-map-dot-hit" cx="77.6" cy="51.4" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="77.6" cy="51.4" r="5" />
+          <circle cx="77.6" cy="51.4" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Garissa" data-label="Garissa" role="button" tabindex="0" aria-label="Garissa - show the simulated site feed">
+          <title>Garissa</title>
+          <circle class="ken-map-dot-hit" cx="126.1" cy="115.7" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="126.1" cy="115.7" r="5" />
+          <circle cx="126.1" cy="115.7" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Taita Taveta" data-label="Taita Taveta" role="button" tabindex="0" aria-label="Taita Taveta - show the simulated site feed">
+          <title>Taita Taveta</title>
+          <circle class="ken-map-dot-hit" cx="93.4" cy="170.5" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="93.4" cy="170.5" r="5" />
+          <circle cx="93.4" cy="170.5" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Kajiado" data-label="Kajiado" role="button" tabindex="0" aria-label="Kajiado - show the simulated site feed">
+          <title>Kajiado</title>
+          <circle class="ken-map-dot-hit" cx="65.3" cy="146.1" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="65.3" cy="146.1" r="5" />
+          <circle cx="65.3" cy="146.1" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Nyandarua" data-label="Nyandarua" role="button" tabindex="0" aria-label="Nyandarua - show the simulated site feed">
+          <title>Nyandarua</title>
+          <circle class="ken-map-dot-hit" cx="57.3" cy="112.5" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="57.3" cy="112.5" r="5" />
+          <circle cx="57.3" cy="112.5" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Uasin Gishu" data-label="Uasin Gishu (Eldoret)" data-town="Eldoret" role="button" tabindex="0" aria-label="Uasin Gishu (Eldoret) - show the simulated site feed">
+          <title>Uasin Gishu (Eldoret)</title>
+          <circle class="ken-map-dot-hit" cx="35.9" cy="96.8" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="35.9" cy="96.8" r="5" />
+          <circle cx="35.9" cy="96.8" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Kisumu" data-label="Kisumu" role="button" tabindex="0" aria-label="Kisumu - show the simulated site feed">
+          <title>Kisumu</title>
+          <circle class="ken-map-dot-hit" cx="26.9" cy="109.9" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="26.9" cy="109.9" r="5" />
+          <circle cx="26.9" cy="109.9" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Kiambu" data-label="Kiambu" role="button" tabindex="0" aria-label="Kiambu - show the simulated site feed">
+          <title>Kiambu</title>
+          <circle class="ken-map-dot-hit" cx="63.7" cy="126.6" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="63.7" cy="126.6" r="5" />
+          <circle cx="63.7" cy="126.6" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Nandi" data-label="Nandi" role="button" tabindex="0" aria-label="Nandi - show the simulated site feed">
+          <title>Nandi</title>
+          <circle class="ken-map-dot-hit" cx="32.2" cy="103.3" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="32.2" cy="103.3" r="5" />
+          <circle cx="32.2" cy="103.3" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Nyeri" data-label="Nyeri" role="button" tabindex="0" aria-label="Nyeri - show the simulated site feed">
+          <title>Nyeri</title>
+          <circle class="ken-map-dot-hit" cx="66.2" cy="113.1" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="66.2" cy="113.1" r="5" />
+          <circle cx="66.2" cy="113.1" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Migori" data-label="Migori" role="button" tabindex="0" aria-label="Migori - show the simulated site feed">
+          <title>Migori</title>
+          <circle class="ken-map-dot-hit" cx="18.1" cy="125.0" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="18.1" cy="125.0" r="5" />
+          <circle cx="18.1" cy="125.0" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Embu" data-label="Embu" role="button" tabindex="0" aria-label="Embu - show the simulated site feed">
+          <title>Embu</title>
+          <circle class="ken-map-dot-hit" cx="78.7" cy="117.5" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="78.7" cy="117.5" r="5" />
+          <circle cx="78.7" cy="117.5" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Murang'a" data-label="Murang'a" role="button" tabindex="0" aria-label="Murang'a - show the simulated site feed">
+          <title>Murang'a</title>
+          <circle class="ken-map-dot-hit" cx="67.6" cy="121.7" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="67.6" cy="121.7" r="5" />
+          <circle cx="67.6" cy="121.7" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Mombasa" data-label="Mombasa" role="button" tabindex="0" aria-label="Mombasa - show the simulated site feed">
+          <title>Mombasa</title>
+          <circle class="ken-map-dot-hit" cx="117.3" cy="180.8" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="117.3" cy="180.8" r="5" />
+          <circle cx="117.3" cy="180.8" r="2.4" />
+        </g>
+        <g class="ken-map-dot" data-county="Nairobi" data-label="Nairobi" role="button" tabindex="0" aria-label="Nairobi - show the simulated site feed">
+          <title>Nairobi</title>
+          <circle class="ken-map-dot-hit" cx="65.0" cy="130.7" r="5.4" />
+          <circle class="ken-map-dot-halo" cx="65.0" cy="130.7" r="5" />
+          <circle cx="65.0" cy="130.7" r="2.4" />
+        </g>
+      </g>
     </svg>
     <span class="ken-map-caption">Kenya</span>
   </div>
 
   <div class="ken-map-panel ken-map-panel--zoom">
     <svg class="ken-map-svg ken-map-svg--zoom" viewBox="0 0 260 215" role="img"
-         aria-label="Zoomed map of Nairobi, Kiambu, Machakos and Kajiado counties, with the Molongo office marked">
+         aria-label="Zoomed map of Nairobi, Kiambu, Machakos and Kajiado counties, with the Mlolongo office marked">
       <title>Nairobi metro and the counties around it</title>
       <clipPath id="ken-metro"><rect width="260" height="215" /></clipPath>
       <g clip-path="url(#ken-metro)">
@@ -52,7 +217,7 @@ claim ever changes.
         <g class="ken-map-pin ken-map-pin--hq">
           <circle cx="129.2" cy="58.0" r="4.6" />
           <circle class="ken-map-pin-halo" cx="129.2" cy="58.0" r="10" />
-          <text x="141.8" y="60.6" text-anchor="start">Molongo HQ</text>
+          <text x="141.8" y="60.6" text-anchor="start">Mlolongo HQ</text>
         </g>
       </g>
     </svg>

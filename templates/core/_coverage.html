@@ -1,22 +1,61 @@
 {% comment %}
 Usage: {% include "core/_coverage.html" %}
 {% endcomment %}
+{% load static %}
 <section class="section" id="coverage">
   <div class="wrap">
     <div class="coverage-grid">
       <div>
         <p class="eyebrow">Where we work</p>
-        <h2>Nairobi crews, and the counties around it</h2>
-        <p class="section-lede">Most of our sites sit inside the metro, so a technician can usually walk the property within the week. Further out, the same survey-first process applies — we just plan the travel into the programme.</p>
+        <h2>Any place in Kenya</h2>
+        <p class="section-lede">Crews leave the Mlolongo office and work the whole country — nineteen counties so far, from Turkana and Marsabit in the north to Lamu and Mombasa on the coast, Kisumu and Migori in the west. Tap a county dot to see the kind of system we keep an eye on after handover.</p>
         <dl class="hero-specs">
           <div><dt>24/7</dt><dd>Emergency call-out across the metro</dd></div>
           <div><dt>1 day</dt><dd>Typical callback on a new request</dd></div>
           <div><dt>13+</dt><dd>Service lines under one contract</dd></div>
         </dl>
       </div>
+
       <div class="coverage-map">
-        {% include "core/_kenya_map.html" %}
-        <p class="coverage-hq"><strong>Office</strong> Jamii Plaza, 2nd Floor, off Police Road, Molongo, Machakos County &middot; P.O. Box 37, 00519</p>
+        <div class="coverage-stage">
+          {% include "core/_kenya_map.html" %}
+
+          <aside class="site-feed" id="site-feed" aria-label="Simulated site feed" aria-live="polite">
+            <p class="site-feed-tag">Simulated demo</p>
+            <h3 class="site-feed-site" data-feed="site">Pick a county dot</h3>
+            <p class="site-feed-clock"><span data-feed="clock">--:--</span> site time</p>
+            <ul class="site-feed-rows">
+              <li>
+                <span class="feed-name">Grid</span>
+                <span class="feed-value" data-value="grid">&mdash;</span>
+                <i class="feed-track" aria-hidden="true"><b class="feed-bar" data-bar="grid"></b></i>
+              </li>
+              <li>
+                <span class="feed-name">Solar</span>
+                <span class="feed-value" data-value="solar">&mdash;</span>
+                <i class="feed-track" aria-hidden="true"><b class="feed-bar feed-bar--solar" data-bar="solar"></b></i>
+              </li>
+              <li>
+                <span class="feed-name">Load</span>
+                <span class="feed-value" data-value="load">&mdash;</span>
+                <i class="feed-track" aria-hidden="true"><b class="feed-bar feed-bar--load" data-bar="load"></b></i>
+              </li>
+              <li>
+                <span class="feed-name">Inverter</span>
+                <span class="feed-value feed-value--dim" data-value="inverter">&mdash;</span>
+                <i class="feed-led" aria-hidden="true"></i>
+              </li>
+              <li>
+                <span class="feed-name">Battery</span>
+                <span class="feed-value" data-value="battery">&mdash;</span>
+                <i class="feed-track" aria-hidden="true"><b class="feed-bar feed-bar--battery" data-bar="battery"></b></i>
+              </li>
+            </ul>
+            <p class="site-feed-note">Built in your browser to show what a monitored site looks like. Not live client telemetry.</p>
+          </aside>
+        </div>
+
+        <p class="coverage-hq"><strong>Office</strong> Jamii Plaza, 2nd Floor, off Police Road, Mlolongo, Machakos County &middot; P.O. Box 37, 00519</p>
       </div>
     </div>
 
@@ -25,8 +64,8 @@ Usage: {% include "core/_coverage.html" %}
       <div class="area"><strong>Kiambu</strong><span>Industrial &amp; homes</span></div>
       <div class="area"><strong>Machakos</strong><span>Athi River corridor</span></div>
       <div class="area"><strong>Kajiado</strong><span>Southern suburbs</span></div>
-      <div class="area"><strong>Central business district</strong><span>Offices &amp; retail</span></div>
-      <div class="area"><strong>Further afield</strong><span>On request</span></div>
     </div>
+    <p class="area-more"><strong>Also working</strong> Nakuru &middot; Nandi &middot; Uasin Gishu (Eldoret) &middot; Kisumu &middot; Migori &middot; Nyandarua &middot; Nyeri &middot; Murang&rsquo;a &middot; Embu &middot; Taita Taveta &middot; Garissa &middot; Lamu &middot; Mombasa &middot; Turkana &middot; Marsabit (Moyale)</p>
   </div>
 </section>
+<script src="{% static 'core/js/coverage-feed.js' %}" defer></script>
