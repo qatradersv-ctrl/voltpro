@@ -5,7 +5,7 @@ County shapes come from the geoBoundaries gbOpen KEN ADM1 set, projected to SVG 
 an equirectangular grid with a cos(lat) correction and simplified to 0.75px. All 47
 counties are drawn so the served ones read as part of a country rather than loose
 shapes; the 19 we work in carry ken-map-served plus a clickable ken-map-dot that
-drives the demo site feed in _coverage.html. The second panel is a window onto the
+drives the live site simulation in _coverage.html. The second panel is a window onto the
 metro cluster with its neighbours drawn for context, because Kajiado dwarfs the other
 three and a fit-to-bounds frame reduces Nairobi to a speck. This file is the source of
 truth; tools/build_kenya_map.py regenerates this panel from a fresh ADM1
@@ -14,7 +14,7 @@ download, so run that rather than editing path data by hand if the county list c
 <div class="ken-map">
   <div class="ken-map-panel ken-map-panel--locator">
     <svg class="ken-map-svg ken-map-svg--locator" viewBox="0 0 168 200" role="group"
-         aria-label="Map of the 19 Kenyan counties we work in. Each shaded county is a button that loads a simulated site feed."
+         aria-label="Map of the 19 Kenyan counties we work in. Each shaded county is a button that loads a live site simulation using mock data."
       <title>Kenya - the counties we work in</title>
       <g class="ken-map-country">
         <path d="M93.7,108.1L103.4,125.9L104.2,137.9L103.5,138.3L104.5,142.3L100.4,150.2L97.3,151.5L105.7,163.4L108.3,163.8L120.7,149.6L126.4,157.5L128.2,155.2L132.4,153.7L131.4,153.1L134.0,154.2L136.3,152.3L127.4,151.2L125.7,136.6L124.4,134.1L123.4,134.4L122.9,129.8L118.6,118.1L116.5,116.9L114.3,112.2L110.1,109.2L106.7,109.2L105.5,107.6L101.2,108.5L96.0,107.0L93.7,108.1Z" />
@@ -67,115 +67,115 @@ download, so run that rather than editing path data by hand if the county list c
       </g>
       <rect class="ken-map-zoombox" x="47.7" y="124.4" width="37.1" height="30.6" rx="2" />
       <g class="ken-map-dots">
-        <g class="ken-map-dot" data-county="Turkana" data-label="Turkana" role="button" tabindex="0" aria-label="Turkana - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Turkana" data-label="Turkana" role="button" tabindex="0" aria-label="Turkana - show the live site simulation using mock data">
           <title>Turkana</title>
           <circle class="ken-map-dot-hit" cx="38.1" cy="43.5" r="5.4" />
           <circle class="ken-map-dot-halo" cx="38.1" cy="43.5" r="5" />
           <circle cx="38.1" cy="43.5" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Lamu" data-label="Lamu" role="button" tabindex="0" aria-label="Lamu - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Lamu" data-label="Lamu" role="button" tabindex="0" aria-label="Lamu - show the live site simulation using mock data">
           <title>Lamu</title>
           <circle class="ken-map-dot-hit" cx="136.8" cy="144.5" r="5.4" />
           <circle class="ken-map-dot-halo" cx="136.8" cy="144.5" r="5" />
           <circle cx="136.8" cy="144.5" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Nakuru" data-label="Nakuru" role="button" tabindex="0" aria-label="Nakuru - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Nakuru" data-label="Nakuru" role="button" tabindex="0" aria-label="Nakuru - show the live site simulation using mock data">
           <title>Nakuru</title>
           <circle class="ken-map-dot-hit" cx="50.0" cy="115.4" r="5.4" />
           <circle class="ken-map-dot-halo" cx="50.0" cy="115.4" r="5" />
           <circle cx="50.0" cy="115.4" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Machakos" data-label="Machakos" role="button" tabindex="0" aria-label="Machakos - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Machakos" data-label="Machakos" role="button" tabindex="0" aria-label="Machakos - show the live site simulation using mock data">
           <title>Machakos</title>
           <circle class="ken-map-dot-hit" cx="74.8" cy="130.6" r="5.4" />
           <circle class="ken-map-dot-halo" cx="74.8" cy="130.6" r="5" />
           <circle cx="74.8" cy="130.6" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Marsabit" data-label="Marsabit (Moyale)" data-town="Moyale" role="button" tabindex="0" aria-label="Marsabit (Moyale) - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Marsabit" data-label="Marsabit (Moyale)" data-town="Moyale" role="button" tabindex="0" aria-label="Marsabit (Moyale) - show the live site simulation using mock data">
           <title>Marsabit (Moyale)</title>
           <circle class="ken-map-dot-hit" cx="77.6" cy="51.4" r="5.4" />
           <circle class="ken-map-dot-halo" cx="77.6" cy="51.4" r="5" />
           <circle cx="77.6" cy="51.4" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Garissa" data-label="Garissa" role="button" tabindex="0" aria-label="Garissa - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Garissa" data-label="Garissa" role="button" tabindex="0" aria-label="Garissa - show the live site simulation using mock data">
           <title>Garissa</title>
           <circle class="ken-map-dot-hit" cx="126.1" cy="115.7" r="5.4" />
           <circle class="ken-map-dot-halo" cx="126.1" cy="115.7" r="5" />
           <circle cx="126.1" cy="115.7" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Taita Taveta" data-label="Taita Taveta" role="button" tabindex="0" aria-label="Taita Taveta - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Taita Taveta" data-label="Taita Taveta" role="button" tabindex="0" aria-label="Taita Taveta - show the live site simulation using mock data">
           <title>Taita Taveta</title>
           <circle class="ken-map-dot-hit" cx="93.4" cy="170.5" r="5.4" />
           <circle class="ken-map-dot-halo" cx="93.4" cy="170.5" r="5" />
           <circle cx="93.4" cy="170.5" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Kajiado" data-label="Kajiado" role="button" tabindex="0" aria-label="Kajiado - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Kajiado" data-label="Kajiado" role="button" tabindex="0" aria-label="Kajiado - show the live site simulation using mock data">
           <title>Kajiado</title>
           <circle class="ken-map-dot-hit" cx="65.3" cy="146.1" r="5.4" />
           <circle class="ken-map-dot-halo" cx="65.3" cy="146.1" r="5" />
           <circle cx="65.3" cy="146.1" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Nyandarua" data-label="Nyandarua" role="button" tabindex="0" aria-label="Nyandarua - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Nyandarua" data-label="Nyandarua" role="button" tabindex="0" aria-label="Nyandarua - show the live site simulation using mock data">
           <title>Nyandarua</title>
           <circle class="ken-map-dot-hit" cx="57.3" cy="112.5" r="5.4" />
           <circle class="ken-map-dot-halo" cx="57.3" cy="112.5" r="5" />
           <circle cx="57.3" cy="112.5" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Uasin Gishu" data-label="Uasin Gishu (Eldoret)" data-town="Eldoret" role="button" tabindex="0" aria-label="Uasin Gishu (Eldoret) - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Uasin Gishu" data-label="Uasin Gishu (Eldoret)" data-town="Eldoret" role="button" tabindex="0" aria-label="Uasin Gishu (Eldoret) - show the live site simulation using mock data">
           <title>Uasin Gishu (Eldoret)</title>
           <circle class="ken-map-dot-hit" cx="35.9" cy="96.8" r="5.4" />
           <circle class="ken-map-dot-halo" cx="35.9" cy="96.8" r="5" />
           <circle cx="35.9" cy="96.8" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Kisumu" data-label="Kisumu" role="button" tabindex="0" aria-label="Kisumu - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Kisumu" data-label="Kisumu" role="button" tabindex="0" aria-label="Kisumu - show the live site simulation using mock data">
           <title>Kisumu</title>
           <circle class="ken-map-dot-hit" cx="26.9" cy="109.9" r="5.4" />
           <circle class="ken-map-dot-halo" cx="26.9" cy="109.9" r="5" />
           <circle cx="26.9" cy="109.9" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Kiambu" data-label="Kiambu" role="button" tabindex="0" aria-label="Kiambu - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Kiambu" data-label="Kiambu" role="button" tabindex="0" aria-label="Kiambu - show the live site simulation using mock data">
           <title>Kiambu</title>
           <circle class="ken-map-dot-hit" cx="63.7" cy="126.6" r="5.4" />
           <circle class="ken-map-dot-halo" cx="63.7" cy="126.6" r="5" />
           <circle cx="63.7" cy="126.6" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Nandi" data-label="Nandi" role="button" tabindex="0" aria-label="Nandi - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Nandi" data-label="Nandi" role="button" tabindex="0" aria-label="Nandi - show the live site simulation using mock data">
           <title>Nandi</title>
           <circle class="ken-map-dot-hit" cx="32.2" cy="103.3" r="5.4" />
           <circle class="ken-map-dot-halo" cx="32.2" cy="103.3" r="5" />
           <circle cx="32.2" cy="103.3" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Nyeri" data-label="Nyeri" role="button" tabindex="0" aria-label="Nyeri - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Nyeri" data-label="Nyeri" role="button" tabindex="0" aria-label="Nyeri - show the live site simulation using mock data">
           <title>Nyeri</title>
           <circle class="ken-map-dot-hit" cx="66.2" cy="113.1" r="5.4" />
           <circle class="ken-map-dot-halo" cx="66.2" cy="113.1" r="5" />
           <circle cx="66.2" cy="113.1" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Migori" data-label="Migori" role="button" tabindex="0" aria-label="Migori - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Migori" data-label="Migori" role="button" tabindex="0" aria-label="Migori - show the live site simulation using mock data">
           <title>Migori</title>
           <circle class="ken-map-dot-hit" cx="18.1" cy="125.0" r="5.4" />
           <circle class="ken-map-dot-halo" cx="18.1" cy="125.0" r="5" />
           <circle cx="18.1" cy="125.0" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Embu" data-label="Embu" role="button" tabindex="0" aria-label="Embu - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Embu" data-label="Embu" role="button" tabindex="0" aria-label="Embu - show the live site simulation using mock data">
           <title>Embu</title>
           <circle class="ken-map-dot-hit" cx="78.7" cy="117.5" r="5.4" />
           <circle class="ken-map-dot-halo" cx="78.7" cy="117.5" r="5" />
           <circle cx="78.7" cy="117.5" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Murang'a" data-label="Murang'a" role="button" tabindex="0" aria-label="Murang'a - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Murang'a" data-label="Murang'a" role="button" tabindex="0" aria-label="Murang'a - show the live site simulation using mock data">
           <title>Murang'a</title>
           <circle class="ken-map-dot-hit" cx="67.6" cy="121.7" r="5.4" />
           <circle class="ken-map-dot-halo" cx="67.6" cy="121.7" r="5" />
           <circle cx="67.6" cy="121.7" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Mombasa" data-label="Mombasa" role="button" tabindex="0" aria-label="Mombasa - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Mombasa" data-label="Mombasa" role="button" tabindex="0" aria-label="Mombasa - show the live site simulation using mock data">
           <title>Mombasa</title>
           <circle class="ken-map-dot-hit" cx="117.3" cy="180.8" r="5.4" />
           <circle class="ken-map-dot-halo" cx="117.3" cy="180.8" r="5" />
           <circle cx="117.3" cy="180.8" r="2.4" />
         </g>
-        <g class="ken-map-dot" data-county="Nairobi" data-label="Nairobi" role="button" tabindex="0" aria-label="Nairobi - show the simulated site feed">
+        <g class="ken-map-dot" data-county="Nairobi" data-label="Nairobi" role="button" tabindex="0" aria-label="Nairobi - show the live site simulation using mock data">
           <title>Nairobi</title>
           <circle class="ken-map-dot-hit" cx="65.0" cy="130.7" r="5.4" />
           <circle class="ken-map-dot-halo" cx="65.0" cy="130.7" r="5" />

@@ -1,9 +1,9 @@
-/* The coverage map's demo feed.
+/* The coverage map's live simulation feed.
  *
  * Clicking a county dot opens what a monitored VoltPro site would report — grid,
  * solar, load, inverter and battery — with the numbers generated here in the
- * browser. Nothing is read from a real installation, so every surface that shows
- * these figures labels them as a simulation.
+ * browser as mock data. Nothing is read from a real installation, so every
+ * surface that shows these figures labels them as a live simulation.
  */
 (function () {
     'use strict';

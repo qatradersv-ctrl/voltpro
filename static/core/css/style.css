@@ -3170,9 +3170,8 @@ ol.qdoc-band-list li::marker{ color: var(--primary); font-weight: 700; }
    PASS 18 - the locator map becomes an instrument, not a picture.
    All 47 counties are drawn so the served ones sit inside a country instead of
    floating as blobs, and the 19 counties we work in carry a clickable dot.
-   A dot opens the simulated site feed beside the map - grid, solar, load,
-   inverter, battery - which is demo output built in the browser, so the panel
-   says so in its own header and footnote.
+   A dot opens the live site simulation beside the map - grid, solar, load,
+   inverter and battery - with mock values generated in the browser.
    ========================================================= */
 .coverage-grid{ grid-template-columns: 1fr 1.62fr; gap: 34px; align-items: start; }
 .coverage-stage{ display: grid; grid-template-columns: minmax(0, 1fr) 232px; gap: 14px; align-items: start; }

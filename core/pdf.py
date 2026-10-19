@@ -256,7 +256,11 @@ def _build_quotation_pdf(quote):
         n = max(1, len(_wrap_lines(item.description, desc_w, size=8.2)))
         item_heights.append(max(row_min, 7 + n * row_lead))
 
-    pay_lines = quote.payment_details_list
+    pay_lines = [
+        wrapped
+        for payment_line in quote.payment_details_list
+        for wrapped in (_wrap_lines(payment_line, table_w - 18, size=8) or [""])
+    ]
     pay_h = 15 + 11 + len(pay_lines) * 10 + 9
     numbered_terms = [f"{i}. {line}" for i, line in enumerate(quote.terms_list, 1)]
     terms_col_w = table_w * 0.72
@@ -338,39 +342,50 @@ def _build_quotation_pdf(quote):
             yy -= h
             c.line(x_left, yy, x_right, yy)
 
-    # A materials list can be longer than the page, and the bank details, terms
-    # and signature must never be pushed off the bottom of it, so the table
-    # splits and the closing blocks always sit under the last chunk of rows.
+    def start_continuation_page(page_number):
+        c.showPage()
+        _quotation_frame(c)
+        top = A4_H - FRAME - PAD
+        c.setFillColor(BRAND_NAVY)
+        c.setFont("Helvetica-Bold", 11)
+        c.drawString(x_left, top - 10, "VoltPro Electrodata Solutions")
+        c.setFillColor(BRAND_MUTED)
+        c.setFont("Helvetica", 7.6)
+        c.drawRightString(
+            x_right, top - 10,
+            f"Quotation {quote.quote_number or ''} continued - {quote.billing_name}".strip(),
+        )
+        line_y = top - 22
+        c.setStrokeColor(BRAND_LINE)
+        c.setLineWidth(0.7)
+        c.line(x_left, line_y, x_right, line_y)
+        return line_y - 14
+
+    # Reserve space for the closing sections when they fit below the party
+    # block. Otherwise reserve the notes and totals, then continue the payment
+    # and terms on another page instead of drawing them below the paper edge.
     idx = 0
     page = 1
+    available_after_header = y - head_h - bottom - 14
+    notes_reserve = close_h + 20
+    if fixed <= available_after_header:
+        table_reserve = fixed
+    elif notes_reserve <= available_after_header:
+        table_reserve = notes_reserve
+    else:
+        table_reserve = 0
     while True:
         if page > 1:
-            c.showPage()
-            _quotation_frame(c)
-            y = A4_H - FRAME - PAD
-            c.setFillColor(BRAND_NAVY)
-            c.setFont("Helvetica-Bold", 11)
-            c.drawString(x_left, y - 10, "VoltPro Electrodata Solutions")
-            c.setFillColor(BRAND_MUTED)
-            c.setFont("Helvetica", 7.6)
-            c.drawRightString(
-                x_right, y - 10,
-                f"Quotation {quote.quote_number or ''} continued — {quote.billing_name}".strip(),
-            )
-            y -= 22
-            c.setStrokeColor(BRAND_LINE)
-            c.setLineWidth(0.7)
-            c.line(x_left, y, x_right, y)
-            y -= 14
+            y = start_continuation_page(page)
         y = draw_head(y)
         table_top = y
-        limit = y - fixed - bottom - 14
+        limit = y - table_reserve - bottom - 14
         heights = []
         while idx < len(items) and (not heights or y - item_heights[idx] > limit):
             heights.append(item_heights[idx])
             y = draw_row(y, idx, item_heights[idx], items[idx])
             idx += 1
-        if idx >= len(items):
+        if idx >= len(items) and table_reserve == fixed and page == 1:
             blanks = max(0, min(6, int((y - limit) // row_min))) if page == 1 else 0
             for n in range(blanks):
                 heights.append(row_min)
@@ -380,6 +395,9 @@ def _build_quotation_pdf(quote):
             break
         page += 1
     y -= 14
+    if y - close_h < bottom:
+        page += 1
+        y = start_continuation_page(page)
 
     # ---------------- notes and totals ----------------
     totals = [
@@ -428,6 +446,10 @@ def _build_quotation_pdf(quote):
     y -= close_h + 10
 
     # ---------------- payment and bank details ----------------
+    tail_after_payment = terms_h + footer_h + 32
+    if y - (pay_h + tail_after_payment) < bottom:
+        page += 1
+        y = start_continuation_page(page)
     _box(c, x_left, y, table_w, pay_h)
     c.setFillColor(BRAND_NAVY)
     c.rect(x_left, y - 15, table_w, 15, fill=1, stroke=0)
@@ -443,6 +465,9 @@ def _build_quotation_pdf(quote):
     y -= pay_h + 10
 
     # ---------------- terms and signature ----------------
+    if y - (terms_h + footer_h + 24) < bottom:
+        page += 1
+        y = start_continuation_page(page)
     _box(c, x_left, y, table_w, terms_h)
     c.setFillColor(BRAND_NAVY)
     c.rect(x_left, y - 15, table_w, 15, fill=1, stroke=0)
