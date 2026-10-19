@@ -395,7 +395,7 @@ class Invoice(Quote):
 class InventoryItem(models.Model):
     """Inventory items that can be selected in quote line items."""
     name = models.CharField(max_length=200, help_text="Item name for dropdown")
-    description = models.CharField(max_length=200, help_text="Default description")
+    description = models.TextField(help_text="Default description")
     unit = models.CharField(max_length=20, default="unit", help_text="e.g. unit, hrs, m, lot")
     unit_price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("0.00"))
     category = models.CharField(max_length=100, blank=True, help_text="Category for grouping")
@@ -413,9 +413,9 @@ class InventoryItem(models.Model):
 
 class QuoteLineItem(models.Model):
     quote = models.ForeignKey(Quote, on_delete=models.CASCADE, related_name="line_items")
-    description = models.CharField(
-        max_length=200, 
-        help_text="Detailed description of the item, material, or service"
+    description = models.TextField(
+        help_text="Detailed description of the item, material, or service. "
+                  "Scope, spec and make/model all belong here — the line grows to fit."
     )
     unit = models.CharField(
         max_length=20, 

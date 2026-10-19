@@ -158,9 +158,9 @@
         });
 
         // Improve description field placeholder
-        const descriptionInputs = formset.querySelectorAll('input[name$="-description"]');
-        descriptionInputs.forEach(input => {
-            input.placeholder = 'Enter item description...';
+        const descriptionFields = formset.querySelectorAll('[name$="-description"]');
+        descriptionFields.forEach(field => {
+            field.placeholder = 'Enter item description...';
         });
 
         // Improve unit field suggestions

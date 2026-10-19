@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
 from django.conf import settings
+from django.db import models
 
 from .models import (
     Service, Project, Testimonial, QuoteRequest, Quote, QuoteLineItem, QuoteStatus,
@@ -320,6 +321,10 @@ class QuoteLineItemInline(admin.TabularInline):
     min_num = 1
     verbose_name = "Line Item"
     verbose_name_plural = "Line Items"
+    # The stock admin textarea is ten rows tall, which turns a tabular row into a column.
+    formfield_overrides = {
+        models.TextField: {"widget": forms.Textarea(attrs={"rows": 2, "cols": 46})},
+    }
     
     class Media:
         js = ('core/js/line_numbering.js',)

@@ -36,7 +36,7 @@
             
             if (!inventoryId) {
                 // Clear fields if no inventory item selected
-                $row.find('input[name$="-description"]').val('');
+                $row.find('[name$="-description"]').val('');
                 $row.find('input[name$="-unit"]').val('unit');
                 $row.find('input[name$="-unit_price"]').val('0.00');
                 return;
@@ -49,7 +49,7 @@
                 dataType: 'json',
                 success: function(data) {
                     // Auto-populate fields
-                    $row.find('input[name$="-description"]').val(data.description);
+                    $row.find('[name$="-description"]').val(data.description);
                     $row.find('input[name$="-unit"]').val(data.unit);
                     $row.find('input[name$="-unit_price"]').val(data.unit_price);
                     
