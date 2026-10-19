@@ -3235,3 +3235,112 @@ ol.qdoc-band-list li::marker{ color: var(--primary); font-weight: 700; }
 @media (prefers-reduced-motion: reduce){
   .feed-bar, .ken-map-dot circle:not(.ken-map-dot-halo):not(.ken-map-dot-hit), .ken-map-dot-halo{ transition: none; }
 }
+
+/* Coverage is the one place where the site shows a live, but simulated,
+   system readout. Give that panel a distinct instrument treatment and keep it
+   aligned with the map instead of letting the metrics feel like a second card. */
+.coverage-grid{
+  grid-template-columns: minmax(300px, .82fr) minmax(0, 1.58fr);
+  gap: clamp(28px, 4vw, 60px);
+  align-items: stretch;
+}
+.coverage-grid > div:first-child{ align-self: center; }
+.coverage-grid > div:first-child h2{ max-width: 9ch; font-size: clamp(42px, 4.2vw, 64px); }
+.coverage-grid > div:first-child .section-lede{ max-width: 48ch; }
+.coverage-stage{ grid-template-columns: minmax(0, 1fr) minmax(248px, .38fr); gap: 16px; align-items: stretch; }
+.ken-map{ height: 100%; }
+.ken-map-panel{ min-height: 350px; padding: 16px 14px 34px; background: #fff; }
+.ken-map-panel--zoom{ background: #f5f7fb; }
+.ken-map-panel--locator .ken-map-svg{ max-height: 310px; }
+.ken-map-panel--zoom .ken-map-svg{ margin: auto; }
+.site-feed{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 18px 17px 16px;
+  border-color: rgba(255,255,255,.16);
+  background: linear-gradient(155deg, #103b82 0%, #071f4b 100%);
+  box-shadow: 0 14px 34px rgba(4, 24, 61, .18);
+  color: #fff;
+}
+.site-feed::before{
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0 42%, rgba(255,255,255,.18) 42% 100%);
+}
+.site-feed-tag{
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 6px 9px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 999px;
+  background: rgba(255,255,255,.07);
+  color: #ffdb62;
+  font-size: 9px;
+  letter-spacing: .13em;
+}
+.site-feed-tag::before{
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255,204,0,.16);
+  animation: feed-pulse 2s ease-out infinite;
+}
+@keyframes feed-pulse{
+  0%, 100%{ box-shadow: 0 0 0 3px rgba(255,204,0,.16); }
+  50%{ box-shadow: 0 0 0 6px rgba(255,204,0,.04); }
+}
+.site-feed-site{ font-size: 22px; color: #fff; }
+.site-feed-clock{ margin: 4px 0 20px; color: rgba(255,255,255,.66); }
+.site-feed-rows{ gap: 13px; }
+.feed-name{ color: rgba(255,255,255,.62); font-size: 9px; }
+.feed-value{ color: #fff; font-size: 11px; }
+.feed-value--ok{ color: #8be1bc; }
+.feed-value--dim{ color: rgba(255,255,255,.62); }
+.feed-track{ height: 4px; background: rgba(255,255,255,.13); }
+.feed-bar{ background: #79aaff; }
+.feed-bar--solar{ background: var(--accent); }
+.feed-bar--load{ background: rgba(255,255,255,.65); }
+.feed-bar--battery{ background: #61d5b0; }
+.feed-led{ background: rgba(255,255,255,.14); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); }
+.feed-led.is-on{ background: #70dcaf; box-shadow: 0 0 0 3px rgba(112,220,175,.2); }
+.site-feed:not(.is-live) .site-feed-rows{ opacity: 1; }
+.site-feed-note{
+  margin: auto 0 0;
+  padding: 13px 10px 0;
+  border-top-color: rgba(255,255,255,.15);
+  color: rgba(255,255,255,.7);
+  font-size: 10.5px;
+}
+.coverage-hq{ margin-top: 14px; }
+@media (max-width: 1180px){
+  .coverage-stage{ grid-template-columns: minmax(0, 1fr); }
+  .site-feed{ max-width: none; min-height: 0; }
+  .site-feed-rows{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; }
+}
+@media (max-width: 900px){
+  .coverage-grid{ grid-template-columns: 1fr; gap: 30px; }
+  .coverage-grid > div:first-child{ align-self: auto; }
+  .coverage-grid > div:first-child h2{ max-width: none; }
+}
+@media (max-width: 760px){
+  .ken-map{ height: auto; }
+  .ken-map-panel{ min-height: 0; }
+}
+@media (max-width: 520px){
+  .coverage-stage{ gap: 12px; }
+  .site-feed{ padding: 17px 15px 15px; }
+  .site-feed-rows{ grid-template-columns: 1fr; gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .site-feed-tag::before{ animation: none; }
+}
