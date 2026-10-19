@@ -6,19 +6,7 @@
 {% block content %}
 <section class="quote-page">
   <div class="quote-wrap">
-    <div class="quote-sheet">
-
-      <header class="quote-brand">
-        <div class="quote-logo-container">
-          <img src="{% static 'core/images/logo-mark.png' %}" alt="VoltPro mark" class="quote-logo" width="186" height="238">
-        </div>
-        <div class="quote-brand-text">
-          <p class="quote-eyebrow">VoltPro Electrodata Solutions</p>
-          <h2>{% if quote.is_invoice %}Invoice{% else %}Quotation{% endif %}</h2>
-          <p class="quote-brand-meta">Nairobi, Kenya &middot; 0715 117855 &middot; info@voltpro.co.ke</p>
-        </div>
-        <span class="quote-status quote-status-{{ quote.status }}">{{ quote.get_status_display }}</span>
-      </header>
+    <div class="quote-sheet qdoc">
 
       {% if messages %}
       <div class="quote-messages">
@@ -28,102 +16,140 @@
       </div>
       {% endif %}
 
-      <div class="quote-head">
-        <div>
-          <p class="quote-eyebrow">{% if quote.is_invoice %}Invoice {{ quote.invoice_number }}{% else %}Quote {{ quote.quote_number }}{% endif %}</p>
-          <h1>{{ quote.billing_name }}</h1>
-          {% if quote.client_company and quote.client_name %}<p class="quote-meta">Attn: {{ quote.client_name }}</p>{% endif %}
-          <p class="quote-meta">Issued {{ quote.issue_date|date:"d M Y" }}{% if quote.valid_until and not quote.is_invoice %} &middot; valid until {{ quote.valid_until|date:"d M Y" }}{% endif %}</p>
-          {% if quote.client_kra_pin or site_config.kra_pin %}
-          <p class="quote-meta">
-            {% if quote.client_kra_pin %}Client KRA PIN: {{ quote.client_kra_pin }}{% endif %}
-            {% if quote.client_kra_pin and site_config.kra_pin %} &middot; {% endif %}
-            {% if site_config.kra_pin %}VoltPro KRA PIN: {{ site_config.kra_pin }}{% endif %}
-          </p>
-          {% endif %}
+      {# ---------------- letterhead ---------------- #}
+      <header class="qdoc-head">
+        <div class="qdoc-mark">
+          <img src="{% static 'core/images/logo-mark.png' %}" alt="VoltPro mark" width="52" height="52">
         </div>
-        {% if quote.service %}<p class="quote-meta quote-meta--right">{{ quote.service.title }}</p>{% endif %}
+        <div class="qdoc-org">
+          <p class="qdoc-org-name">VoltPro Electrodata Solutions</p>
+          <ul class="qdoc-contact">
+            <li>Jamii Plaza, 2nd Floor, off Police Road</li>
+            <li>Molongo, Machakos County, Kenya</li>
+            <li>P.O. Box 37, 00519 - Molongo</li>
+            <li>Tel: 0715 117855 / 0724 076 047</li>
+            <li>Email: {{ site_config.contact_email|default:"info@voltpro.co.ke" }}</li>
+            {% if site_config.kra_pin %}<li>KRA PIN: {{ site_config.kra_pin }}</li>{% endif %}
+          </ul>
+        </div>
+        <div class="qdoc-title">
+          <h1 class="qdoc-title-band">{% if quote.is_invoice %}Invoice{% else %}Quotation{% endif %}</h1>
+          <p class="qdoc-title-sub">{{ quote.invoice_number|default:quote.quote_number|default:"Draft" }}</p>
+        </div>
+      </header>
+
+      {# ---------------- parties + document meta ---------------- #}
+      <div class="qdoc-parties">
+        <div class="qdoc-party-col">
+          <div class="qdoc-box">
+            <p class="qdoc-box-title">Billed to</p>
+            <p class="qdoc-party-name">{{ quote.billing_name|default:"—" }}</p>
+            {% if quote.client_company and quote.client_name %}<p class="qdoc-party-line">Attn: {{ quote.client_name }}</p>{% endif %}
+            {% if quote.client_phone %}<p class="qdoc-party-line">Tel: {{ quote.client_phone }}</p>{% endif %}
+            {% if quote.client_email %}<p class="qdoc-party-line">Email: {{ quote.client_email }}</p>{% endif %}
+            {% if quote.client_kra_pin %}<p class="qdoc-party-line">KRA PIN: {{ quote.client_kra_pin }}</p>{% endif %}
+          </div>
+          <div class="qdoc-box">
+            <p class="qdoc-box-title">Site / work location</p>
+            <p class="qdoc-party-line">{{ quote.client_location|default:"To be confirmed at survey" }}</p>
+          </div>
+        </div>
+        <table class="qdoc-meta">
+          <caption class="sr-only">Document details</caption>
+          <tbody>
+            <tr><th scope="row">{% if quote.is_invoice %}Invoice number{% else %}Quote number{% endif %}</th><td>{{ quote.invoice_number|default:quote.quote_number|default:"—" }}</td></tr>
+            <tr><th scope="row">Date</th><td>{{ quote.issue_date|date:"d/m/Y" }}</td></tr>
+            {% if not quote.is_invoice %}<tr><th scope="row">Valid until</th><td>{{ quote.valid_until|date:"d/m/Y"|default:"—" }}</td></tr>{% endif %}
+            <tr><th scope="row">Status</th><td>{{ quote.get_status_display }}</td></tr>
+            <tr><th scope="row">Currency</th><td>KES</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <div class="quote-table-wrap">
-        <table class="quote-table">
+      {# ---------------- line items ---------------- #}
+      <div class="qdoc-table-wrap">
+        <table class="qdoc-table">
           <caption class="sr-only">Line items included in this quotation</caption>
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">Description</th>
-              <th scope="col">Qty</th>
-              <th scope="col">Unit</th>
-              <th scope="col">Unit price</th>
-              <th scope="col">Line total</th>
-              <th scope="col"><span class="sr-only">Charge VAT</span>VAT</th>
+              <th scope="col" class="qdoc-c-line">Line</th>
+              <th scope="col" class="qdoc-c-desc">Description</th>
+              <th scope="col" class="qdoc-c-num">Quantity</th>
+              <th scope="col" class="qdoc-c-unit">Unit</th>
+              <th scope="col" class="qdoc-c-num">Unit price</th>
+              <th scope="col" class="qdoc-c-vat"><span class="sr-only">Charge VAT</span>VAT</th>
+              <th scope="col" class="qdoc-c-num">Total</th>
             </tr>
           </thead>
           <tbody>
             {% for item in quote.line_items.all %}
             <tr>
-              <td>{{ forloop.counter }}</td>
-              <td class="quote-cell-desc">{{ item.description }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.unit }}</td>
-              <td>KES {{ item.unit_price|floatformat:2|intcomma }}</td>
-              <td class="quote-cell-total">KES {{ item.line_total|floatformat:2|intcomma }}</td>
-              <td class="quote-cell-tax">
-                <input type="checkbox"
-                       class="taxable-checkbox"
-                       id="tax-{{ item.id }}"
-                       data-item-id="{{ item.id }}"
-                       aria-label="Charge VAT on item {{ forloop.counter }}"
-                       {% if item.taxable %}checked{% endif %}
-                       onchange="toggleItemTax({{ item.id }}, this.checked)"
-                       {% if quote.status != "draft" %}disabled{% endif %}>
-                <label class="sr-only" for="tax-{{ item.id }}">Charge VAT on item {{ forloop.counter }}</label>
+              <td class="qdoc-c-line">{{ forloop.counter }}</td>
+              <td class="qdoc-c-desc">{{ item.description }}</td>
+              <td class="qdoc-c-num">{{ item.quantity }}</td>
+              <td class="qdoc-c-unit">{{ item.unit }}</td>
+              <td class="qdoc-c-num">{{ item.unit_price|floatformat:2|intcomma }}</td>
+              <td class="qdoc-c-vat">
+                <label class="qdoc-tax">
+                  <input type="checkbox"
+                         class="taxable-checkbox"
+                         id="tax-{{ item.id }}"
+                         data-item-id="{{ item.id }}"
+                         aria-label="Charge VAT on item {{ forloop.counter }}"
+                         {% if item.taxable %}checked{% endif %}
+                         onchange="toggleItemTax({{ item.id }}, this.checked)"
+                         {% if quote.status != "draft" %}disabled{% endif %}>
+                  <span class="qdoc-tax-text">{{ item.taxable|yesno:"VAT,Exempt" }}</span>
+                  <span class="sr-only" id="tax-{{ item.id }}-label">Charge VAT on item {{ forloop.counter }}</span>
+                </label>
               </td>
+              <td class="qdoc-c-num qdoc-cell-total">{{ item.line_total|floatformat:2|intcomma }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="7" class="quote-empty">No line items have been added to this quote yet &mdash; it will be itemised before it is sent.</td></tr>
+            <tr><td colspan="7" class="qdoc-empty">No line items have been added to this quote yet &mdash; it will be itemised before it is sent.</td></tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
 
-      <div class="quote-totals">
-        <div>
-          <span>Subtotal</span>
-          <b>KES {{ quote.subtotal|floatformat:2|intcomma }}</b>
+      {# ---------------- notes + totals ---------------- #}
+      <div class="qdoc-close">
+        <div class="qdoc-box qdoc-notes">
+          <p class="qdoc-box-title">Notes / scope of work</p>
+          {% if quote.notes %}<p class="qdoc-notes-body">{{ quote.notes|linebreaksbr }}</p>
+          {% else %}<p class="qdoc-notes-body qdoc-muted">Nothing beyond the line items above.</p>{% endif %}
         </div>
-        <div>
-          <span>VAT ({{ quote.tax_rate }}%)</span>
-          <b>KES {{ quote.tax_amount|floatformat:2|intcomma }}</b>
-        </div>
-        <div class="quote-total-final">
-          <span>Total due</span>
-          <b>KES {{ quote.total|floatformat:2|intcomma }}</b>
-        </div>
+        <table class="qdoc-totals">
+          <caption class="sr-only">Totals</caption>
+          <tbody>
+            <tr><th scope="row">Subtotal</th><td>Ksh {{ quote.subtotal|floatformat:2|intcomma }}</td></tr>
+            <tr><th scope="row">VAT ({{ quote.tax_rate|floatformat:"-2" }}%)</th><td>Ksh {{ quote.tax_amount|floatformat:2|intcomma }}</td></tr>
+            <tr class="qdoc-total-final"><th scope="row">Total</th><td>Ksh {{ quote.total|floatformat:2|intcomma }}</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      {% if quote.notes %}
-      <div class="quote-block">
-        <h3 class="quote-block-title">Scope of work</h3>
-        <p>{{ quote.notes|linebreaksbr }}</p>
-      </div>
-      {% endif %}
-
+      {% comment %}
+      Payment details and terms belong to the quotation stage; an invoice is a
+      demand for payment, so the client page drops both.
+      {% endcomment %}
       {% if not quote.is_invoice %}
-      {# Payment details and terms belong to the quotation stage; an invoice
-         is a demand for payment, so the client page drops both. #}
-      <div class="quote-block quote-payment">
-        <h3 class="quote-block-title">Payment details</h3>
-        <ul class="quote-payment-list">
+      <div class="qdoc-band">
+        <p class="qdoc-band-title">Payment &amp; bank details</p>
+        <ul class="qdoc-band-list">
           {% for line in quote.payment_details_list %}<li>{{ line }}</li>{% endfor %}
         </ul>
       </div>
 
-      <div class="quote-block">
-        <h3 class="quote-block-title">Terms and conditions</h3>
-        <ol class="quote-terms">
+      <div class="qdoc-band">
+        <p class="qdoc-band-title">Terms and conditions</p>
+        <ol class="qdoc-band-list">
           {% for term in quote.terms_list %}<li>{{ term }}</li>{% endfor %}
         </ol>
+        <div class="qdoc-sign">
+          <span class="qdoc-sign-rule"></span>
+          <p class="qdoc-sign-label">Customer acceptance &mdash; sign here, then print name and date</p>
+        </div>
       </div>
       {% endif %}
 
@@ -151,8 +177,10 @@
         </div>
       </div>
 
-      <footer class="quote-foot">
-        <p>Prepared by VoltPro Electrodata Solutions. Questions about any line above? Call <a href="tel:+254715117855">0715 117855</a> or write to <a href="mailto:info@voltpro.co.ke">info@voltpro.co.ke</a>.</p>
+      <footer class="qdoc-foot">
+        <p>Questions about any line above? Call <a href="tel:+254715117855">0715 117855</a> or write to
+          <a href="mailto:{{ site_config.contact_email|default:'info@voltpro.co.ke' }}">{{ site_config.contact_email|default:"info@voltpro.co.ke" }}</a>.
+          Thank you for your business.</p>
       </footer>
 
     </div>
