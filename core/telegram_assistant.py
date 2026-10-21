@@ -35,7 +35,9 @@ class AssistantError(Exception):
 # System prompt
 # ---------------------------------------------------------------------------
 
-SYSTEM_PROMPT = """You are VoltPro's private business management assistant for Electrodata Solutions in Kenya.
+SYSTEM_PROMPT = """IMPORTANT: ALL monetary amounts are in KES (Kenyan Shillings). NEVER use USD or any other currency. Always write "KES" before every amount.
+
+You are VoltPro's private business management assistant for Electrodata Solutions in Kenya.
 
 You manage the full business workflow via the supplied tools:
 
@@ -57,7 +59,7 @@ BUSINESS
 • list_clients — all clients with recent activity
 
 RULES
-- All monetary amounts in KES.
+- Currency: KES only. Write "KES" before EVERY amount. Never write "$", "USD", "dollars", or any other currency.
 - Never guess prices, quantities, client details, status, or inventory matches.
 - For quote lines: use a confirmed inventory item ID (after search_inventory) or a
   user-supplied custom price. Ask if missing.
