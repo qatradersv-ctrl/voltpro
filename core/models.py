@@ -599,3 +599,21 @@ class NewsletterSubscriber(models.Model):
 
     def __str__(self):
         return f"{self.email} ({'Active' if self.is_active else 'Inactive'})"
+
+
+class TelegramBotState(models.Model):
+    """Persistent polling cursor and one short-lived, owner-confirmed action."""
+
+    update_offset = models.PositiveBigIntegerField(default=0)
+    pending_chat_id = models.BigIntegerField(blank=True, null=True)
+    pending_code = models.CharField(max_length=12, blank=True)
+    pending_action = models.JSONField(blank=True, null=True)
+    pending_expires_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Telegram assistant state"
+        verbose_name_plural = "Telegram assistant state"
+
+    def __str__(self):
+        return "Telegram assistant state"

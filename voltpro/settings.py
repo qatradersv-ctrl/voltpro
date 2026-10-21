@@ -228,6 +228,13 @@ DEFAULT_FROM_EMAIL = 'info@voltpro.co.ke'
 CONTACT_EMAIL = 'info@voltpro.co.ke'
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
+# Optional private Telegram + Groq quote assistant. Keep these values in the
+# hosting provider's encrypted environment settings, never in source control.
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_ALLOWED_USER_ID = os.environ.get("TELEGRAM_ALLOWED_USER_ID", "")
+
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
