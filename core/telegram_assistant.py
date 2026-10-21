@@ -1338,8 +1338,8 @@ def poll_once():
         raise AssistantError("Add TELEGRAM_BOT_TOKEN to the server environment.")
     if not getattr(settings, "TELEGRAM_ALLOWED_USER_ID", ""):
         raise AssistantError("Set TELEGRAM_ALLOWED_USER_ID to the owner's numeric Telegram user ID.")
-    if not getattr(settings, "ANTHROPIC_API_KEY", ""):
-        raise AssistantError("Set ANTHROPIC_API_KEY in the server environment.")
+    if not getattr(settings, "GROQ_API_KEY", ""):
+        raise AssistantError("Set GROQ_API_KEY in the server environment.")
     state = _state()
     response = _telegram(
         token,
