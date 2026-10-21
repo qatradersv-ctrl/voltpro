@@ -183,7 +183,7 @@ def _groq(messages, *, tools=None, tool_choice=None):
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=35) as response:
+        with urllib.request.urlopen(request, timeout=20) as response:
             data = json.loads(response.read().decode("utf-8"))
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         raise AssistantError("Groq could not answer that request. Try again shortly.") from None
@@ -550,7 +550,7 @@ def _answer_prompt(text, chat_id, update_id):
     return (final.get("content") or "I could not find any matching records.").strip()
 
 
-def _telegram(token, method, payload, *, timeout=35):
+def _telegram(token, method, payload, *, timeout=15):
     return _http_json(f"https://api.telegram.org/bot{token}/{method}", payload, timeout=timeout)
 
 
@@ -587,7 +587,7 @@ def _send_document(token, chat_id, quote, kind):
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=40) as response:
+        with urllib.request.urlopen(request, timeout=20) as response:
             result = json.loads(response.read().decode("utf-8"))
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         _send_message(token, chat_id, f"Saved {quote.invoice_number if kind == 'invoice' else quote.quote_number}, but Telegram could not deliver its PDF. Try again from the admin.")
@@ -696,3 +696,37 @@ def poll_once():
             finally:
                 _advance(update_id)
     return len(updates)
+
+
+def handle_webhook_update(update):
+    """Process a single, authenticated Telegram webhook update once."""
+    if not isinstance(update, dict):
+        return False
+    try:
+        update_id = int(update["update_id"])
+    except (KeyError, TypeError, ValueError):
+        return False
+
+    with transaction.atomic():
+        state = TelegramBotState.objects.select_for_update().filter(pk=1).first()
+        if not state:
+            state = TelegramBotState.objects.create(pk=1)
+        if update_id <= state.last_webhook_update:
+            return False
+        state.last_webhook_update = update_id
+        state.save(update_fields=["last_webhook_update", "updated_at"])
+
+    message = update.get("message") or {}
+    token = getattr(settings, "TELEGRAM_BOT_TOKEN", "")
+    try:
+        _handle_message(token, message, update_id)
+    except Exception:
+        # Do not return a failed status that could replay a confirmation update.
+        # The owner can retry the request through Telegram if no reply arrived.
+        try:
+            authorized = _authorized_private_message({"message": message})
+            if authorized:
+                _send_message(token, authorized["chat"]["id"], "I could not complete that request. Please try again shortly.")
+        except Exception:
+            pass
+    return True

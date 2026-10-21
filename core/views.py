@@ -7,9 +7,34 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
+import secrets
 
 from .models import Service, Project, Testimonial, QuoteRequest, Quote, QuoteStatus, SiteConfiguration, InventoryItem, BlogPost, NewsletterSubscriber, QuoteLineItem, Invoice
 from .pdf import build_quote_pdf
+
+
+@csrf_exempt
+def telegram_webhook(request):
+    """Receive Telegram updates after validating Telegram's webhook secret."""
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    expected = getattr(settings, "TELEGRAM_WEBHOOK_SECRET", "")
+    provided = request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")
+    if not expected or not secrets.compare_digest(provided, expected):
+        return HttpResponse(status=403)
+    if len(request.body) > 65536:
+        return HttpResponse(status=413)
+    try:
+        update = json.loads(request.body.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return HttpResponse(status=400)
+    if not isinstance(update, dict) or "update_id" not in update:
+        return HttpResponse(status=400)
+
+    from .telegram_assistant import handle_webhook_update
+
+    handle_webhook_update(update)
+    return JsonResponse({"ok": True})
 
 
 def home(request):

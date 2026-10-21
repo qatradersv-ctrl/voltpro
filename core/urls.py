@@ -4,6 +4,7 @@ from . import views
 app_name = "core"
 
 urlpatterns = [
+    path("telegram/webhook/", views.telegram_webhook, name="telegram_webhook"),
     path("", views.home, name="home"),
     path("about/", views.about, name="about"),
     path("services/", views.services, name="services"),
