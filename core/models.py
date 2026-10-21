@@ -602,7 +602,7 @@ class NewsletterSubscriber(models.Model):
 
 
 class TelegramBotState(models.Model):
-    """Persistent delivery cursor and one short-lived, owner-confirmed action."""
+    """Persistent delivery cursor, one short-lived confirmed action, and conversation history."""
 
     update_offset = models.PositiveBigIntegerField(default=0)
     last_webhook_update = models.PositiveBigIntegerField(default=0)
@@ -610,6 +610,8 @@ class TelegramBotState(models.Model):
     pending_code = models.CharField(max_length=12, blank=True)
     pending_action = models.JSONField(blank=True, null=True)
     pending_expires_at = models.DateTimeField(blank=True, null=True)
+    conversation_history = models.JSONField(default=list, blank=True)
+    conversation_updated_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
