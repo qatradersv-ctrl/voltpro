@@ -12,11 +12,14 @@ The bot uses Groq to understand owner prompts and offers a narrow set of tools: 
    - `GROQ_API_KEY` — Groq API key.
    - `GROQ_MODEL` — optional; defaults to `llama-3.3-70b-versatile`.
 
-2. Deploy the site so the webhook endpoint is available at `https://<your-domain>/telegram/webhook/`.
-3. On a trusted machine with the same four environment variables available, register the endpoint once:
+2. Set `DATABASE_URL` to the persistent PostgreSQL database used by the site. The bot stores update and confirmation state there; SQLite is not suitable for Vercel's serverless filesystem.
+3. Deploy the site to production. The Vercel production build registers `https://voltpro.co.ke/telegram/webhook/` with Telegram automatically when `TELEGRAM_BOT_TOKEN` is set. The build fails with a configuration error if the database or any other required bot settings are missing or invalid.
+
+   Preview builds do not change the production webhook. For a different domain, update the URL in `tools/vercel_build.py` before deploying.
+
+   To register or repair the webhook manually from a trusted machine with the four environment variables available, run:
 
    ```powershell
-   python manage.py migrate
    python manage.py set_telegram_webhook https://<your-domain>/telegram/webhook/
    ```
 
