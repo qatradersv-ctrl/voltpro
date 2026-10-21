@@ -347,12 +347,28 @@ def _groq(messages):
     try:
         with urllib.request.urlopen(request, timeout=25) as response:
             data = json.loads(response.read().decode("utf-8"))
-    except (urllib.error.URLError, TimeoutError, OSError, ValueError):
-        raise AssistantError("Groq could not answer that request. Try again shortly.") from None
+    except urllib.error.HTTPError as exc:
+        code = exc.code
+        try:
+            body = json.loads(exc.read().decode("utf-8"))
+            detail = (body.get("error") or {}).get("message") or str(body)
+        except Exception:
+            detail = ""
+        if code == 401:
+            raise AssistantError("Groq API key is invalid or expired. Check GROQ_API_KEY on the server.") from None
+        if code == 400:
+            raise AssistantError(f"Groq rejected the request (400): {detail[:200]}") from None
+        if code == 429:
+            raise AssistantError("Groq rate limit hit. Wait a moment and try again.") from None
+        raise AssistantError(f"Groq returned HTTP {code}: {detail[:200]}") from None
+    except (urllib.error.URLError, TimeoutError, OSError):
+        raise AssistantError("Groq could not be reached. Check server internet connectivity.") from None
+    except ValueError:
+        raise AssistantError("Groq returned an unreadable response. Try again.") from None
     try:
         return data["choices"][0]["message"]
     except (KeyError, IndexError, TypeError):
-        raise AssistantError("Groq returned an unreadable response. Try again.") from None
+        raise AssistantError("Groq returned an unexpected response format. Try again.") from None
 
 
 def _decimal(value, label, *, minimum=None, maximum=None):
