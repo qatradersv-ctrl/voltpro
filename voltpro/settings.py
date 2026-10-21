@@ -231,7 +231,7 @@ CONTACT_EMAIL = 'info@voltpro.co.ke'
 # Optional private Telegram + Groq quote assistant. Keep these values in the
 # hosting provider's encrypted environment settings, never in source control.
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TELEGRAM_ALLOWED_USER_ID = os.environ.get("TELEGRAM_ALLOWED_USER_ID", "")
 TELEGRAM_WEBHOOK_SECRET = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "")

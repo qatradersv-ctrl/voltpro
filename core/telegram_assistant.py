@@ -341,6 +341,7 @@ def _groq(messages):
         headers={
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
+            "User-Agent": "VoltPro-TelegramBot/1.0",
         },
         method="POST",
     )
